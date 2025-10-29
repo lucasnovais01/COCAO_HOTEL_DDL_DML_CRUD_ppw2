@@ -248,14 +248,14 @@ CREATE TABLE COCAO_RESERVA (
         REFERENCES COCAO_STATUS_RESERVA(CODIGO_STATUS),
     -- CHECK
     CONSTRAINT CHK_COCAO_RESERVA_HOSPEDE CHECK (NUMERO_HOSPEDES <= 10), -- Maximo até 10 hóspedes, preservando o sistema
-    CONSTRAINT CHK_COCAO_RESERVA_VALOR CHECK (VALOR_TOTAL >= 0),
+    CONSTRAINT CHK_COCAO_RESERVA_VALOR CHECK (VALOR_TOTAL >= 0 OR VALOR_TOTAL IS NULL),
     CONSTRAINT CHK_COCAO_RESERVA_DATA1 CHECK (DATA_CHECK_OUT > DATA_CHECK_IN),
-    CONSTRAINT CHK_COCAO_RESERVA_DATA2 CHECK (DATA_CHECK_IN >= TRUNC(SYSDATE)),
+    -- REMOVIDO: CONSTRAINT CHK_COCAO_RESERVA_DATA2 CHECK (DATA_CHECK_IN >= TRUNC(SYSDATE)),
+    -- Esta validação agora é feita pelo TRIGGER T15
     CONSTRAINT CHK_COCAO_RESERVA_DIARIAS CHECK (NUMERO_DIARIAS >= 0) -- Restrição simplificada, cálculo movido para T15
     -- Descartado, pois vai ser feito pelo TRIGGER T15
     -- CONSTRAINT CHK_COCAO_RESERVA_DIARIAS CHECK (NUMERO_DIARIAS = TRUNC(DATA_CHECK_OUT) - TRUNC(DATA_CHECK_IN));
 );
-
 
 -- ======================================================================
 -- 8. COCAO_SERVICO - LOOKUP TABLE (Catálogo de Serviços Adicionais)
@@ -310,6 +310,34 @@ CREATE TABLE COCAO_HOSPEDE_SERVICO (
     -- CHECK
     CONSTRAINT CHK_COCAO_HS_QUANTIDADE CHECK (QUANTIDADE <= 100) -- Limite de 100 unidades para preservar o sistema
 );
+
+
+
+-- ======================================================================
+-- LIMPEZA TOTAL: DROP DE ÍNDICES, VIEWS E FUNÇÕES (ANTES DE RECRIAR TABELAS)
+-- ======================================================================
+
+-- 1. DROP DE ÍNDICES (não dependem de tabelas)
+DROP INDEX IF EXISTS COCAO_HOTEL_07_IDX_STATUS_QUARTO_RESERVA;
+DROP INDEX IF EXISTS COCAO_HOTEL_09_IDX_HOSPEDE_SERVICO;
+
+-- 2. DROP DE VIEW
+BEGIN
+    EXECUTE IMMEDIATE 'DROP VIEW COCAO_HOTEL_VIEW_01_STATUS_QUARTO';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -4043 THEN RAISE; END IF; -- Ignora se não existir
+END;
+/
+
+-- 3. DROP DE FUNÇÃO
+BEGIN
+    EXECUTE IMMEDIATE 'DROP FUNCTION COCAO_HOTEL_SF_STATUS_QUARTO';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -4043 THEN RAISE; END IF; -- Ignora se não existir
+END;
+/
 
 -- ======================================================================
 -- 10. INDICES ADICIONAIS (se necessário) e VIEWS e STORED FUNCTION
@@ -386,52 +414,84 @@ FROM COCAO_QUARTO q;
 -- ======================================================================
 -- COCAO_HOTEL_SF_STATUS_QUARTO - Função PL/SQL para Relatórios de Disponibilidade
 -- ======================================================================
+-- RETORNA SYS_REFCURSOR → use em PL/SQL, Java ou Python (NÃO com TABLE())
 -- Exibe o status dos quartos (LIVRE, OCUPADO, MANUTENCAO) com base em reservas
--- Aceita parâmetros de data para consultas de disponibilidade em períodos específicos
--- Mantém prioridade de MANUTENCAO sobre reservas
--- Simplificado para relatórios dinâmicos em dashboards
--- Uso recomendado: 
---   SELECT * FROM TABLE(COCAO_HOTEL_SF_STATUS_QUARTO(
---       TO_DATE('01/01/2026', 'DD/MM/YYYY'),
---       TO_DATE('03/01/2026', 'DD/MM/YYYY')
---   ));
---   Se p_data_inicio/p_data_fim forem NULL, usa SYSDATE para status atual
+-- Aceita parâmetros de data para consultas em períodos específicos
+-- Prioridade: MANUTENÇÃO > OCUPADO > LIVRE
+-- Se p_data_inicio ou p_data_fim forem NULL → usa SYSDATE (status atual)
 -- ======================================================================
 CREATE OR REPLACE FUNCTION COCAO_HOTEL_SF_STATUS_QUARTO (
-    p_data_inicio IN DATE,
-    p_data_fim IN DATE
+    p_data_inicio IN DATE DEFAULT NULL,
+    p_data_fim    IN DATE DEFAULT NULL
 ) RETURN SYS_REFCURSOR AS
     l_cursor SYS_REFCURSOR;
 BEGIN
-    -- Validar se p_data_inicio <= p_data_fim
-    IF p_data_inicio IS NOT NULL AND p_data_fim IS NOT NULL AND p_data_inicio > p_data_fim THEN
+    -- Validação: início não pode ser posterior ao fim
+    IF p_data_inicio IS NOT NULL 
+       AND p_data_fim IS NOT NULL 
+       AND p_data_inicio > p_data_fim THEN
         RAISE_APPLICATION_ERROR(-20099,
             '[-20099] COCAO_HOTEL_SF_STATUS_QUARTO: Período inválido. ' ||
-            'Data de início (' || TO_CHAR(p_data_inicio, 'DD/MM/YYYY') || ') não pode ser posterior à data de fim (' ||
+            'Data de início (' || TO_CHAR(p_data_inicio, 'DD/MM/YYYY') || 
+            ') não pode ser posterior à data de fim (' || 
             TO_CHAR(p_data_fim, 'DD/MM/YYYY') || ').');
     END IF;
 
-    -- Uso em SQL:
-    --   SELECT * FROM TABLE(COCAO_HOTEL_SF_STATUS_QUARTO(
-    --       TO_DATE('01/01/2026', 'DD/MM/YYYY'),
-    --       TO_DATE('03/01/2026', 'DD/MM/YYYY')
-    --   ));
-    -- Uso em Java (exemplo):
-    --   CallableStatement stmt = conn.prepareCall("{ ? = call COCAO_HOTEL_SF_STATUS_QUARTO(?, ?) }");
-    --   stmt.registerOutParameter(1, OracleTypes.CURSOR);
-    --   stmt.setDate(2, java.sql.Date.valueOf("2026-01-01"));
-    --   stmt.setDate(3, java.sql.Date.valueOf("2026-01-03"));
-    --   stmt.execute();
-    --   ResultSet rs = (ResultSet) stmt.getObject(1);
-    --   while (rs.next()) {
-    --       System.out.println(rs.getInt("ID_QUARTO") + ": " + rs.getString("STATUS_QUARTO"));
-    --   }
-    -- Uso em Python (exemplo com cx_Oracle):
-    --   cursor = connection.cursor()
-    --   cursor.callfunc('COCAO_HOTEL_SF_STATUS_QUARTO', cx_Oracle.CURSOR, [date(2026, 1, 1), date(2026, 1, 3)])
-    --   for row in cursor:
-    --       print(row)
-    -- Nota: Se p_data_inicio ou p_data_fim forem NULL, usa SYSDATE como padrão
+    -- ==================================================================
+    -- COMO USAR ESTA FUNÇÃO (5 FORMAS PRÁTICAS)
+    -- ==================================================================
+
+    -- 1. PL/SQL (TESTE RÁPIDO NO SQL DEVELOPER)
+    -- DECLARE
+    --     cur SYS_REFCURSOR;
+    --     v_id NUMBER; v_status VARCHAR2(20); v_ini DATE; v_fim DATE;
+    -- BEGIN
+    --     cur := COCAO_HOTEL_SF_STATUS_QUARTO(TO_DATE('01/10/2025','DD/MM/YYYY'), TO_DATE('29/10/2025','DD/MM/YYYY'));
+    --     LOOP
+    --         FETCH cur INTO v_id, v_status, v_ini, v_fim;
+    --         EXIT WHEN cur%NOTFOUND;
+    --         DBMS_OUTPUT.PUT_LINE('Quarto ' || v_id || ' → ' || v_status);
+    --     END LOOP;
+    --     CLOSE cur;
+    -- END;
+    -- /
+
+    -- 2. SQL PURO (USANDO CTE – NÃO PRECISA DE TABLE())
+    -- WITH quartos_status AS (
+    --     SELECT COCAO_HOTEL_SF_STATUS_QUARTO(TO_DATE('01/10/2025','DD/MM/YYYY'), TO_DATE('29/10/2025','DD/MM/YYYY')) AS cur
+    --     FROM DUAL
+    -- ), dados AS (
+    --     SELECT ID_QUARTO, STATUS_QUARTO, DATA_INICIO, DATA_FIM
+    --     FROM quartos_status, TABLE(CAST(CUR AS SYS_REFCURSOR)) -- NÃO FUNCIONA DIRETO
+    -- )
+    -- SELECT * FROM dados; -- NÃO USE ASSIM → só para mostrar o erro comum
+
+    -- 3. JAVA (JDBC) – USO EM APLICAÇÃO
+    -- CallableStatement stmt = conn.prepareCall("{ ? = call COCAO_HOTEL_SF_STATUS_QUARTO(?, ?) }");
+    -- stmt.registerOutParameter(1, OracleTypes.CURSOR);
+    -- stmt.setDate(2, java.sql.Date.valueOf("2025-10-01"));
+    -- stmt.setDate(3, java.sql.Date.valueOf("2025-10-29"));
+    -- stmt.execute();
+    -- ResultSet rs = (ResultSet) stmt.getObject(1);
+    -- while (rs.next()) {
+    --     System.out.println(rs.getInt("ID_QUARTO") + ": " + rs.getString("STATUS_QUARTO"));
+    -- }
+
+    -- 4. PYTHON (cx_Oracle) – DASHBOARD OU SCRIPT
+    -- cursor = conn.cursor()
+    -- ref_cursor = cursor.callfunc(
+    --     'COCAO_HOTEL_SF_STATUS_QUARTO',
+    --     cx_Oracle.CURSOR,
+    --     [datetime.date(2025, 10, 1), datetime.date(2025, 10, 29)]
+    -- )
+    -- for row in ref_cursor:
+    --     print(f"Quarto {row[0]} → {row[1]}")
+
+    -- 5. SQL*PLUS / SQLcl (COM SCRIPTING)
+    -- VARIABLE cur REFCURSOR;
+    -- EXEC :cur := COCAO_HOTEL_SF_STATUS_QUARTO(TO_DATE('01/10/2025','DD/MM/YYYY'), TO_DATE('29/10/2025','DD/MM/YYYY'));
+    -- PRINT cur;
+
     OPEN l_cursor FOR
         SELECT 
             q.ID_QUARTO,
@@ -451,9 +511,32 @@ BEGIN
             NVL(TRUNC(p_data_inicio), TRUNC(SYSDATE)) AS DATA_INICIO,
             NVL(TRUNC(p_data_fim), TRUNC(SYSDATE)) AS DATA_FIM
         FROM COCAO_QUARTO q;
+    
     RETURN l_cursor;
+
+/*
+-- TESTE RÁPIDO (descomente e execute com F5)
+SET SERVEROUTPUT ON;
+DECLARE
+    cur SYS_REFCURSOR;
+    v_id NUMBER; v_status VARCHAR2(20); v_ini DATE; v_fim DATE;
+BEGIN
+    cur := COCAO_HOTEL_SF_STATUS_QUARTO(
+        TO_DATE('01/10/2025','DD/MM/YYYY'), 
+        TO_DATE('29/10/2025','DD/MM/YYYY')
+    );
+    LOOP
+        FETCH cur INTO v_id, v_status, v_ini, v_fim;
+        EXIT WHEN cur%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Quarto ' || v_id || ' → ' || v_status || ' (Período: ' || 
+                             TO_CHAR(v_ini,'DD/MM') || ' a ' || TO_CHAR(v_fim,'DD/MM') || ')');
+    END LOOP;
+    CLOSE cur;
 END;
 /
+*/
+
+END;
 
 
 -- ######################################################################
@@ -464,6 +547,13 @@ END;
 -- - Acionados BEFORE INSERT OR UPDATE, mantendo CREATED_AT inalterado em atualizações
 -- - Inclui proteção contra conflitos de herança (TIPO) em COCAO_HOSPEDE e COCAO_FUNCIONARIO
 -- - T10 reservado para futuro trigger de logging
+
+-- Verificação rápida no SQL Developer:
+
+-- SELECT TRIGGER_NAME, STATUS 
+-- FROM USER_TRIGGERS
+-- WHERE TRIGGER_NAME LIKE 'COCAO_HOTEL_%';
+
 
 -- ======================================================================
 -- T01: COCAO_HOSPEDE - Auditoria com Proteção para Herança
@@ -754,6 +844,11 @@ END;
 -- - Mantida simplicidade, sem tabela adicional para agendamento de manutenção.
 -- - Suporta cenário onde o quarto volta a LIVRE antes do check-in (nenhuma ação
 --   necessária se a manutenção for concluída).
+-- FOR UPDATE SKIP LOCKED é uma alternativa mais moderna (Oracle 12c+) que evita esperas: simplesmente ignora registros já bloqueados. 
+-- No lugar do FOR UPDATE WAIT 5, poderia ser usado FOR UPDATE SKIP LOCKED. Porém, neste caso específico, optou-se por WAIT 5 para notificar 
+-- o usuário sobre bloqueios temporários, permitindo que ele tente novamente após alguns segundos. Isso é útil em ambientes com alta concorrência, 
+-- onde bloqueios podem ser breves. Assim, o gerente é informado sobre a situação atual e pode agir de acordo, em vez de simplesmente ignorar 
+-- reservas bloqueadas que podem ser relevantes para a decisão de manutenção.
 -- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_12_TRG_STATUS_QUARTO
 BEFORE INSERT OR UPDATE OF STATUS_QUARTO ON COCAO_QUARTO
@@ -823,6 +918,10 @@ END;
 -- Novo: Índice COCAO_HOTEL_07_IDX_STATUS_QUARTO_RESERVA já criado, melhora performance.
 -- Novo: Adicionado FOR UPDATE WAIT 5 para limitar tempo de espera em bloqueios.
 -- ======================================================================
+-- [CORREÇÃO v15.2]: Removido FOR UPDATE WAIT 5 do UPDATE
+-- Motivo: FOR UPDATE NÃO é permitido em UPDATE. Causa ORA-00933.
+-- Oracle garante consistência via row-level locking. Índice já otimiza.
+-- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_13_TRG_RESERVA_STATUS_QUARTO
 AFTER INSERT OR UPDATE OF CODIGO_STATUS, DATA_CHECK_IN, DATA_CHECK_OUT, ID_QUARTO ON COCAO_RESERVA
 FOR EACH ROW
@@ -830,50 +929,31 @@ DECLARE
     v_count NUMBER;
     v_status_quarto COCAO_QUARTO.STATUS_QUARTO%TYPE;
 BEGIN
-    -- Verificar o status atual do quarto
     SELECT STATUS_QUARTO
     INTO v_status_quarto
     FROM COCAO_QUARTO
     WHERE ID_QUARTO = :NEW.ID_QUARTO;
     
-    -- Se o quarto está em MANUTENCAO, não atualizar o status
     IF v_status_quarto = 'MANUTENCAO' THEN
         RETURN;
     END IF;
     
-    -- Contar reservas ativas
     SELECT COUNT(*)
     INTO v_count
     FROM COCAO_RESERVA r
     WHERE r.ID_QUARTO = :NEW.ID_QUARTO
-      AND r.CODIGO_STATUS = 2 -- ATIVA
+      AND r.CODIGO_STATUS = 2
       AND TRUNC(r.DATA_CHECK_OUT) > TRUNC(SYSDATE);
     
-    -- Atualizar STATUS_QUARTO apenas se não estiver em MANUTENCAO
+    -- UPDATE SEM FOR UPDATE (válido)
     UPDATE COCAO_QUARTO q
-    SET q.STATUS_QUARTO = CASE 
-        WHEN v_count > 0 THEN 'OCUPADO'
-        ELSE 'LIVRE'
-    END
-    WHERE q.ID_QUARTO = :NEW.ID_QUARTO
-    FOR UPDATE WAIT 5;
+    SET q.STATUS_QUARTO = CASE WHEN v_count > 0 THEN 'OCUPADO' ELSE 'LIVRE' END
+    WHERE q.ID_QUARTO = :NEW.ID_QUARTO;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20010,
-            '[-20010] COCAO_RESERVA/T13: Falha na atualização de status do quarto. ' ||
-            'Quarto ID ' || :NEW.ID_QUARTO || ' não encontrado em COCAO_QUARTO. ' ||
-            'Verifique o ID do quarto na reserva.');
+        RAISE_APPLICATION_ERROR(-20010, '[-20010] COCAO_RESERVA/T13: Quarto não encontrado.');
     WHEN OTHERS THEN
-        IF SQLCODE = -00054 THEN
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_RESERVA/T13: Tempo de espera excedido para bloqueio do quarto. ' ||
-                'Quarto ID ' || :NEW.ID_QUARTO || ' está bloqueado por outra transação. ' ||
-                'Tente novamente mais tarde.');
-        ELSE
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_RESERVA/T13: Erro inesperado ao atualizar STATUS_QUARTO. ' ||
-                'Erro: ' || SQLERRM);
-        END IF;
+        RAISE_APPLICATION_ERROR(-20019, '[-20019] COCAO_RESERVA/T13: Erro: ' || SQLERRM);
 END;
 /
 
@@ -1064,27 +1144,27 @@ END;
 -- - Mantida lógica de considerar apenas reservas ABERTA (1) ou ATIVA (2).
 -- - Adicionados comentários instrucionais para esclarecer o uso de ID_RESERVA.
 -- ======================================================================
+-- [CORREÇÃO v15.2]: Removido FOR UPDATE WAIT 5 do UPDATE
+-- Motivo: Causa ORA-00933. Subquery no SET é válida, mas FOR UPDATE não.
+-- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_16_TRG_ATUALIZA_SERVICO
 AFTER UPDATE OF PRECO ON COCAO_SERVICO
 FOR EACH ROW
 DECLARE
     v_count NUMBER;
 BEGIN
-    -- Verificar se há reservas afetadas
     SELECT COUNT(*)
     INTO v_count
     FROM COCAO_RESERVA r
     WHERE r.CODIGO_STATUS IN (1, 2)
       AND EXISTS (
-          SELECT 1
-          FROM COCAO_HOSPEDE_SERVICO hs
+          SELECT 1 FROM COCAO_HOSPEDE_SERVICO hs
           WHERE hs.ID_RESERVA = r.ID_RESERVA
             AND hs.CODIGO_SERVICO = :NEW.CODIGO_SERVICO
             AND TRUNC(hs.DATA_SOLICITACAO) >= TRUNC(r.DATA_CHECK_IN)
             AND TRUNC(hs.DATA_SOLICITACAO) < TRUNC(r.DATA_CHECK_OUT)
       );
     
-    -- Apenas atualizar se houver reservas afetadas
     IF v_count > 0 THEN
         UPDATE COCAO_RESERVA r
         SET VALOR_TOTAL = (
@@ -1102,32 +1182,18 @@ BEGIN
         ), 0)
         WHERE r.CODIGO_STATUS IN (1, 2)
           AND EXISTS (
-              SELECT 1
-              FROM COCAO_HOSPEDE_SERVICO hs
+              SELECT 1 FROM COCAO_HOSPEDE_SERVICO hs
               WHERE hs.ID_RESERVA = r.ID_RESERVA
                 AND hs.CODIGO_SERVICO = :NEW.CODIGO_SERVICO
                 AND TRUNC(hs.DATA_SOLICITACAO) >= TRUNC(r.DATA_CHECK_IN)
                 AND TRUNC(hs.DATA_SOLICITACAO) < TRUNC(r.DATA_CHECK_OUT)
-          )
-        FOR UPDATE WAIT 5;
+          );
     END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20042,
-            '[-20042] COCAO_SERVICO/T16: Falha ao calcular VALOR_TOTAL. ' ||
-            'Quarto, tipo de quarto ou serviço associado à reserva não encontrado. ' ||
-            'Verifique as tabelas COCAO_QUARTO, COCAO_TIPO_QUARTO e COCAO_HOSPEDE_SERVICO.');
+        RAISE_APPLICATION_ERROR(-20042, '[-20042] COCAO_SERVICO/T16: Dados não encontrados.');
     WHEN OTHERS THEN
-        IF SQLCODE = -00054 THEN
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_SERVICO/T16: Tempo de espera excedido para bloqueio da reserva. ' ||
-                'Serviço CODIGO_SERVICO ' || :NEW.CODIGO_SERVICO || ' está bloqueado por outra transação. ' ||
-                'Tente novamente mais tarde.');
-        ELSE
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_SERVICO/T16: Erro inesperado ao atualizar VALOR_TOTAL. ' ||
-                'Erro: ' || SQLERRM);
-        END IF;
+        RAISE_APPLICATION_ERROR(-20019, '[-20019] COCAO_SERVICO/T16: Erro: ' || SQLERRM);
 END;
 /
 
@@ -1151,36 +1217,25 @@ END;
 -- - Mantida lógica de considerar apenas reservas ABERTA (1) ou ATIVA (2).
 -- - Adicionados comentários instrucionais para esclarecer o uso de ID_RESERVA.
 -- ======================================================================
+-- [CORREÇÃO v15.2]: Removido FOR UPDATE WAIT 5 do UPDATE
+-- Motivo: Causa ORA-00933 em AFTER trigger.
+-- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_17_TRG_ATUALIZA_RESERVA
 AFTER INSERT OR UPDATE OR DELETE ON COCAO_HOSPEDE_SERVICO
 FOR EACH ROW
 DECLARE
-    v_id_reserva COCAO_RESERVA.ID_RESERVA%TYPE;
+    v_id_reserva COCAO_RESERVA.ID_RESERVA%TYPE := CASE WHEN DELETING THEN :OLD.ID_RESERVA ELSE :NEW.ID_RESERVA END;
     v_count NUMBER;
 BEGIN
-    v_id_reserva := CASE WHEN DELETING THEN :OLD.ID_RESERVA ELSE :NEW.ID_RESERVA END;
-    
-    -- Verificar se ID_RESERVA existe
-    SELECT COUNT(*)
-    INTO v_count
-    FROM COCAO_RESERVA
-    WHERE ID_RESERVA = v_id_reserva;
-    
+    SELECT COUNT(*) INTO v_count FROM COCAO_RESERVA WHERE ID_RESERVA = v_id_reserva;
     IF v_count = 0 THEN
-        RAISE_APPLICATION_ERROR(-20049,
-            '[-20049] COCAO_HOSPEDE_SERVICO/T17: Reserva não encontrada. ' ||
-            'ID_RESERVA ' || v_id_reserva || ' não existe em COCAO_RESERVA. ' ||
-            'Verifique o ID da reserva.');
+        RAISE_APPLICATION_ERROR(-20049, '[-20049] COCAO_HOSPEDE_SERVICO/T17: Reserva não encontrada.');
     END IF;
     
-    -- Verificar se a reserva está em estado ABERTA (1) ou ATIVA (2)
-    SELECT COUNT(*)
-    INTO v_count
+    SELECT COUNT(*) INTO v_count
     FROM COCAO_RESERVA
-    WHERE ID_RESERVA = v_id_reserva
-      AND CODIGO_STATUS IN (1, 2);
+    WHERE ID_RESERVA = v_id_reserva AND CODIGO_STATUS IN (1, 2);
     
-    -- Apenas atualizar se a reserva for válida
     IF v_count > 0 THEN
         UPDATE COCAO_RESERVA r
         SET VALOR_TOTAL = (
@@ -1196,27 +1251,13 @@ BEGIN
               AND TRUNC(hs.DATA_SOLICITACAO) >= TRUNC(r.DATA_CHECK_IN)
               AND TRUNC(hs.DATA_SOLICITACAO) < TRUNC(r.DATA_CHECK_OUT)
         ), 0)
-        WHERE r.ID_RESERVA = v_id_reserva
-          AND r.CODIGO_STATUS IN (1, 2)
-        FOR UPDATE WAIT 5;
+        WHERE r.ID_RESERVA = v_id_reserva AND r.CODIGO_STATUS IN (1, 2);
     END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20044,
-            '[-20044] COCAO_HOSPEDE_SERVICO/T17: Falha ao calcular VALOR_TOTAL. ' ||
-            'Quarto, tipo de quarto ou serviço não encontrado. ' ||
-            'Verifique as tabelas COCAO_QUARTO, COCAO_TIPO_QUARTO e COCAO_HOSPEDE_SERVICO.');
+        RAISE_APPLICATION_ERROR(-20044, '[-20044] COCAO_HOSPEDE_SERVICO/T17: Dados não encontrados.');
     WHEN OTHERS THEN
-        IF SQLCODE = -00054 THEN
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_HOSPEDE_SERVICO/T17: Tempo de espera excedido para bloqueio da reserva. ' ||
-                'Reserva ID ' || v_id_reserva || ' está bloqueado por outra transação. ' ||
-                'Tente novamente mais tarde.');
-        ELSE
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_HOSPEDE_SERVICO/T17: Erro inesperado ao atualizar VALOR_TOTAL. ' ||
-                'Erro: ' || SQLERRM);
-        END IF;
+        RAISE_APPLICATION_ERROR(-20019, '[-20019] COCAO_HOSPEDE_SERVICO/T17: Erro: ' || SQLERRM);
 END;
 /
 
@@ -1389,11 +1430,13 @@ END;
 --             para surpresas no check-out. Respeite o T20: ele calcula, protege e
 --             nunca dorme no ponto!
 -- ======================================================================
+-- [CORREÇÃO v15.2]: Removido FOR UPDATE WAIT 5 do UPDATE
+-- Motivo: Causa ORA-00933. Subquery no SET é segura.
+-- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_20_TRG_RESERVA_VALOR_RECALCULADO
 AFTER UPDATE OF DATA_CHECK_IN, DATA_CHECK_OUT, ID_QUARTO ON COCAO_RESERVA
 FOR EACH ROW
 BEGIN
-    -- Atualizar VALOR_TOTAL apenas para reservas ABERTA (1) ou ATIVA (2)
     IF :NEW.CODIGO_STATUS IN (1, 2) THEN
         UPDATE COCAO_RESERVA r
         SET VALOR_TOTAL = (
@@ -1409,25 +1452,12 @@ BEGIN
               AND TRUNC(hs.DATA_SOLICITACAO) >= TRUNC(:NEW.DATA_CHECK_IN)
               AND TRUNC(hs.DATA_SOLICITACAO) < TRUNC(:NEW.DATA_CHECK_OUT)
         ), 0)
-        WHERE r.ID_RESERVA = :NEW.ID_RESERVA
-        FOR UPDATE WAIT 5;
+        WHERE r.ID_RESERVA = :NEW.ID_RESERVA;
     END IF;
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20044,
-            '[-20044] COCAO_RESERVA/T20: Falha ao calcular VALOR_TOTAL. ' ||
-            'Quarto, tipo de quarto ou serviço não encontrado. ' ||
-            'Verifique as tabelas COCAO_QUARTO, COCAO_TIPO_QUARTO e COCAO_HOSPEDE_SERVICO.');
+        RAISE_APPLICATION_ERROR(-20044, '[-20044] COCAO_RESERVA/T20: Dados não encontrados.');
     WHEN OTHERS THEN
-        IF SQLCODE = -00054 THEN
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_RESERVA/T20: Tempo de espera excedido para bloqueio da reserva. ' ||
-                'Reserva ID ' || :NEW.ID_RESERVA || ' está bloqueado por outra transação. ' ||
-                'Tente novamente mais tarde.');
-        ELSE
-            RAISE_APPLICATION_ERROR(-20019,
-                '[-20019] COCAO_RESERVA/T20: Erro inesperado ao atualizar VALOR_TOTAL. ' ||
-                'Erro: ' || SQLERRM);
-        END IF;
+        RAISE_APPLICATION_ERROR(-20019, '[-20019] COCAO_RESERVA/T20: Erro: ' || SQLERRM);
 END;
 /

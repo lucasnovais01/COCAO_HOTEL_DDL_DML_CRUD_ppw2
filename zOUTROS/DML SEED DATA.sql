@@ -1,0 +1,91 @@
+
+-- Obs: Oracle NÃO aceita múltiplas tuplas com VALUES (...), (...), (...)
+
+-- Opção 1 — Fazer vários INSERTs separados, Exemplo:
+
+-- INSERT INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+-- VALUES (1001, 'Recepcionista', 'Atende hóspedes, faz check-in/check-out, gerencia reservas', 1);
+
+-- INSERT INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+-- VALUES (1002, 'Camareira', 'Limpeza e arrumação dos quartos', 1);
+-- ...
+
+-- Opção 2 — Usar INSERT ALL (mais eficiente para múltiplas linhas), como abaixo:
+
+-- ======================================================================
+-- SEED DATA: TODAS AS LOOKUP TABLES (ORACLE 21c COMPATÍVEL)
+-- ======================================================================
+
+-- COCAO_FUNCAO
+INSERT ALL
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (1001, 'Recepcionista', 'Atende hóspedes, faz check-in/check-out, gerencia reservas', 2)
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (1002, 'Camareira', 'Limpeza e arrumação dos quartos', 2)
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (2001, 'Gerente de Recepção', 'Supervisiona recepcionistas, resolve problemas de hóspedes', 2)
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (2002, 'Supervisor de Limpeza', 'Gerencia equipe de camareiras, verifica quartos', 2)
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (3001, 'Gerente Geral', 'Administra todo o hotel, acesso total ao sistema', 3)
+    INTO COCAO_FUNCAO (CODIGO_FUNCAO, NOME_FUNCAO, DESCRICAO, NIVEL_ACESSO)
+        VALUES (3002, 'Gerente de Manutenção', 'Responsável por reparos e manutenção dos quartos', 3)
+SELECT * FROM DUAL;
+
+-- COCAO_TIPO_QUARTO
+INSERT ALL
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1001, 'Solteiro', 1, 120.00)
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1002, 'Casal Standard', 2, 180.00)
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1003, 'Casal Superior', 2, 220.00)
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1004, 'Família', 4, 320.00)
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1005, 'Suíte Executiva', 2, 380.00)
+    INTO COCAO_TIPO_QUARTO (CODIGO_TIPO_QUARTO, NOME_TIPO, CAPACIDADE_MAXIMA, VALOR_DIARIA)
+        VALUES (1006, 'Suíte Master', 3, 520.00)
+SELECT * FROM DUAL;
+
+-- COCAO_STATUS_RESERVA
+INSERT ALL
+    INTO COCAO_STATUS_RESERVA (CODIGO_STATUS, DESCRICAO)
+        VALUES (1, 'ABERTA')
+    INTO COCAO_STATUS_RESERVA (CODIGO_STATUS, DESCRICAO)
+        VALUES (2, 'ATIVA')
+    INTO COCAO_STATUS_RESERVA (CODIGO_STATUS, DESCRICAO)
+        VALUES (3, 'A_PAGAR')
+    INTO COCAO_STATUS_RESERVA (CODIGO_STATUS, DESCRICAO)
+        VALUES (4, 'FINALIZADA')
+    INTO COCAO_STATUS_RESERVA (CODIGO_STATUS, DESCRICAO)
+        VALUES (5, 'CANCELADA')
+SELECT * FROM DUAL;
+
+-- COCAO_SERVICO
+INSERT ALL
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0101, 'Café da Manhã', 25.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0102, 'Almoço', 45.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0103, 'Jantar', 55.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0201, 'Lavanderia (por peça)', 10.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0202, 'Passadoria Rápida', 15.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0203, 'Limpeza Extra de Quarto', 40.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0301, 'Estacionamento (diária)', 30.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0302, 'Transfer Aeroporto → Hotel', 80.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0303, 'Transfer Hotel → Aeroporto', 80.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0404, 'Berço para Bebê', 35.00, 1)
+    INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO)
+        VALUES (0405, 'Cama Extra', 50.00, 1)
+SELECT * FROM DUAL;
+
+COMMIT;
