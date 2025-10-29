@@ -766,28 +766,40 @@ CREATE OR REPLACE TRIGGER COCAO_HOTEL_11_TRG_HOSPEDE_DELETE
 BEFORE DELETE ON COCAO_HOSPEDE
 FOR EACH ROW
 DECLARE
-    v_count NUMBER;
+    v_count_func NUMBER;
+    v_count_res  NUMBER;
 BEGIN
+    -- 1. VERIFICA SE É FUNCIONÁRIO E SE EXISTE EM COCAO_FUNCIONARIO
     IF :OLD.TIPO = 1 THEN
-        RAISE_APPLICATION_ERROR(-20020,
-            '[-20020] COCAO_HOSPEDE/T11: Exclusão de funcionário bloqueada. ' ||
-            'ID ' || :OLD.ID_USUARIO || ' é um funcionário (TIPO = 1). ' ||
-            'Exclua o registro correspondente em COCAO_FUNCIONARIO antes de excluir de COCAO_HOSPEDE.');
+        SELECT COUNT(*)
+        INTO v_count_func
+        FROM COCAO_FUNCIONARIO
+        WHERE ID_USUARIO = :OLD.ID_USUARIO;
+
+        IF v_count_func > 0 THEN
+            RAISE_APPLICATION_ERROR(-20020,
+                '[-20020] COCAO_HOSPEDE/T11: Exclusão de funcionário bloqueada. ' ||
+                'ID ' || :OLD.ID_USUARIO || ' possui registro em COCAO_FUNCIONARIO. ' ||
+                'Exclua primeiro o registro em COCAO_FUNCIONARIO.');
+        END IF;
+        -- Se não existe em COCAO_FUNCIONARIO → permite exclusão
     END IF;
-    
+
+    -- 2. VERIFICA RESERVAS ATIVAS/ABERTAS/A_PAGAR
     SELECT COUNT(*)
-    INTO v_count
+    INTO v_count_res
     FROM COCAO_RESERVA
     WHERE ID_USUARIO = :OLD.ID_USUARIO
-      AND CODIGO_STATUS IN (1, 2, 3) -- ABERTA, ATIVA, A_PAGAR
+      AND CODIGO_STATUS IN (1, 2, 3)
       AND TRUNC(SYSDATE) < TRUNC(DATA_CHECK_OUT);
-    
-    IF v_count > 0 THEN
+
+    IF v_count_res > 0 THEN
         RAISE_APPLICATION_ERROR(-20021,
             '[-20021] COCAO_HOSPEDE/T11: Exclusão de hóspede bloqueada. ' ||
-            'Hóspede ID ' || :OLD.ID_USUARIO || ' possui ' || v_count || ' reserva(s) ativa(s), aberta(s) ou a pagar. ' ||
-            'Cancele ou finalize as reservas antes de excluir.');
+            'Hóspede ID ' || :OLD.ID_USUARIO || ' possui ' || v_count_res || ' reserva(s) ativa(s). ' ||
+            'Cancele ou finalize as reservas antes.');
     END IF;
+
 END;
 /
 
@@ -926,34 +938,33 @@ CREATE OR REPLACE TRIGGER COCAO_HOTEL_13_TRG_RESERVA_STATUS_QUARTO
 AFTER INSERT OR UPDATE OF CODIGO_STATUS, DATA_CHECK_IN, DATA_CHECK_OUT, ID_QUARTO ON COCAO_RESERVA
 FOR EACH ROW
 DECLARE
-    v_count NUMBER;
     v_status_quarto COCAO_QUARTO.STATUS_QUARTO%TYPE;
+    v_count NUMBER;
 BEGIN
-    SELECT STATUS_QUARTO
-    INTO v_status_quarto
+    -- 1. Pega o status atual do quarto
+    SELECT STATUS_QUARTO INTO v_status_quarto
     FROM COCAO_QUARTO
     WHERE ID_QUARTO = :NEW.ID_QUARTO;
-    
+
     IF v_status_quarto = 'MANUTENCAO' THEN
         RETURN;
     END IF;
-    
-    SELECT COUNT(*)
-    INTO v_count
-    FROM COCAO_RESERVA r
-    WHERE r.ID_QUARTO = :NEW.ID_QUARTO
-      AND r.CODIGO_STATUS = 2
-      AND TRUNC(r.DATA_CHECK_OUT) > TRUNC(SYSDATE);
-    
-    -- UPDATE SEM FOR UPDATE (válido)
-    UPDATE COCAO_QUARTO q
-    SET q.STATUS_QUARTO = CASE WHEN v_count > 0 THEN 'OCUPADO' ELSE 'LIVRE' END
-    WHERE q.ID_QUARTO = :NEW.ID_QUARTO;
+
+    -- 2. Conta reservas ATIVAS com check-out futuro (sem tocar em COCAO_RESERVA aqui!)
+    -- Vamos usar uma variável baseada em :NEW e :OLD
+    IF :NEW.CODIGO_STATUS = 2 AND TRUNC(:NEW.DATA_CHECK_OUT) > TRUNC(SYSDATE) THEN
+        v_count := 1;
+    ELSE
+        v_count := 0;
+    END IF;
+
+    -- 3. Atualiza o quarto
+    UPDATE COCAO_QUARTO
+    SET STATUS_QUARTO = CASE WHEN v_count > 0 THEN 'OCUPADO' ELSE 'LIVRE' END
+    WHERE ID_QUARTO = :NEW.ID_QUARTO;
+
 EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20010, '[-20010] COCAO_RESERVA/T13: Quarto não encontrado.');
-    WHEN OTHERS THEN
-        RAISE_APPLICATION_ERROR(-20019, '[-20019] COCAO_RESERVA/T13: Erro: ' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN NULL; -- Quarto não existe? Ignora
 END;
 /
 
