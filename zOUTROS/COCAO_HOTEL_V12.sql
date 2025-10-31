@@ -1062,12 +1062,16 @@ END;
 --   - Simplificado para hotel pequeno, sem validações adicionais de manutenção futura
 -- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_15_TRG_RESERVA_CONFLITO
-BEFORE INSERT OR UPDATE OF DATA_CHECK_IN, DATA_CHECK_OUT, ID_QUARTO, NUMERO_HOSPEDES ON COCAO_RESERVA
-FOR EACH ROW
-DECLARE
+FOR INSERT OR UPDATE OF DATA_CHECK_IN, DATA_CHECK_OUT, ID_QUARTO, NUMERO_HOSPEDES ON COCAO_RESERVA
+COMPOUND TRIGGER
+    -- Variáveis para BEFORE EACH ROW
     v_status_quarto COCAO_QUARTO.STATUS_QUARTO%TYPE;
     v_capacidade_maxima COCAO_TIPO_QUARTO.CAPACIDADE_MAXIMA%TYPE;
+    
+    -- Variável para AFTER STATEMENT
     v_count_conflitos NUMBER;
+
+BEFORE EACH ROW IS
 BEGIN
     -- Validar número de hóspedes
     IF :NEW.NUMERO_HOSPEDES <= 0 THEN
@@ -1101,7 +1105,11 @@ BEGIN
             v_capacidade_maxima || ') do quarto ID ' || :NEW.ID_QUARTO || '. ' ||
             'Ajuste o número de hóspedes ou escolha outro quarto.');
     END IF;
-    
+END BEFORE EACH ROW;
+
+AFTER STATEMENT IS
+BEGIN
+    -- Validar conflitos de reserva (executado após todas as linhas, evitando mutating table)
     SELECT COUNT(*)
     INTO v_count_conflitos
     FROM COCAO_RESERVA r
@@ -1120,6 +1128,8 @@ BEGIN
             TO_CHAR(:NEW.DATA_CHECK_OUT, 'DD/MM/YYYY') || '. ' ||
             'Escolha outro quarto ou período.');
     END IF;
+END AFTER STATEMENT;
+
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
         RAISE_APPLICATION_ERROR(-20013,
@@ -1130,7 +1140,7 @@ EXCEPTION
         RAISE_APPLICATION_ERROR(-20019,
             '[-20019] COCAO_RESERVA/T15: Erro inesperado ao validar reserva. ' ||
             'Erro: ' || SQLERRM);
-END;
+END COCAO_HOTEL_15_TRG_RESERVA_CONFLITO;
 /
 
 -- ======================================================================
