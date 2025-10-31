@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Cocao - Conforto e Simplicidade</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @keyframes wave {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .wave-bg {
+      background: linear-gradient(135deg, #1E40AF, #3B82F6, #60A5FA, #3B82F6, #1E40AF);
+      background-size: 400% 400%;
+      animation: wave 15s ease infinite;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(30, 64, 175, 0.3);
+    }
+    
+    .btn-glow:hover {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    }
+    
+    .nav-item {
+      transition: all 0.3s ease;
+    }
+    
+    .nav-item:hover {
+      transform: scale(1.05);
+    }
+    
+    .status-badge {
+      transition: all 0.3s ease;
+    }
+    
+    .status-badge:hover {
+      transform: scale(1.1);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="min-h-full bg-gray-50"><!-- Header -->
+  <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20"><!-- Logo -->
+     <div class="flex items-center space-x-3"><i class="fas fa-hotel text-4xl text-blue-600" id="logo-icon"></i> <span class="text-2xl font-bold text-blue-600" id="hotel-name-text">Hotel Cocao</span>
+     </div><!-- Navigation -->
+     <nav class="hidden md:flex items-center space-x-8"><button class="nav-item flex items-center space-x-2 text-blue-600 px-4 py-2 rounded-lg border-b-2 border-blue-600" id="nav-home" onclick="showPage('home')"> <i class="fas fa-home"></i> <span class="font-medium">Home</span> </button> <button class="nav-item flex items-center space-x-2 text-gray-600 px-4 py-2 rounded-lg hover:text-blue-600" id="nav-funcionarios" onclick="showPage('funcionarios')"> <i class="fas fa-users"></i> <span class="font-medium">Funcionários</span> </button> <button class="nav-item flex items-center space-x-2 text-gray-600 px-4 py-2 rounded-lg hover:text-blue-600" id="nav-sobre" onclick="showPage('sobre')"> <i class="fas fa-info-circle"></i> <span class="font-medium">Sobre</span> </button> <button class="nav-item flex items-center space-x-2 text-gray-600 px-4 py-2 rounded-lg hover:text-blue-600" id="nav-faq" onclick="showPage('faq')"> <i class="fas fa-question-circle"></i> <span class="font-medium">FAQ</span> </button> <button class="nav-item flex items-center space-x-2 text-gray-500 px-4 py-2 rounded-lg hover:text-gray-700" id="nav-devtools" onclick="showPage('devtools')"> <i class="fas fa-tools"></i> <span class="font-medium">Dev Tools</span> </button>
+     </nav><!-- Login Button --> <button class="btn-glow flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all hover:bg-blue-700" id="login-btn" onclick="showPage('login')"> <i class="fas fa-sign-in-alt"></i> <span>Login</span> </button>
+    </div>
+   </div>
+  </header><!-- Main Content -->
+  <main class="pt-20"><!-- Home Page -->
+   <div id="page-home" class="page-content"><!-- Banner Principal -->
+    <section class="wave-bg text-white py-32 px-4">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 float-animation" id="banner-title">Bem-vindo ao Hotel Cocao</h1>
+      <p class="text-xl md:text-2xl mb-8 opacity-90" id="banner-subtitle">Conforto e simplicidade para sua estadia</p><button onclick="showPage('busca')" class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-2xl transition-all transform hover:scale-105" id="cta-button"> <span id="cta-text">Reserve Agora</span> <i class="fas fa-arrow-right ml-2"></i> </button>
+     </div>
+    </section><!-- Menu Secundário -->
+    <section class="bg-gray-100 shadow-inner py-8">
+     <div class="max-w-4xl mx-auto px-4">
+      <div class="flex justify-center space-x-4"><button class="flex items-center space-x-3 bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:bg-blue-700" id="btn-quartos"> <i class="fas fa-bed text-2xl"></i> <span>QUARTOS</span> </button> <button class="flex items-center space-x-3 bg-gray-300 text-gray-700 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:bg-gray-400" id="btn-servicos"> <i class="fas fa-concierge-bell text-2xl"></i> <span>SERVIÇOS</span> </button>
+      </div>
+     </div>
+    </section><!-- Seção de Quartos -->
+    <section class="py-16 px-4 fade-in" id="section-quartos">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Nossos Quartos</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Quarto A001 - Ocupado -->
+       <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg border-4 border-red-500">
+        <div class="relative">
+         <div class="h-48 bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center"><i class="fas fa-bed text-6xl text-red-400"></i>
+         </div>
+         <div class="absolute top-4 right-4 status-badge bg-red-500 text-white px-4 py-2 rounded-full font-bold flex items-center space-x-2"><i class="fas fa-times"></i> <span>OCUPADO</span>
+         </div>
+        </div>
+        <div class="p-6">
+         <h3 class="text-2xl font-bold mb-2 text-gray-800">Quarto A001</h3>
+         <p class="text-gray-600 mb-2">Quarto Standard</p>
+         <div class="flex items-center space-x-2 mb-4 text-gray-700"><i class="fas fa-users"></i> <span>2 hóspedes</span>
+         </div>
+         <p class="text-3xl font-bold text-blue-600 mb-4">R$ 250/dia</p><button class="w-full bg-gray-400 text-white py-3 rounded-lg font-bold cursor-not-allowed" disabled> Indisponível </button>
+        </div>
+       </div><!-- Quarto A002 - Disponível -->
+       <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg border-4 border-green-500">
+        <div class="relative">
+         <div class="h-48 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center"><i class="fas fa-bed text-6xl text-green-400"></i>
+         </div>
+         <div class="absolute top-4 right-4 status-badge bg-green-500 text-white px-4 py-2 rounded-full font-bold flex items-center space-x-2"><i class="fas fa-check"></i> <span>DISPONÍVEL</span>
+         </div>
+        </div>
+        <div class="p-6">
+         <h3 class="text-2xl font-bold mb-2 text-gray-800">Quarto A002</h3>
+         <p class="text-gray-600 mb-2">Quarto Standard</p>
+         <div class="flex items-center space-x-2 mb-4 text-gray-700"><i class="fas fa-users"></i> <span>2 hóspedes</span>
+         </div>
+         <p class="text-3xl font-bold text-blue-600 mb-4">R$ 250/dia</p><button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-all"> Ver Detalhes </button>
+        </div>
+       </div><!-- Quarto A003 - Disponível -->
+       <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-lg border-4 border-green-500">
+        <div class="relative">
+         <div class="h-48 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center"><i class="fas fa-bed text-6xl text-green-400"></i>
+         </div>
+         <div class="absolute top-4 right-4 status-badge bg-green-500 text-white px-4 py-2 rounded-full font-bold flex items-center space-x-2"><i class="fas fa-check"></i> <span>DISPONÍVEL</span>
+         </div>
+        </div>
+        <div class="p-6">
+         <h3 class="text-2xl font-bold mb-2 text-gray-800">Quarto A003</h3>
+         <p class="text-gray-600 mb-2">Quarto Deluxe</p>
+         <div class="flex items-center space-x-2 mb-4 text-gray-700"><i class="fas fa-users"></i> <span>3 hóspedes</span>
+         </div>
+         <p class="text-3xl font-bold text-blue-600 mb-4">R$ 350/dia</p><button class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-all"> Ver Detalhes </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Seção de Serviços -->
+    <section class="py-16 px-4 hidden" id="section-servicos">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Nossos Serviços</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Serviço 1 -->
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg text-center">
+        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-wifi text-4xl text-blue-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-gray-800">Wi-Fi Premium</h3>
+        <p class="text-gray-600 mb-4">Internet de alta velocidade em todos os quartos</p>
+        <p class="text-2xl font-bold text-blue-600">Grátis</p>
+       </div><!-- Serviço 2 -->
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg text-center">
+        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-utensils text-4xl text-blue-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-gray-800">Café da Manhã</h3>
+        <p class="text-gray-600 mb-4">Buffet completo com opções variadas</p>
+        <p class="text-2xl font-bold text-blue-600">R$ 35/pessoa</p>
+       </div><!-- Serviço 3 -->
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg text-center">
+        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-car text-4xl text-blue-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold mb-4 text-gray-800">Estacionamento</h3>
+        <p class="text-gray-600 mb-4">Vaga coberta e segura para seu veículo</p>
+        <p class="text-2xl font-bold text-blue-600">R$ 20/dia</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Promoções -->
+    <section class="py-16 px-4 bg-gradient-to-br from-blue-50 to-white">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Promoções Especiais</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg border-2 border-blue-200">
+        <div class="flex items-center space-x-4 mb-4">
+         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center float-animation"><i class="fas fa-percent text-3xl text-white"></i>
+         </div>
+         <h3 class="text-2xl font-bold text-gray-800">Oferta Especial</h3>
+        </div>
+        <p class="text-xl text-gray-700 mb-4">20% de desconto em suítes para estadias acima de 5 dias!</p><button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-all"> Aproveitar Oferta </button>
+       </div>
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg border-2 border-green-200">
+        <div class="flex items-center space-x-4 mb-4">
+         <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center float-animation"><i class="fas fa-gift text-3xl text-white"></i>
+         </div>
+         <h3 class="text-2xl font-bold text-gray-800">Pacote Família</h3>
+        </div>
+        <p class="text-xl text-gray-700 mb-4">Café da manhã grátis para crianças até 12 anos!</p><button class="bg-green-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-600 transition-all"> Saiba Mais </button>
+       </div>
+      </div>
+     </div>
+    </section><!-- Por que escolher Cocao -->
+    <section class="py-16 px-4 bg-white">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Por que escolher Cocao?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div class="text-center">
+        <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-bed text-5xl text-blue-600"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800">Colchões Premium</h3>
+        <p class="text-gray-600">Descanso perfeito com colchões de alta qualidade</p>
+       </div>
+       <div class="text-center">
+        <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-snowflake text-5xl text-blue-600"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800">Ar-Condicionado</h3>
+        <p class="text-gray-600">Climatização ideal em todos os ambientes</p>
+       </div>
+       <div class="text-center">
+        <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-volume-mute text-5xl text-blue-600"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-3 text-gray-800">Isolamento Acústico</h3>
+        <p class="text-gray-600">Tranquilidade garantida para seu descanso</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Depoimentos -->
+    <section class="py-16 px-4 bg-gradient-to-br from-white to-blue-50">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">O que dizem nossos hóspedes</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+        <div class="flex items-center space-x-4 mb-4">
+         <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center"><i class="fas fa-user text-3xl text-blue-600"></i>
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800">Maria Silva</h4>
+          <div class="flex text-yellow-400"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i>
+          </div>
+         </div>
+        </div>
+        <p class="text-gray-600 italic">"Experiência maravilhosa! Quartos limpos, equipe atenciosa e localização perfeita. Voltarei com certeza!"</p>
+       </div>
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+        <div class="flex items-center space-x-4 mb-4">
+         <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center"><i class="fas fa-user text-3xl text-blue-600"></i>
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800">João Santos</h4>
+          <div class="flex text-yellow-400"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i>
+          </div>
+         </div>
+        </div>
+        <p class="text-gray-600 italic">"Melhor custo-benefício da região. Café da manhã excelente e atendimento impecável. Recomendo!"</p>
+       </div>
+       <div class="card-hover bg-white rounded-2xl p-8 shadow-lg">
+        <div class="flex items-center space-x-4 mb-4">
+         <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center"><i class="fas fa-user text-3xl text-blue-600"></i>
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800">Ana Costa</h4>
+          <div class="flex text-yellow-400"><i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i>
+          </div>
+         </div>
+        </div>
+        <p class="text-gray-600 italic">"Hotel aconchegante e moderno. Os quartos são espaçosos e muito confortáveis. Adorei a estadia!"</p>
+       </div>
+      </div>
+     </div>
+    </section>
+   </div><!-- Dev Tools Page -->
+   <div id="page-devtools" class="page-content hidden">
+    <section class="bg-gray-800 text-white py-8 px-4">
+     <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl font-bold mb-2">Dev Tools - Hotel Cocao</h1>
+      <p class="text-gray-300">Painel administrativo para gerenciamento do sistema</p>
+     </div>
+    </section>
+    <section class="py-8 px-4">
+     <div class="max-w-7xl mx-auto"><!-- Tabs Navigation -->
+      <div class="border-b border-gray-200 mb-8">
+       <nav class="flex space-x-8 overflow-x-auto"><button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm active" data-tab="usuarios"> Usuários (Todos) </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="hospedes"> Hóspedes </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="funcionarios"> Funcionários </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="funcoes"> Funções </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="tipos-quarto"> Tipos de Quarto </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="quartos"> Quartos </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="status-reserva"> Status Reserva </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="reservas"> Reservas </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="servicos"> Serviços </button> <button class="dev-tab-btn whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="solicitacoes"> Solicitações </button>
+       </nav>
+      </div><!-- Tab Contents -->
+      <div id="dev-tab-content"><!-- Content will be populated by JavaScript -->
+      </div>
+     </div>
+    </section>
+   </div><!-- Other Pages (Login, Funcionários, Sobre, FAQ) -->
+   <div id="page-login" class="page-content hidden">
+    <section class="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center px-4">
+     <div class="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md">
+      <div class="text-center mb-8"><i class="fas fa-hotel text-5xl text-blue-600 mb-4"></i>
+       <h1 class="text-3xl font-bold text-gray-800 mb-2">Hotel Cocao</h1>
+       <p class="text-gray-600">Faça login para continuar</p>
+      </div>
+      <form class="space-y-6">
+       <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fas fa-user text-gray-400"></i>
+        </div><input type="text" class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-all" placeholder="Usuário" required>
+       </div>
+       <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fas fa-lock text-gray-400"></i>
+        </div><input type="password" class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-all" placeholder="Senha" required>
+       </div><button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-all"> Entrar </button>
+      </form>
+     </div>
+    </section>
+   </div>
+   <div id="page-funcionarios" class="page-content hidden">
+    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 px-4">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">Nossa Equipe</h1>
+      <p class="text-xl opacity-90">Conheça os profissionais que tornam sua estadia especial</p>
+     </div>
+    </section>
+   </div>
+   <div id="page-sobre" class="page-content hidden">
+    <section class="bg-gradient-to-r from-green-500 to-blue-600 text-white py-16 px-4">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">Sobre o Hotel Cocao</h1>
+      <p class="text-xl opacity-90">Conheça nossa história, missão e valores</p>
+     </div>
+    </section>
+   </div>
+   <div id="page-faq" class="page-content hidden">
+    <section class="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-16 px-4">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">Perguntas Frequentes</h1>
+      <p class="text-xl opacity-90">Encontre respostas para as dúvidas mais comuns</p>
+     </div>
+    </section>
+   </div>
+  </main><!-- Footer -->
+  <footer class="bg-gray-900 text-white" style="padding-top: 50px;">
+   <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8"><!-- Logo e Descrição -->
+     <div>
+      <div class="flex items-center space-x-3 mb-4"><i class="fas fa-hotel text-3xl text-blue-400"></i> <span class="text-2xl font-bold" id="footer-hotel-name">Hotel Cocao</span>
+      </div>
+      <p class="text-gray-400">Conforto e simplicidade para sua estadia perfeita.</p>
+     </div><!-- Contatos -->
+     <div>
+      <h3 class="text-xl font-bold mb-4">Contato</h3>
+      <div class="space-y-3">
+       <div class="flex items-center space-x-3"><i class="fas fa-phone text-blue-400"></i> <span class="text-gray-400" id="footer-phone">(11) 1234-5678</span>
+       </div>
+       <div class="flex items-center space-x-3"><i class="fas fa-envelope text-blue-400"></i> <span class="text-gray-400" id="footer-email">contato@hotelcocao.com</span>
+       </div>
+       <div class="flex items-center space-x-3"><i class="fas fa-map-marker-alt text-blue-400"></i> <span class="text-gray-400" id="footer-address">Av. Oceano, 123 - São Paulo, SP</span>
+       </div>
+      </div>
+     </div><!-- Links Úteis -->
+     <div>
+      <h3 class="text-xl font-bold mb-4">Links Úteis</h3>
+      <ul class="space-y-2">
+       <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Política de Privacidade</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Termos de Uso</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Perguntas Frequentes</a></li>
+       <li><a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">Trabalhe Conosco</a></li>
+      </ul>
+     </div><!-- Redes Sociais -->
+     <div>
+      <h3 class="text-xl font-bold mb-4">Redes Sociais</h3>
+      <div class="flex space-x-4"><a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all"> <i class="fab fa-facebook-f text-xl"></i> </a> <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-400 transition-all"> <i class="fab fa-twitter text-xl"></i> </a> <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition-all"> <i class="fab fa-instagram text-xl"></i> </a>
+      </div>
+     </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+     <p>© 2024 Hotel Cocao. Todos os direitos reservados.</p>
+    </div>
+   </div>
+  </footer><!-- Toast Notification -->
+  <div id="toast" class="fixed top-24 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+   <div class="flex items-center space-x-2"><i class="fas fa-check-circle"></i> <span id="toast-message">Operação realizada com sucesso!</span>
+   </div>
+  </div><!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+   <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+    <div class="flex justify-between items-center mb-4">
+     <h3 id="modal-title" class="text-lg font-bold">Modal Title</h3><button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"> <i class="fas fa-times"></i> </button>
+    </div>
+    <div id="modal-content"><!-- Modal content will be populated by JavaScript -->
+    </div>
+   </div>
+  </div>
+  <script>
+    // src/types - Interface definitions
+    // interface Hospede { id: number; nome: string; cpf: string; rg: string; sexo: string; dataNascimento: string; email: string; telefone: string; tipo: number; ativo: boolean; }
+    // interface Funcionario { id: number; codigoFuncao: number; nomeLogin: string; dataContratacao: string; ativo: boolean; }
+    // interface Funcao { codigoFuncao: number; nomeFuncao: string; descricao: string; nivelAcesso: number; }
+
+    // src/assets - Mock data arrays
+    let usuarios = [
+      { id: 1, nome: 'João Silva', cpf: '12345678901', rg: '123456789', sexo: 'M', dataNascimento: '1990-05-15', email: 'joao@email.com', telefone: '11999999999', tipo: 0, ativo: true },
+      { id: 2, nome: 'Maria Santos', cpf: '98765432100', rg: '987654321', sexo: 'F', dataNascimento: '1985-10-31', email: 'maria@email.com', telefone: '11888888888', tipo: 1, ativo: true }
+    ];
+
+    let funcionarios = [
+      { id: 2, codigoFuncao: 1, nomeLogin: 'maria.santos', dataContratacao: '2025-01-15', ativo: true }
+    ];
+
+    let funcoes = [
+      { codigoFuncao: 1, nomeFuncao: 'Gerente', descricao: 'Responsável pela gestão geral', nivelAcesso: 5 },
+      { codigoFuncao: 2, nomeFuncao: 'Recepcionista', descricao: 'Atendimento ao cliente', nivelAcesso: 2 }
+    ];
+
+    let tiposQuarto = [
+      { codigoTipoQuarto: 1, nomeTipo: 'Standard', capacidadeMaxima: 2, valorDiaria: 250.00 },
+      { codigoTipoQuarto: 2, nomeTipo: 'Deluxe', capacidadeMaxima: 3, valorDiaria: 350.00 }
+    ];
+
+    let quartos = [
+      { idQuarto: 'A001', codigoTipoQuarto: 1, numero: 'A001', statusQuarto: 'OCUPADO', andar: 1 },
+      { idQuarto: 'A002', codigoTipoQuarto: 1, numero: 'A002', statusQuarto: 'LIVRE', andar: 1 },
+      { idQuarto: 'A003', codigoTipoQuarto: 2, numero: 'A003', statusQuarto: 'LIVRE', andar: 1 }
+    ];
+
+    let statusReserva = [
+      { codigoStatus: 1, descricao: 'Confirmada' },
+      { codigoStatus: 2, descricao: 'Cancelada' },
+      { codigoStatus: 3, descricao: 'Check-in' }
+    ];
+
+    let reservas = [
+      { idReserva: 1, codigoStatus: 1, idUsuario: 1, idQuarto: 'A001', dataCheckIn: '2025-10-31', dataCheckOut: '2025-11-02', numeroHospedes: 2, valorTotal: 500.00, numeroDiarias: 2 }
+    ];
+
+    let servicos = [
+      { codigoServico: 1, nomeServico: 'Café da Manhã', preco: 35.00, ativo: true },
+      { codigoServico: 2, nomeServico: 'Estacionamento', preco: 20.00, ativo: true }
+    ];
+
+    let solicitacoes = [
+      { idSolicitacao: 1, idUsuario: 1, codigoServico: 1, idReserva: 1, dataSolicitacao: '2025-10-31', quantidade: 2 }
+    ];
+
+    // Element SDK Configuration
+    const defaultConfig = {
+      hotel_name: "Hotel Cocao",
+      banner_title: "Bem-vindo ao Hotel Cocao",
+      banner_subtitle: "Conforto e simplicidade para sua estadia",
+      cta_button: "Reserve Agora",
+      footer_phone: "(11) 1234-5678",
+      footer_email: "contato@hotelcocao.com",
+      footer_address: "Av. Oceano, 123 - São Paulo, SP"
+    };
+
+    async function onConfigChange(config) {
+      const hotelName = config.hotel_name || defaultConfig.hotel_name;
+      const bannerTitle = config.banner_title || defaultConfig.banner_title;
+      const bannerSubtitle = config.banner_subtitle || defaultConfig.banner_subtitle;
+      const ctaButton = config.cta_button || defaultConfig.cta_button;
+      const footerPhone = config.footer_phone || defaultConfig.footer_phone;
+      const footerEmail = config.footer_email || defaultConfig.footer_email;
+      const footerAddress = config.footer_address || defaultConfig.footer_address;
+
+      document.getElementById('hotel-name-text').textContent = hotelName;
+      document.getElementById('footer-hotel-name').textContent = hotelName;
+      document.getElementById('banner-title').textContent = bannerTitle;
+      document.getElementById('banner-subtitle').textContent = bannerSubtitle;
+      document.getElementById('cta-text').textContent = ctaButton;
+      document.getElementById('footer-phone').textContent = footerPhone;
+      document.getElementById('footer-email').textContent = footerEmail;
+      document.getElementById('footer-address').textContent = footerAddress;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["hotel_name", config.hotel_name || defaultConfig.hotel_name],
+          ["banner_title", config.banner_title || defaultConfig.banner_title],
+          ["banner_subtitle", config.banner_subtitle || defaultConfig.banner_subtitle],
+          ["cta_button", config.cta_button || defaultConfig.cta_button],
+          ["footer_phone", config.footer_phone || defaultConfig.footer_phone],
+          ["footer_email", config.footer_email || defaultConfig.footer_email],
+          ["footer_address", config.footer_address || defaultConfig.footer_address]
+        ])
+      });
+    }
+
+    // Page Navigation
+    function showPage(pageId) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page-content');
+      pages.forEach(page => page.classList.add('hidden'));
+      
+      // Show selected page
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if (targetPage) {
+        targetPage.classList.remove('hidden');
+        targetPage.classList.add('fade-in');
+      }
+      
+      // Update navigation active state
+      const navButtons = document.querySelectorAll('[id^="nav-"]');
+      navButtons.forEach(btn => {
+        btn.classList.remove('border-b-2', 'border-blue-600', 'text-blue-600');
+        btn.classList.add('text-gray-600');
+      });
+      
+      const activeNav = document.getElementById(`nav-${pageId}`);
+      if (activeNav) {
+        activeNav.classList.add('border-b-2', 'border-blue-600', 'text-blue-600');
+        activeNav.classList.remove('text-gray-600');
+      }
+
+      // Initialize dev tools if needed
+      if (pageId === 'devtools') {
+        initDevTools();
+      }
+    }
+
+    // Toggle entre Quartos e Serviços
+    const btnQuartos = document.getElementById('btn-quartos');
+    const btnServicos = document.getElementById('btn-servicos');
+    const sectionQuartos = document.getElementById('section-quartos');
+    const sectionServicos = document.getElementById('section-servicos');
+
+    if (btnQuartos && btnServicos) {
+      btnQuartos.addEventListener('click', () => {
+        btnQuartos.classList.add('bg-blue-600', 'text-white');
+        btnQuartos.classList.remove('bg-gray-300', 'text-gray-700');
+        btnServicos.classList.remove('bg-blue-600', 'text-white');
+        btnServicos.classList.add('bg-gray-300', 'text-gray-700');
+        
+        sectionQuartos.classList.remove('hidden');
+        sectionQuartos.classList.add('fade-in');
+        sectionServicos.classList.add('hidden');
+      });
+
+      btnServicos.addEventListener('click', () => {
+        btnServicos.classList.add('bg-blue-600', 'text-white');
+        btnServicos.classList.remove('bg-gray-300', 'text-gray-700');
+        btnQuartos.classList.remove('bg-blue-600', 'text-white');
+        btnQuartos.classList.add('bg-gray-300', 'text-gray-700');
+        
+        sectionServicos.classList.remove('hidden');
+        sectionServicos.classList.add('fade-in');
+        sectionQuartos.classList.add('hidden');
+      });
+    }
+
+    // src/services - Mock API functions
+    const mockApi = {
+      createUser: (userData) => {
+        console.log('POST /api/users', userData);
+        const newId = Math.max(...usuarios.map(u => u.id)) + 1;
+        const newUser = { ...userData, id: newId };
+        usuarios.push(newUser);
+        console.log('Trigger T01: Usuário criado com sucesso');
+        return newUser;
+      },
+      updateUser: (id, userData) => {
+        console.log('PUT /api/users/' + id, userData);
+        const index = usuarios.findIndex(u => u.id === id);
+        if (index !== -1) {
+          usuarios[index] = { ...usuarios[index], ...userData };
+          console.log('Trigger T02: Usuário atualizado');
+          return usuarios[index];
+        }
+        return null;
+      },
+      deleteUser: (id) => {
+        console.log('DELETE /api/users/' + id);
+        const index = usuarios.findIndex(u => u.id === id);
+        if (index !== -1) {
+          usuarios.splice(index, 1);
+          console.log('Trigger T03: Usuário removido');
+          return true;
+        }
+        return false;
+      }
+    };
+
+    // src/components - Table Component
+    function TableComponent(data, columns, actions) {
+      if (!data || data.length === 0) {
+        return `
+          <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-inbox text-4xl mb-4"></i>
+            <p>Nenhum registro encontrado</p>
+          </div>
+        `;
+      }
+
+      const headers = columns.map(col => `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${col.label}</th>`).join('');
+      const actionHeader = actions ? '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>' : '';
+      
+      const rows = data.map(item => {
+        const cells = columns.map(col => {
+          let value = item[col.key];
+          if (col.render) {
+            value = col.render(value, item);
+          }
+          return `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${value}</td>`;
+        }).join('');
+        
+        const actionCells = actions ? `
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="editRecord('${item.id || item.codigoFuncao || item.codigoTipoQuarto || item.idQuarto || item.codigoStatus || item.idReserva || item.codigoServico || item.idSolicitacao}')" class="text-blue-600 hover:text-blue-900 mr-3">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteRecord('${item.id || item.codigoFuncao || item.codigoTipoQuarto || item.idQuarto || item.codigoStatus || item.idReserva || item.codigoServico || item.idSolicitacao}')" class="text-red-600 hover:text-red-900">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        ` : '';
+        
+        return `<tr class="hover:bg-gray-50">${cells}${actionCells}</tr>`;
+      }).join('');
+
+      return `
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>${headers}${actionHeader}</tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // src/views - DevToolsView
+    function initDevTools() {
+      const tabButtons = document.querySelectorAll('.dev-tab-btn');
+      const tabContent = document.getElementById('dev-tab-content');
+
+      // Set active tab styles
+      tabButtons.forEach(btn => {
+        btn.classList.remove('border-blue-500', 'text-blue-600', 'active');
+        btn.classList.add('border-transparent', 'text-gray-500');
+        
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          
+          // Update active tab
+          tabButtons.forEach(b => {
+            b.classList.remove('border-blue-500', 'text-blue-600', 'active');
+            b.classList.add('border-transparent', 'text-gray-500');
+          });
+          btn.classList.add('border-blue-500', 'text-blue-600', 'active');
+          btn.classList.remove('border-transparent', 'text-gray-500');
+          
+          // Load tab content
+          loadTabContent(tabId);
+        });
+      });
+
+      // Set first tab as active
+      tabButtons[0].classList.add('border-blue-500', 'text-blue-600', 'active');
+      tabButtons[0].classList.remove('border-transparent', 'text-gray-500');
+      loadTabContent('usuarios');
+    }
+
+    function loadTabContent(tabId) {
+      const content = document.getElementById('dev-tab-content');
+      let html = '';
+
+      switch (tabId) {
+        case 'usuarios':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Usuários (Todos)</h2>
+              <button onclick="openCreateModal('usuario')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <i class="fas fa-plus mr-2"></i>Novo Usuário
+              </button>
+            </div>
+            <div class="mb-4">
+              <input type="text" id="search-usuarios" placeholder="Buscar por CPF..." class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg" oninput="filterUsuarios(this.value)">
+            </div>
+            <div id="usuarios-table">
+              ${TableComponent(usuarios, [
+                { key: 'id', label: 'ID' },
+                { key: 'nome', label: 'Nome' },
+                { key: 'cpf', label: 'CPF' },
+                { key: 'rg', label: 'RG' },
+                { key: 'sexo', label: 'Sexo' },
+                { key: 'dataNascimento', label: 'Data Nascimento' },
+                { key: 'email', label: 'Email' },
+                { key: 'telefone', label: 'Telefone' },
+                { key: 'tipo', label: 'Tipo', render: (value) => value === 0 ? 'Hóspede' : 'Funcionário' },
+                { key: 'ativo', label: 'Ativo', render: (value) => value ? '<span class="text-green-600">Sim</span>' : '<span class="text-red-600">Não</span>' }
+              ], true)}
+            </div>
+          `;
+          break;
+
+        case 'hospedes':
+          const hospedes = usuarios.filter(u => u.tipo === 0);
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Hóspedes</h2>
+              <button onclick="openCreateModal('hospede')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                <i class="fas fa-plus mr-2"></i>Novo Hóspede
+              </button>
+            </div>
+            ${TableComponent(hospedes, [
+              { key: 'id', label: 'ID' },
+              { key: 'nome', label: 'Nome' },
+              { key: 'cpf', label: 'CPF' },
+              { key: 'email', label: 'Email' },
+              { key: 'telefone', label: 'Telefone' },
+              { key: 'ativo', label: 'Ativo', render: (value) => value ? '<span class="text-green-600">Sim</span>' : '<span class="text-red-600">Não</span>' }
+            ], true)}
+          `;
+          break;
+
+        case 'funcionarios':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Funcionários</h2>
+              <button onclick="openCreateModal('funcionario')" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                <i class="fas fa-plus mr-2"></i>Novo Funcionário
+              </button>
+            </div>
+            ${TableComponent(funcionarios.map(f => {
+              const usuario = usuarios.find(u => u.id === f.id);
+              const funcao = funcoes.find(fn => fn.codigoFuncao === f.codigoFuncao);
+              return {
+                ...f,
+                nome: usuario?.nome || 'N/A',
+                nomeFuncao: funcao?.nomeFuncao || 'N/A'
+              };
+            }), [
+              { key: 'id', label: 'ID Usuário' },
+              { key: 'nome', label: 'Nome' },
+              { key: 'codigoFuncao', label: 'Código Função' },
+              { key: 'nomeFuncao', label: 'Função' },
+              { key: 'nomeLogin', label: 'Login' },
+              { key: 'dataContratacao', label: 'Data Contratação' },
+              { key: 'ativo', label: 'Ativo', render: (value) => value ? '<span class="text-green-600">Sim</span>' : '<span class="text-red-600">Não</span>' }
+            ], true)}
+          `;
+          break;
+
+        case 'funcoes':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Funções</h2>
+              <button onclick="openCreateModal('funcao')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                <i class="fas fa-plus mr-2"></i>Nova Função
+              </button>
+            </div>
+            ${TableComponent(funcoes, [
+              { key: 'codigoFuncao', label: 'Código' },
+              { key: 'nomeFuncao', label: 'Nome' },
+              { key: 'descricao', label: 'Descrição' },
+              { key: 'nivelAcesso', label: 'Nível Acesso' }
+            ], true)}
+          `;
+          break;
+
+        case 'tipos-quarto':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Tipos de Quarto</h2>
+              <button onclick="openCreateModal('tipo-quarto')" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700">
+                <i class="fas fa-plus mr-2"></i>Novo Tipo
+              </button>
+            </div>
+            ${TableComponent(tiposQuarto, [
+              { key: 'codigoTipoQuarto', label: 'Código' },
+              { key: 'nomeTipo', label: 'Nome' },
+              { key: 'capacidadeMaxima', label: 'Capacidade' },
+              { key: 'valorDiaria', label: 'Valor Diária', render: (value) => `R$ ${value.toFixed(2)}` }
+            ], true)}
+          `;
+          break;
+
+        case 'quartos':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Quartos</h2>
+              <button onclick="openCreateModal('quarto')" class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
+                <i class="fas fa-plus mr-2"></i>Novo Quarto
+              </button>
+            </div>
+            ${TableComponent(quartos.map(q => {
+              const tipo = tiposQuarto.find(t => t.codigoTipoQuarto === q.codigoTipoQuarto);
+              return { ...q, nomeTipo: tipo?.nomeTipo || 'N/A' };
+            }), [
+              { key: 'idQuarto', label: 'ID' },
+              { key: 'numero', label: 'Número' },
+              { key: 'nomeTipo', label: 'Tipo' },
+              { key: 'statusQuarto', label: 'Status', render: (value) => {
+                const colors = { 'LIVRE': 'green', 'OCUPADO': 'red', 'MANUTENCAO': 'yellow' };
+                return `<span class="text-${colors[value]}-600 font-semibold">${value}</span>`;
+              }},
+              { key: 'andar', label: 'Andar' }
+            ], true)}
+          `;
+          break;
+
+        case 'status-reserva':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Status de Reserva</h2>
+              <button onclick="openCreateModal('status-reserva')" class="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700">
+                <i class="fas fa-plus mr-2"></i>Novo Status
+              </button>
+            </div>
+            ${TableComponent(statusReserva, [
+              { key: 'codigoStatus', label: 'Código' },
+              { key: 'descricao', label: 'Descrição' }
+            ], true)}
+          `;
+          break;
+
+        case 'reservas':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Reservas</h2>
+              <button onclick="openCreateModal('reserva')" class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
+                <i class="fas fa-plus mr-2"></i>Nova Reserva
+              </button>
+            </div>
+            ${TableComponent(reservas.map(r => {
+              const usuario = usuarios.find(u => u.id === r.idUsuario);
+              const status = statusReserva.find(s => s.codigoStatus === r.codigoStatus);
+              return {
+                ...r,
+                nomeUsuario: usuario?.nome || 'N/A',
+                descricaoStatus: status?.descricao || 'N/A'
+              };
+            }), [
+              { key: 'idReserva', label: 'ID' },
+              { key: 'descricaoStatus', label: 'Status' },
+              { key: 'nomeUsuario', label: 'Usuário' },
+              { key: 'idQuarto', label: 'Quarto' },
+              { key: 'dataCheckIn', label: 'Check-in' },
+              { key: 'dataCheckOut', label: 'Check-out' },
+              { key: 'numeroHospedes', label: 'Hóspedes' },
+              { key: 'valorTotal', label: 'Valor Total', render: (value) => `R$ ${value.toFixed(2)}` },
+              { key: 'numeroDiarias', label: 'Diárias' }
+            ], true)}
+          `;
+          break;
+
+        case 'servicos':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Serviços</h2>
+              <button onclick="openCreateModal('servico')" class="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700">
+                <i class="fas fa-plus mr-2"></i>Novo Serviço
+              </button>
+            </div>
+            ${TableComponent(servicos, [
+              { key: 'codigoServico', label: 'Código' },
+              { key: 'nomeServico', label: 'Nome' },
+              { key: 'preco', label: 'Preço', render: (value) => `R$ ${value.toFixed(2)}` },
+              { key: 'ativo', label: 'Ativo', render: (value) => value ? '<span class="text-green-600">Sim</span>' : '<span class="text-red-600">Não</span>' }
+            ], true)}
+          `;
+          break;
+
+        case 'solicitacoes':
+          html = `
+            <div class="mb-4 flex justify-between items-center">
+              <h2 class="text-xl font-bold">Solicitações de Serviços</h2>
+              <button onclick="openCreateModal('solicitacao')" class="bg-lime-600 text-white px-4 py-2 rounded-lg hover:bg-lime-700">
+                <i class="fas fa-plus mr-2"></i>Nova Solicitação
+              </button>
+            </div>
+            ${TableComponent(solicitacoes.map(s => {
+              const usuario = usuarios.find(u => u.id === s.idUsuario);
+              const servico = servicos.find(sv => sv.codigoServico === s.codigoServico);
+              return {
+                ...s,
+                nomeUsuario: usuario?.nome || 'N/A',
+                nomeServico: servico?.nomeServico || 'N/A'
+              };
+            }), [
+              { key: 'idSolicitacao', label: 'ID' },
+              { key: 'nomeUsuario', label: 'Usuário' },
+              { key: 'nomeServico', label: 'Serviço' },
+              { key: 'idReserva', label: 'Reserva' },
+              { key: 'dataSolicitacao', label: 'Data' },
+              { key: 'quantidade', label: 'Quantidade' }
+            ], true)}
+          `;
+          break;
+      }
+
+      content.innerHTML = html;
+    }
+
+    // Filter functions
+    function filterUsuarios(searchTerm) {
+      const filtered = usuarios.filter(u => 
+        u.cpf.includes(searchTerm) || 
+        u.nome.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      
+      document.getElementById('usuarios-table').innerHTML = TableComponent(filtered, [
+        { key: 'id', label: 'ID' },
+        { key: 'nome', label: 'Nome' },
+        { key: 'cpf', label: 'CPF' },
+        { key: 'rg', label: 'RG' },
+        { key: 'sexo', label: 'Sexo' },
+        { key: 'dataNascimento', label: 'Data Nascimento' },
+        { key: 'email', label: 'Email' },
+        { key: 'telefone', label: 'Telefone' },
+        { key: 'tipo', label: 'Tipo', render: (value) => value === 0 ? 'Hóspede' : 'Funcionário' },
+        { key: 'ativo', label: 'Ativo', render: (value) => value ? '<span class="text-green-600">Sim</span>' : '<span class="text-red-600">Não</span>' }
+      ], true);
+    }
+
+    // Modal functions
+    function openCreateModal(type) {
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      const content = document.getElementById('modal-content');
+      
+      title.textContent = `Criar ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+      
+      let formHtml = '';
+      
+      switch (type) {
+        case 'usuario':
+        case 'hospede':
+          formHtml = `
+            <form id="create-form" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Nome</label>
+                <input type="text" name="nome" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">CPF</label>
+                <input type="text" name="cpf" required pattern="[0-9]{11}" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Telefone</label>
+                <input type="text" name="telefone" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Tipo</label>
+                <select name="tipo" required class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+                  <option value="0">Hóspede</option>
+                  <option value="1">Funcionário</option>
+                </select>
+              </div>
+              <div class="flex justify-end space-x-2 pt-4">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                  Cancelar
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                  Criar
+                </button>
+              </div>
+            </form>
+          `;
+          break;
+      }
+      
+      content.innerHTML = formHtml;
+      modal.classList.remove('hidden');
+      
+      // Add form submit handler
+      const form = document.getElementById('create-form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          handleCreateSubmit(type, new FormData(form));
+        });
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    function handleCreateSubmit(type, formData) {
+      const data = Object.fromEntries(formData);
+      
+      switch (type) {
+        case 'usuario':
+        case 'hospede':
+          // Basic validation
+          if (data.cpf.length !== 11 || !/^\d+$/.test(data.cpf)) {
+            showToast('CPF deve ter 11 dígitos numéricos', 'error');
+            return;
+          }
+          
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+            showToast('Email inválido', 'error');
+            return;
+          }
+          
+          // Create user
+          const newUser = {
+            nome: data.nome,
+            cpf: data.cpf,
+            rg: data.rg || '000000000',
+            sexo: data.sexo || 'M',
+            dataNascimento: data.dataNascimento || '1990-01-01',
+            email: data.email,
+            telefone: data.telefone,
+            tipo: parseInt(data.tipo),
+            ativo: true
+          };
+          
+          mockApi.createUser(newUser);
+          console.log('Trigger T15: Validando dados do usuário');
+          showToast('Usuário criado com sucesso!');
+          closeModal();
+          
+          // Refresh current tab
+          const activeTab = document.querySelector('.dev-tab-btn.active');
+          if (activeTab) {
+            loadTabContent(activeTab.dataset.tab);
+          }
+          break;
+      }
+    }
+
+    function editRecord(id) {
+      showToast('Funcionalidade de edição em desenvolvimento', 'info');
+    }
+
+    function deleteRecord(id) {
+      if (confirm('Tem certeza que deseja excluir este registro?')) {
+        // Find and delete from appropriate array
+        const deleted = mockApi.deleteUser(parseInt(id));
+        if (deleted) {
+          showToast('Registro excluído com sucesso!');
+          
+          // Refresh current tab
+          const activeTab = document.querySelector('.dev-tab-btn.active');
+          if (activeTab) {
+            loadTabContent(activeTab.dataset.tab);
+          }
+        } else {
+          showToast('Erro ao excluir registro', 'error');
+        }
+      }
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      
+      // Set color based on type
+      toast.className = `fixed top-24 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50`;
+      
+      switch (type) {
+        case 'error':
+          toast.classList.add('bg-red-500', 'text-white');
+          break;
+        case 'info':
+          toast.classList.add('bg-blue-500', 'text-white');
+          break;
+        default:
+          toast.classList.add('bg-green-500', 'text-white');
+      }
+      
+      // Show toast
+      toast.classList.remove('translate-x-full');
+      
+      // Hide after 3 seconds
+      setTimeout(() => {
+        toast.classList.add('translate-x-full');
+      }, 3000);
+    }
+
+    // Initialize home page as active
+    showPage('home');
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99762f26c114b898',t:'MTc2MTk0NTQ5OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
