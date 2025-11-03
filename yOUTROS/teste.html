@@ -40,25 +40,32 @@
    <section id="section-servicos" class="container mx-auto px-4 py-12 hidden">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8"><!-- Card Serviço 1 -->
      <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
-      <div class="text-center mb-4"><i class="fas fa-utensils text-5xl text-blue-600"></i>
+      <div class="text-center mb-4"><i class="fas fa-coffee text-5xl text-blue-600"></i>
       </div>
-      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Restaurante</h3>
-      <p class="text-gray-600 text-center mb-4">Café da manhã, almoço e jantar com menu variado</p>
-      <p class="text-2xl font-bold text-blue-700 text-center">R$ 45,00</p>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Café da Manhã</h3>
+      <p class="text-gray-600 text-center mb-4">Café da manhã completo com pães, frutas e bebidas</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 25,00</p>
      </div><!-- Card Serviço 2 -->
      <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
-      <div class="text-center mb-4"><i class="fas fa-spa text-5xl text-blue-600"></i>
+      <div class="text-center mb-4"><i class="fas fa-utensils text-5xl text-blue-600"></i>
       </div>
-      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Spa &amp; Massagem</h3>
-      <p class="text-gray-600 text-center mb-4">Relaxamento e bem-estar com profissionais</p>
-      <p class="text-2xl font-bold text-blue-700 text-center">R$ 120,00</p>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Almoço</h3>
+      <p class="text-gray-600 text-center mb-4">Refeição completa com pratos variados e sobremesa</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 45,00</p>
      </div><!-- Card Serviço 3 -->
      <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
-      <div class="text-center mb-4"><i class="fas fa-car text-5xl text-blue-600"></i>
+      <div class="text-center mb-4"><i class="fas fa-moon text-5xl text-blue-600"></i>
       </div>
-      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Transfer</h3>
-      <p class="text-gray-600 text-center mb-4">Transporte do/para aeroporto</p>
-      <p class="text-2xl font-bold text-blue-700 text-center">R$ 80,00</p>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Jantar</h3>
+      <p class="text-gray-600 text-center mb-4">Jantar especial com menu executivo e entrada</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 55,00</p>
+     </div><!-- Card Serviço 4 -->
+     <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
+      <div class="text-center mb-4"><i class="fas fa-tshirt text-5xl text-blue-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Lavanderia</h3>
+      <p class="text-gray-600 text-center mb-4">Serviço de lavanderia rápida e cuidadosa</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 10,00/peça</p>
      </div>
     </div>
    </section><!-- Seção de Calendário (oculta por padrão, aparece ao clicar no ícone de relógio) -->
@@ -910,7 +917,7 @@
       {
         id: 3,
         pergunta: "Como adicionar serviços extras à minha reserva?",
-        resposta: "Serviços extras podem ser adicionados através da tabela COCAO_HOSPEDE_SERVICO, vinculados ao ID_RESERVA da sua estadia. Nossa equipe pode incluir serviços como spa, restaurante, transfer e outros durante sua permanência no hotel.",
+        resposta: "Serviços extras podem ser adicionados através da tabela COCAO_HOSPEDE_SERVICO, vinculados ao ID_RESERVA da sua estadia. Nossa equipe pode incluir serviços como café da manhã, almoço, jantar e lavanderia durante sua permanência no hotel.",
         categoria: "servicos"
       },
       {
@@ -1406,14 +1413,26 @@
       servicos: [
         {
           CODIGO_SERVICO: 1,
-          NOME_SERVICO: 'Restaurante',
-          PRECO: 45.00,
+          NOME_SERVICO: 'Café da Manhã',
+          PRECO: 25.00,
           ATIVO: true
         },
         {
           CODIGO_SERVICO: 2,
-          NOME_SERVICO: 'Spa & Massagem',
-          PRECO: 120.00,
+          NOME_SERVICO: 'Almoço',
+          PRECO: 45.00,
+          ATIVO: true
+        },
+        {
+          CODIGO_SERVICO: 3,
+          NOME_SERVICO: 'Jantar',
+          PRECO: 55.00,
+          ATIVO: true
+        },
+        {
+          CODIGO_SERVICO: 4,
+          NOME_SERVICO: 'Lavanderia',
+          PRECO: 10.00,
           ATIVO: true
         }
       ],
@@ -2294,5 +2313,5 @@
       });
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99895b5c508051ed',t:'MTc2MjE0NjUzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998982b2766c6242',t:'MTc2MjE0ODE1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
