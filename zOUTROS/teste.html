@@ -1,0 +1,2298 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Cocao - Sistema de Reservas</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-gray-50"><!-- Header fixo no topo -->
+  <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+   <div class="container mx-auto px-4 py-4 flex items-center justify-between"><!-- Logo -->
+    <div class="flex items-center space-x-3"><i class="fas fa-hotel text-3xl text-blue-700"></i> <span id="hotel-name" class="text-2xl font-bold text-gray-800">Hotel Cocao</span>
+    </div><!-- Menu de navegação central -->
+    <nav class="hidden md:flex space-x-6"><button id="nav-home" class="nav-btn active flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300" onclick="mostrarPagina('home')"> <i class="fas fa-home"></i> <span>Home</span> </button> <button id="nav-funcionarios" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300" onclick="mostrarPagina('funcionarios')"> <i class="fas fa-users"></i> <span>Funcionários</span> </button> <button id="nav-sobre" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300" onclick="mostrarPagina('sobre')"> <i class="fas fa-info-circle"></i> <span>Sobre</span> </button> <button id="nav-faq" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300" onclick="mostrarPagina('faq')"> <i class="fas fa-question-circle"></i> <span>FAQ</span> </button> <button id="nav-devtools" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-500" onclick="mostrarPagina('devtools')"> <i class="fas fa-tools"></i> <span>Dev Tools</span> </button>
+    </nav><!-- Botão Login --> <button id="btn-login" class="login-btn flex items-center space-x-2 px-6 py-2 bg-blue-700 text-white rounded-lg transition-all duration-300" onclick="mostrarPagina('login')"> <i class="fas fa-sign-in-alt"></i> <span>Login</span> </button>
+   </div>
+  </header><!-- PÁGINA HOME -->
+  <div id="pagina-home" class="pagina-content"><!-- Espaçamento para header fixo -->
+   <div class="h-20"></div><!-- Banner Principal com gradiente animado -->
+   <section class="banner-principal relative overflow-hidden">
+    <div class="container mx-auto px-4 py-24 text-center relative z-10">
+     <h1 id="banner-title" class="text-5xl md:text-6xl font-bold text-white mb-4 animate-fade-in">Bem-vindo ao Hotel Cocao</h1>
+     <p id="banner-subtitle" class="text-xl md:text-2xl text-blue-100 mb-8 animate-fade-in-delay">Conforto e simplicidade para sua estadia</p><button id="banner-cta" class="cta-button inline-block px-8 py-3 bg-white text-blue-700 font-semibold rounded-full transition-all duration-300"> Reserve Agora </button>
+    </div>
+   </section><!-- Menu Secundário (Quartos e Serviços) -->
+   <section class="bg-gray-100 shadow-inner py-8">
+    <div class="container mx-auto px-4">
+     <div class="flex justify-center space-x-4"><button id="btn-quartos" class="section-toggle-btn active flex items-center space-x-3 px-8 py-4 rounded-xl transition-all duration-300" onclick="toggleSections('quartos')"> <i class="fas fa-bed text-2xl"></i> <span class="text-lg font-semibold">QUARTOS</span> </button> <button id="btn-servicos" class="section-toggle-btn flex items-center space-x-3 px-8 py-4 rounded-xl transition-all duration-300" onclick="toggleSections('servicos')"> <i class="fas fa-concierge-bell text-2xl"></i> <span class="text-lg font-semibold">SERVIÇOS</span> </button>
+     </div>
+    </div>
+   </section><!-- Seção de Quartos (visível por padrão) -->
+   <section id="section-quartos" class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="quartos-grid"><!-- Cards de quartos serão gerados dinamicamente -->
+    </div>
+   </section><!-- Seção de Serviços (oculta por padrão) -->
+   <section id="section-servicos" class="container mx-auto px-4 py-12 hidden">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8"><!-- Card Serviço 1 -->
+     <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
+      <div class="text-center mb-4"><i class="fas fa-utensils text-5xl text-blue-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Restaurante</h3>
+      <p class="text-gray-600 text-center mb-4">Café da manhã, almoço e jantar com menu variado</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 45,00</p>
+     </div><!-- Card Serviço 2 -->
+     <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
+      <div class="text-center mb-4"><i class="fas fa-spa text-5xl text-blue-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Spa &amp; Massagem</h3>
+      <p class="text-gray-600 text-center mb-4">Relaxamento e bem-estar com profissionais</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 120,00</p>
+     </div><!-- Card Serviço 3 -->
+     <div class="service-card bg-white rounded-xl shadow-lg p-6 transition-all duration-300">
+      <div class="text-center mb-4"><i class="fas fa-car text-5xl text-blue-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">Transfer</h3>
+      <p class="text-gray-600 text-center mb-4">Transporte do/para aeroporto</p>
+      <p class="text-2xl font-bold text-blue-700 text-center">R$ 80,00</p>
+     </div>
+    </div>
+   </section><!-- Seção de Calendário (oculta por padrão, aparece ao clicar no ícone de relógio) -->
+   <section id="section-calendario" class="container mx-auto px-4 py-12 hidden">
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-4xl mx-auto">
+     <div class="flex items-center justify-between mb-6">
+      <h2 id="calendario-titulo" class="text-3xl font-bold text-gray-800">Agendamentos - Quarto</h2><button id="btn-fechar-calendario" class="text-gray-500 hover:text-red-600 transition-colors duration-300" onclick="showCalendar(null)"> <i class="fas fa-times text-2xl"></i> </button>
+     </div>
+     <div class="flex items-center justify-between mb-6"><button id="btn-mes-anterior" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300" onclick="navegarMes(-1)"> <i class="fas fa-chevron-left"></i> </button>
+      <h3 id="mes-ano-atual" class="text-2xl font-semibold text-gray-700"></h3><button id="btn-mes-proximo" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300" onclick="navegarMes(1)"> <i class="fas fa-chevron-right"></i> </button>
+     </div>
+     <div id="calendario-container" class="overflow-x-auto"><!-- Calendário será gerado dinamicamente -->
+     </div>
+    </div>
+   </section>
+  </div><!-- PÁGINA LOGIN -->
+  <div id="pagina-login" class="pagina-content hidden">
+   <main class="flex items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-800 to-purple-600">
+    <div class="login-card bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+     <div class="text-center mb-8"><i class="fas fa-user-circle text-6xl text-blue-600 mb-4"></i>
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Bem-vindo</h1>
+      <p class="text-gray-600">Faça login para acessar o sistema</p>
+     </div>
+     <form id="loginForm" class="space-y-6">
+      <div class="form-group"><label for="usuario" class="block text-sm font-medium text-gray-700 mb-2"> <i class="fas fa-user mr-2"></i>Usuário </label> <input type="text" id="usuario" name="usuario" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" placeholder="Digite seu usuário" required>
+       <div id="usuario-error" class="error-message hidden mt-2 text-red-600 text-sm"><i class="fas fa-exclamation-triangle mr-1"></i> <span></span>
+       </div>
+      </div>
+      <div class="form-group"><label for="senha" class="block text-sm font-medium text-gray-700 mb-2"> <i class="fas fa-lock mr-2"></i>Senha </label>
+       <div class="relative"><input type="password" id="senha" name="senha" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300" placeholder="Digite sua senha" required> <button type="button" id="toggleSenha" class="absolute right-3 top-3 text-gray-500 hover:text-gray-700"> <i class="fas fa-eye"></i> </button>
+       </div>
+       <div id="senha-error" class="error-message hidden mt-2 text-red-600 text-sm"><i class="fas fa-exclamation-triangle mr-1"></i> <span></span>
+       </div>
+      </div>
+      <div class="flex items-center justify-between"><label class="flex items-center"> <input type="checkbox" id="lembrarMe" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"> <span class="ml-2 text-sm text-gray-600">Lembrar-me</span> </label> <a href="#" class="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-300">Esqueceu a senha?</a>
+      </div><button type="submit" id="btnEntrar" class="btn-login w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-300 flex items-center justify-center"> <span id="btnText">Entrar</span> <i id="btnSpinner" class="fas fa-spinner animate-spin ml-2 hidden"></i> </button>
+     </form>
+     <div id="alertContainer" class="mt-6"></div>
+    </div>
+   </main>
+  </div><!-- PÁGINA FUNCIONÁRIOS -->
+  <div id="pagina-funcionarios" class="pagina-content hidden"><!-- Breadcrumb -->
+   <nav class="bg-gray-100 py-3">
+    <div class="container mx-auto px-4">
+     <ol class="flex items-center space-x-2 text-sm">
+      <li><button onclick="mostrarPagina('home')" class="text-blue-600 hover:text-blue-800">Home</button></li>
+      <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+      <li class="text-gray-600">Funcionários</li>
+     </ol>
+    </div>
+   </nav><!-- Banner -->
+   <section class="bg-gradient-to-r from-blue-600 to-blue-800 py-16">
+    <div class="container mx-auto px-4 text-center"><i class="fas fa-users text-6xl text-white mb-4"></i>
+     <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Nossa Equipe</h1>
+     <p class="text-xl text-blue-100">Conheça os profissionais que tornam sua estadia especial</p>
+    </div>
+   </section><!-- Grid de Funcionários -->
+   <main class="container mx-auto px-4 py-12">
+    <div id="funcionarios-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"><!-- Cards serão gerados dinamicamente -->
+    </div>
+   </main>
+  </div><!-- PÁGINA SOBRE -->
+  <div id="pagina-sobre" class="pagina-content hidden"><!-- Breadcrumb -->
+   <nav class="bg-gray-100 py-3">
+    <div class="container mx-auto px-4">
+     <ol class="flex items-center space-x-2 text-sm">
+      <li><button onclick="mostrarPagina('home')" class="text-blue-600 hover:text-blue-800">Home</button></li>
+      <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+      <li class="text-gray-600">Sobre</li>
+     </ol>
+    </div>
+   </nav><!-- Banner -->
+   <section class="bg-gradient-to-r from-green-600 to-blue-600 py-16">
+    <div class="container mx-auto px-4 text-center"><i class="fas fa-info-circle text-6xl text-white mb-4"></i>
+     <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Sobre o Hotel Cocao</h1>
+     <p class="text-xl text-green-100">Conheça nossa história e valores</p>
+    </div>
+   </section><!-- Conteúdo Principal -->
+   <main class="container mx-auto px-4 py-12"><!-- História -->
+    <section class="mb-16">
+     <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Nossa História</h2>
+     <div class="max-w-4xl mx-auto">
+      <div class="bg-white rounded-xl shadow-lg p-8">
+       <div class="flex items-start space-x-6">
+        <div class="flex-shrink-0"><i class="fas fa-history text-4xl text-blue-600"></i>
+        </div>
+        <div class="flex-1">
+         <h3 class="text-xl font-semibold text-gray-800 mb-4">Fundado em Outubro de 2025</h3>
+         <p class="text-gray-600 leading-relaxed mb-4">O Hotel Cocao nasceu com o propósito de ser um projeto educacional inovador, desenvolvido especificamente para estudantes e profissionais que buscam compreender os fundamentos da gestão hoteleira através de tecnologia.</p>
+         <p class="text-gray-600 leading-relaxed mb-4">Utilizando Oracle Database 21c como base de dados, nosso sistema foi projetado com foco didático, priorizando a simplicidade e clareza dos processos sobre a complexidade de segurança encontrada em sistemas comerciais.</p>
+         <p class="text-gray-600 leading-relaxed">Como um hotel de pequeno porte voltado para fins estudantis, implementamos funcionalidades essenciais sem logging avançado ou hash de senhas, mantendo o foco na aprendizagem dos conceitos fundamentais.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Missão, Visão e Valores -->
+    <section class="mb-16">
+     <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Missão, Visão e Valores</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300">
+       <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-rocket text-2xl text-blue-600"></i>
+       </div>
+       <h3 class="text-xl font-bold text-gray-800 mb-4">Missão</h3>
+       <p class="text-gray-600 leading-relaxed">Proporcionar uma experiência educacional prática e acessível no setor hoteleiro, combinando conforto e tecnologia para formar profissionais qualificados.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300">
+       <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-eye text-2xl text-green-600"></i>
+       </div>
+       <h3 class="text-xl font-bold text-gray-800 mb-4">Visão</h3>
+       <p class="text-gray-600 leading-relaxed">Ser referência em hospitalidade educacional, inspirando a próxima geração de profissionais do setor através da inovação e excelência no atendimento.</p>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-all duration-300">
+       <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-heart text-2xl text-purple-600"></i>
+       </div>
+       <h3 class="text-xl font-bold text-gray-800 mb-4">Valores</h3>
+       <p class="text-gray-600 leading-relaxed">Simplicidade, transparência, aprendizado contínuo e compromisso com a formação de profissionais éticos e competentes no setor hoteleiro.</p>
+      </div>
+     </div>
+    </section><!-- Prêmios -->
+    <section class="mb-16">
+     <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Reconhecimentos</h2>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg p-6 text-white text-center"><i class="fas fa-trophy text-4xl mb-4"></i>
+       <h3 class="text-xl font-bold mb-2">Melhor Hotel Estudantil 2025</h3>
+       <p class="text-yellow-100">Reconhecimento pela excelência em educação hoteleira</p>
+      </div>
+      <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-xl shadow-lg p-6 text-white text-center"><i class="fas fa-award text-4xl mb-4"></i>
+       <h3 class="text-xl font-bold mb-2">Inovação Tecnológica</h3>
+       <p class="text-green-100">Destaque em uso de Oracle Database para ensino</p>
+      </div>
+     </div>
+    </section>
+   </main>
+  </div><!-- PÁGINA DEV TOOLS -->
+  <div id="pagina-devtools" class="pagina-content hidden"><!-- Breadcrumb -->
+   <nav class="bg-gray-100 py-3">
+    <div class="container mx-auto px-4">
+     <ol class="flex items-center space-x-2 text-sm">
+      <li><button onclick="mostrarPagina('home')" class="text-blue-600 hover:text-blue-800">Home</button></li>
+      <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+      <li class="text-gray-600">Dev Tools</li>
+     </ol>
+    </div>
+   </nav><!-- Banner -->
+   <section class="bg-gradient-to-r from-gray-600 to-gray-800 py-16">
+    <div class="container mx-auto px-4 text-center"><i class="fas fa-tools text-6xl text-white mb-4"></i>
+     <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Dev Tools</h1>
+     <p class="text-xl text-gray-100">Painel de Administração - Simulação DDL</p>
+    </div>
+   </section><!-- Tabs Navigation -->
+   <section class="bg-white shadow-sm">
+    <div class="container mx-auto px-4">
+     <div class="flex overflow-x-auto"><button id="tab-usuarios" class="dev-tab active px-6 py-4 text-sm font-medium border-b-2 border-blue-600 text-blue-600" onclick="showDevTab('usuarios')"> Usuários (Todos) </button> <button id="tab-hospedes" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('hospedes')"> Hóspedes </button> <button id="tab-funcionarios" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('funcionarios')"> Funcionários </button> <button id="tab-funcoes" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('funcoes')"> Funções </button> <button id="tab-tipos-quarto" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('tipos-quarto')"> Tipos de Quarto </button> <button id="tab-quartos" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('quartos')"> Quartos </button> <button id="tab-status-reserva" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('status-reserva')"> Status Reserva </button> <button id="tab-reservas" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('reservas')"> Reservas </button> <button id="tab-servicos" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('servicos')"> Serviços </button> <button id="tab-hospede-servico" class="dev-tab px-6 py-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" onclick="showDevTab('hospede-servico')"> Solicitações </button>
+     </div>
+    </div>
+   </section><!-- Content Area -->
+   <main class="container mx-auto px-4 py-8"><!-- Toast Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50"></div><!-- Tab Content -->
+    <div id="dev-content"><!-- Content will be dynamically generated -->
+    </div>
+   </main>
+  </div><!-- PÁGINA FAQ -->
+  <div id="pagina-faq" class="pagina-content hidden"><!-- Breadcrumb -->
+   <nav class="bg-gray-100 py-3">
+    <div class="container mx-auto px-4">
+     <ol class="flex items-center space-x-2 text-sm">
+      <li><button onclick="mostrarPagina('home')" class="text-blue-600 hover:text-blue-800">Home</button></li>
+      <li><i class="fas fa-chevron-right text-gray-400"></i></li>
+      <li class="text-gray-600">FAQ</li>
+     </ol>
+    </div>
+   </nav><!-- Banner -->
+   <section class="bg-gradient-to-r from-purple-600 to-blue-600 py-16">
+    <div class="container mx-auto px-4 text-center"><i class="fas fa-question-circle text-6xl text-white mb-4"></i>
+     <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Perguntas Frequentes</h1>
+     <p class="text-xl text-purple-100">Encontre respostas para suas dúvidas</p>
+    </div>
+   </section><!-- Busca -->
+   <section class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+     <div class="relative"><input type="text" id="searchFaq" placeholder="Buscar pergunta..." class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"> <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+     </div>
+    </div>
+   </section><!-- Accordion FAQ -->
+   <main class="container mx-auto px-4 pb-12">
+    <div class="max-w-4xl mx-auto">
+     <div id="faq-accordion" class="space-y-4"><!-- Items serão gerados dinamicamente -->
+     </div>
+    </div>
+   </main><!-- Seção Contato -->
+   <section class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4 text-center">
+     <h2 class="text-2xl font-bold text-gray-800 mb-4">Ainda tem dúvidas?</h2>
+     <p class="text-gray-600 mb-6">Nossa equipe está pronta para ajudar você</p>
+     <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
+      <div class="flex items-center"><i class="fas fa-envelope text-blue-600 mr-2"></i> <span class="text-gray-700">suporte@hotelcocao.com</span>
+      </div>
+      <div class="flex items-center"><i class="fas fa-phone text-blue-600 mr-2"></i> <span class="text-gray-700">(11) 3456-7890</span>
+      </div>
+     </div><button class="mt-6 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300"> <i class="fas fa-comments mr-2"></i> Entrar em Contato </button>
+    </div>
+   </section>
+  </div><!-- Rodapé -->
+  <footer class="bg-gray-900 text-white py-12 mt-20">
+   <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8"><!-- Logo e Descrição -->
+     <div class="md:col-span-1">
+      <div class="flex items-center space-x-3 mb-4"><i class="fas fa-hotel text-3xl text-blue-400"></i> <span class="text-2xl font-bold">Hotel Cocao</span>
+      </div>
+      <p class="text-gray-400 text-sm">Conforto e elegância para sua estadia perfeita.</p>
+     </div><!-- Contatos -->
+     <div>
+      <h3 class="text-lg font-semibold mb-4 text-blue-400">Contatos</h3>
+      <div class="space-y-2 text-sm text-gray-400">
+       <p><i class="fas fa-phone mr-2"></i>(11) 3456-7890</p>
+       <p><i class="fas fa-envelope mr-2"></i>contato@hotelcocao.com</p>
+       <p><i class="fas fa-map-marker-alt mr-2"></i>Av. Oceânica, 123 - São Paulo, SP</p>
+      </div>
+     </div><!-- Links Úteis -->
+     <div>
+      <h3 class="text-lg font-semibold mb-4 text-blue-400">Links Úteis</h3>
+      <div class="space-y-2 text-sm"><a href="#" class="block text-gray-400 hover:text-white transition-colors duration-300">Política de Privacidade</a> <a href="#" class="block text-gray-400 hover:text-white transition-colors duration-300">Termos de Uso</a> <a href="#" class="block text-gray-400 hover:text-white transition-colors duration-300">FAQ</a> <a href="#" class="block text-gray-400 hover:text-white transition-colors duration-300">Suporte</a>
+      </div>
+     </div><!-- Redes Sociais -->
+     <div>
+      <h3 class="text-lg font-semibold mb-4 text-blue-400">Redes Sociais</h3>
+      <div class="flex space-x-4"><a href="#" class="social-icon bg-gray-800 p-3 rounded-full hover:bg-blue-600 transition-all duration-300"> <i class="fab fa-facebook text-xl"></i> </a> <a href="#" class="social-icon bg-gray-800 p-3 rounded-full hover:bg-pink-600 transition-all duration-300"> <i class="fab fa-instagram text-xl"></i> </a> <a href="#" class="social-icon bg-gray-800 p-3 rounded-full hover:bg-blue-400 transition-all duration-300"> <i class="fab fa-twitter text-xl"></i> </a> <a href="#" class="social-icon bg-gray-800 p-3 rounded-full hover:bg-green-600 transition-all duration-300"> <i class="fab fa-whatsapp text-xl"></i> </a>
+      </div>
+     </div>
+    </div><!-- Copyright -->
+    <div class="border-t border-gray-700 pt-6 text-center">
+     <p class="text-gray-500 text-sm">© 2024 Hotel Cocao. Todos os direitos reservados.</p>
+    </div>
+   </div>
+  </footer>
+  <style>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    // Configuração padrão do elemento
+    const defaultConfig = {
+      hotel_name: "Hotel Cocao",
+      banner_title: "Bem-vindo ao Hotel Cocao",
+      banner_subtitle: "Conforto e simplicidade para sua estadia",
+      banner_cta: "Reserve Agora",
+      background_color: "#F9FAFB",
+      surface_color: "#FFFFFF",
+      text_color: "#1F2937",
+      primary_action_color: "#1E40AF",
+      secondary_action_color: "#3B82F6",
+      font_family: "Segoe UI",
+      font_size: 16
+    };
+
+    // Dados mock de quartos (simulando COCAO_QUARTO e COCAO_TIPO_QUARTO)
+    const quartosData = [
+      {
+        id: 'Q001',
+        numero: '201',
+        andar: '2º',
+        tipo: 'Standard',
+        nome_tipo: 'Quarto Standard',
+        capacidade_maxima: 2,
+        valor_diaria: 250.00,
+        status_quarto: 'OCUPADO',
+        datasOcupadas: ['2024-12-15', '2024-12-16', '2024-12-22', '2024-12-23']
+      },
+      {
+        id: 'Q002',
+        numero: '301',
+        andar: '3º',
+        tipo: 'Luxo',
+        nome_tipo: 'Quarto Luxo',
+        capacidade_maxima: 3,
+        valor_diaria: 450.00,
+        status_quarto: 'LIVRE',
+        datasOcupadas: ['2024-12-10', '2024-12-11', '2024-12-25']
+      },
+      {
+        id: 'Q003',
+        numero: '401',
+        andar: '4º',
+        tipo: 'Suíte',
+        nome_tipo: 'Suíte Premium',
+        capacidade_maxima: 4,
+        valor_diaria: 650.00,
+        status_quarto: 'LIVRE',
+        datasOcupadas: ['2024-12-05', '2024-12-06', '2024-12-18', '2024-12-19']
+      }
+    ];
+
+    // Estado global para calendário
+    let calendarioState = {
+      quartoAtual: null,
+      mesAtual: new Date().getMonth(),
+      anoAtual: new Date().getFullYear()
+    };
+
+    // Dados mock de funcionários
+    const funcionariosMock = [
+      {
+        id: 1,
+        nome_hospede: 'João Silva Santos',
+        nome_login: 'gerente',
+        data_contratacao: '2023-10-15',
+        ativo: true,
+        funcao: {
+          nome_funcao: 'Gerente Geral',
+          descricao: 'Responsável pela gestão geral do hotel e supervisão de todas as operações',
+          nivel_acesso: 3
+        }
+      },
+      {
+        id: 2,
+        nome_hospede: 'Maria Oliveira Costa',
+        nome_login: 'recepcionista',
+        data_contratacao: '2024-01-20',
+        ativo: true,
+        funcao: {
+          nome_funcao: 'Recepcionista',
+          descricao: 'Atendimento aos hóspedes, check-in/check-out e suporte geral',
+          nivel_acesso: 2
+        }
+      },
+      {
+        id: 3,
+        nome_hospede: 'Ana Paula Ferreira',
+        nome_login: 'camareira',
+        data_contratacao: '2024-03-10',
+        ativo: true,
+        funcao: {
+          nome_funcao: 'Camareira',
+          descricao: 'Limpeza e organização dos quartos, manutenção da qualidade',
+          nivel_acesso: 1
+        }
+      }
+    ];
+
+    // Dados FAQ
+    const faqData = [
+      {
+        id: 1,
+        pergunta: "Como verificar o status da minha reserva?",
+        resposta: "Você pode verificar o status da sua reserva através do nosso sistema COCAO_RESERVA. As datas são armazenadas de forma truncada para facilitar consultas. Utilize a view COCAO_HOTEL_VIEW_01_STATUS_QUARTO para verificar a disponibilidade em tempo real dos quartos e o status das suas reservas.",
+        categoria: "reservas"
+      },
+      {
+        id: 2,
+        pergunta: "O que acontece quando um quarto está em manutenção?",
+        resposta: "Nosso sistema COCAO_QUARTO possui triggers automáticos (T12 e T13) que gerenciam o status de manutenção. Quando um quarto entra em manutenção, ele fica automaticamente indisponível para novas reservas até que a manutenção seja concluída e o status seja atualizado.",
+        categoria: "quartos"
+      },
+      {
+        id: 3,
+        pergunta: "Como adicionar serviços extras à minha reserva?",
+        resposta: "Serviços extras podem ser adicionados através da tabela COCAO_HOSPEDE_SERVICO, vinculados ao ID_RESERVA da sua estadia. Nossa equipe pode incluir serviços como spa, restaurante, transfer e outros durante sua permanência no hotel.",
+        categoria: "servicos"
+      },
+      {
+        id: 4,
+        pergunta: "Quais são os tipos de quartos disponíveis?",
+        resposta: "Oferecemos três categorias de quartos: Standard (2 hóspedes, R$ 250), Luxo (3 hóspedes, R$ 450) e Suíte Premium (4 hóspedes, R$ 650). Todos os quartos possuem controle de status em tempo real através do nosso sistema de gestão.",
+        categoria: "quartos"
+      },
+      {
+        id: 5,
+        pergunta: "Como funciona o sistema de funcionários do hotel?",
+        resposta: "Nosso sistema COCAO_FUNCIONARIO integra com COCAO_HOSPEDE (TIPO=1) e COCAO_FUNCAO com diferentes níveis de acesso: Nível 1 (Básico) para camareiras, Nível 2 (Intermediário) para recepcionistas, e Nível 3 (Gerencial) para gerentes.",
+        categoria: "sistema"
+      }
+    ];
+
+    // ========== FUNÇÕES DE NAVEGAÇÃO ==========
+
+    /**
+     * Função principal de navegação entre páginas
+     * Implementa heurística de Visibilidade do Status do Sistema
+     */
+    function mostrarPagina(pagina) {
+      console.log('Navegando para:', pagina);
+      
+      // Esconder todas as páginas
+      document.querySelectorAll('.pagina-content').forEach(p => {
+        p.classList.add('hidden');
+        p.style.display = 'none';
+      });
+      
+      // Remover active de todos os botões de navegação
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      
+      // Mostrar página selecionada
+      const paginaElement = document.getElementById(`pagina-${pagina}`);
+      if (paginaElement) {
+        paginaElement.classList.remove('hidden');
+        paginaElement.style.display = 'block';
+        console.log('Página mostrada:', pagina);
+      } else {
+        console.error('Página não encontrada:', pagina);
+      }
+      
+      // Ativar botão correspondente
+      const btnElement = document.getElementById(`nav-${pagina}`);
+      if (btnElement) {
+        btnElement.classList.add('active');
+      }
+      
+      // Executar inicialização específica da página
+      setTimeout(() => {
+        switch(pagina) {
+          case 'funcionarios':
+            initFuncionarios();
+            break;
+          case 'faq':
+            initFAQ();
+            break;
+          case 'login':
+            initLogin();
+            break;
+          case 'home':
+            renderQuartos();
+            toggleSections('quartos'); // Garantir que quartos esteja visível
+            break;
+          case 'devtools':
+            initDevTools();
+            break;
+        }
+      }, 100);
+    }
+
+    // ========== FUNÇÕES PRINCIPAIS ==========
+
+    /**
+     * Função para alternar entre seções (Quartos/Serviços)
+     * Implementa heurística de Controle e Liberdade do Usuário
+     */
+    function toggleSections(secao) {
+      console.log('Alternando para seção:', secao);
+      
+      // Remover active de todos os botões
+      document.querySelectorAll('.section-toggle-btn').forEach(btn => btn.classList.remove('active'));
+      
+      // Esconder todas as seções
+      document.getElementById('section-quartos').classList.add('hidden');
+      document.getElementById('section-servicos').classList.add('hidden');
+      
+      // Ativar botão e mostrar seção correspondente
+      if (secao === 'quartos') {
+        document.getElementById('btn-quartos').classList.add('active');
+        document.getElementById('section-quartos').classList.remove('hidden');
+        document.getElementById('section-quartos').classList.add('fade-in');
+      } else if (secao === 'servicos') {
+        document.getElementById('btn-servicos').classList.add('active');
+        document.getElementById('section-servicos').classList.remove('hidden');
+        document.getElementById('section-servicos').classList.add('fade-in');
+      }
+    }
+
+    /**
+     * Função para mostrar/esconder calendário de um quarto específico
+     * Implementa heurística de Visibilidade do Status do Sistema
+     */
+    function showCalendar(quartoId) {
+      const calendarioSection = document.getElementById('section-calendario');
+      
+      if (quartoId === null) {
+        // Fechar calendário
+        calendarioSection.classList.add('hidden');
+        calendarioState.quartoAtual = null;
+        // Remover estado ativo de todos os botões de calendário
+        document.querySelectorAll('.btn-agendamentos').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        return;
+      }
+      
+      // Verificar se o calendário já está aberto para este quarto
+      if (calendarioState.quartoAtual === quartoId && !calendarioSection.classList.contains('hidden')) {
+        // Fechar calendário se já estiver aberto para o mesmo quarto
+        calendarioSection.classList.add('hidden');
+        calendarioState.quartoAtual = null;
+        // Remover estado ativo de todos os botões de calendário
+        document.querySelectorAll('.btn-agendamentos').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        return;
+      }
+      
+      // Encontrar dados do quarto
+      const quarto = quartosData.find(q => q.id === quartoId);
+      if (!quarto) return;
+      
+      // Atualizar estado e título
+      calendarioState.quartoAtual = quartoId;
+      document.getElementById('calendario-titulo').textContent = `Agendamentos - ${quarto.nome_tipo} ${quarto.numero}`;
+      
+      // Remover estado ativo de todos os botões e ativar o atual
+      document.querySelectorAll('.btn-agendamentos').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Encontrar e ativar o botão correspondente
+      const botaoAtual = document.querySelector(`button[onclick="showCalendar('${quartoId}')"]`);
+      if (botaoAtual) {
+        botaoAtual.classList.add('active');
+      }
+      
+      // Mostrar seção e gerar calendário
+      calendarioSection.classList.remove('hidden');
+      calendarioSection.classList.add('fade-in');
+      generateCalendar(quartoId, calendarioState.mesAtual, calendarioState.anoAtual);
+    }
+
+    /**
+     * Função para navegar entre meses no calendário
+     */
+    function navegarMes(direcao) {
+      calendarioState.mesAtual += direcao;
+      
+      if (calendarioState.mesAtual > 11) {
+        calendarioState.mesAtual = 0;
+        calendarioState.anoAtual++;
+      } else if (calendarioState.mesAtual < 0) {
+        calendarioState.mesAtual = 11;
+        calendarioState.anoAtual--;
+      }
+      
+      generateCalendar(calendarioState.quartoAtual, calendarioState.mesAtual, calendarioState.anoAtual);
+    }
+
+    /**
+     * Função para gerar calendário dinâmico
+     * Implementa dados mock de COCAO_RESERVA
+     */
+    function generateCalendar(quartoId, mes, ano) {
+      const quarto = quartosData.find(q => q.id === quartoId);
+      if (!quarto) return;
+      
+      const meses = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      ];
+      
+      // Atualizar título do mês/ano
+      document.getElementById('mes-ano-atual').textContent = `${meses[mes]} ${ano}`;
+      
+      // Calcular dias do mês
+      const primeiroDia = new Date(ano, mes, 1);
+      const ultimoDia = new Date(ano, mes + 1, 0);
+      const diasNoMes = ultimoDia.getDate();
+      const diaSemanaInicio = primeiroDia.getDay();
+      
+      // Gerar tabela do calendário
+      let calendarioHTML = `
+        <table class="calendario-table">
+          <thead>
+            <tr>
+              <th>Dom</th>
+              <th>Seg</th>
+              <th>Ter</th>
+              <th>Qua</th>
+              <th>Qui</th>
+              <th>Sex</th>
+              <th>Sáb</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      let diaAtual = 1;
+      let semanas = Math.ceil((diasNoMes + diaSemanaInicio) / 7);
+      
+      for (let semana = 0; semana < semanas; semana++) {
+        calendarioHTML += '<tr>';
+        
+        for (let diaSemana = 0; diaSemana < 7; diaSemana++) {
+          if (semana === 0 && diaSemana < diaSemanaInicio) {
+            calendarioHTML += '<td class="dia-vazio"></td>';
+          } else if (diaAtual > diasNoMes) {
+            calendarioHTML += '<td class="dia-vazio"></td>';
+          } else {
+            const dataFormatada = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(diaAtual).padStart(2, '0')}`;
+            const isOcupado = quarto.datasOcupadas.includes(dataFormatada);
+            const isHoje = new Date().toDateString() === new Date(ano, mes, diaAtual).toDateString();
+            
+            let classes = '';
+            if (isOcupado) classes += 'dia-ocupado ';
+            if (isHoje) classes += 'dia-atual ';
+            
+            calendarioHTML += `<td class="${classes}">${diaAtual}</td>`;
+            diaAtual++;
+          }
+        }
+        
+        calendarioHTML += '</tr>';
+      }
+      
+      calendarioHTML += '</tbody></table>';
+      
+      // Inserir calendário no container
+      document.getElementById('calendario-container').innerHTML = calendarioHTML;
+    }
+
+    /**
+     * Função para criar um card de quarto individual
+     * Implementa dados mock de COCAO_QUARTO
+     */
+    function criarCardQuarto(quarto) {
+      // Determinar status visual e bordas
+      let statusClass = '';
+      let statusIcon = '';
+      let statusText = '';
+      let borderClass = '';
+      let buttonDisabled = '';
+      let buttonClass = '';
+      let backgroundGradient = '';
+      let iconColor = '';
+      
+      switch(quarto.status_quarto) {
+        case 'LIVRE':
+          statusClass = 'status-disponivel';
+          statusIcon = 'fa-check';
+          statusText = 'DISPONÍVEL';
+          borderClass = 'border-l-4 border-green-500';
+          buttonClass = 'bg-blue-600 text-white hover:bg-blue-700';
+          buttonDisabled = '';
+          backgroundGradient = 'bg-gradient-to-br from-green-300 to-green-500';
+          iconColor = 'text-green-600';
+          break;
+        case 'OCUPADO':
+          statusClass = 'status-ocupado';
+          statusIcon = 'fa-times';
+          statusText = 'OCUPADO';
+          borderClass = 'border-l-4 border-red-500';
+          buttonClass = 'bg-gray-400 text-gray-600 cursor-not-allowed';
+          buttonDisabled = 'disabled';
+          backgroundGradient = 'bg-gradient-to-br from-red-300 to-red-500';
+          iconColor = 'text-red-600';
+          break;
+        case 'MANUTENCAO':
+          statusClass = 'status-manutencao';
+          statusIcon = 'fa-tools';
+          statusText = 'MANUTENÇÃO';
+          borderClass = 'border-l-4 border-yellow-500';
+          buttonClass = 'bg-gray-400 text-gray-600 cursor-not-allowed';
+          buttonDisabled = 'disabled';
+          backgroundGradient = 'bg-gradient-to-br from-yellow-300 to-yellow-500';
+          iconColor = 'text-yellow-600';
+          break;
+      }
+      
+      return `
+        <div class="room-card bg-white rounded-xl shadow-lg overflow-hidden ${borderClass} relative">
+          <!-- Status badge no canto superior direito -->
+          <div class="absolute top-3 right-3 z-10">
+            <span class="status-badge ${statusClass}">
+              <i class="fas ${statusIcon}"></i>
+              ${statusText}
+            </span>
+          </div>
+          
+          <!-- Imagem placeholder -->
+          <div class="h-48 ${backgroundGradient} flex items-center justify-center">
+            <i class="fas fa-bed text-6xl ${iconColor}"></i>
+          </div>
+          
+          <!-- Conteúdo do card -->
+          <div class="p-6">
+            <div class="mb-4">
+              <h3 class="text-xl font-bold text-gray-800">${quarto.nome_tipo}</h3>
+            </div>
+            
+            <div class="space-y-2 mb-4">
+              <p class="text-gray-600">
+                <i class="fas fa-door-open mr-2 text-blue-600"></i>
+                Quarto ${quarto.numero} - ${quarto.andar} andar
+              </p>
+              <p class="text-gray-600">
+                <i class="fas fa-users mr-2 text-blue-600"></i>
+                Até ${quarto.capacidade_maxima} hóspedes
+              </p>
+              <p class="text-2xl font-bold text-blue-700">
+                R$ ${quarto.valor_diaria.toFixed(2)}/diária
+              </p>
+            </div>
+            
+            <!-- Botões de ação -->
+            <div class="flex space-x-3">
+              <button class="flex-1 ${buttonClass} py-2 px-4 rounded-lg transition-all duration-300" ${buttonDisabled}>
+                <i class="fas fa-eye mr-2"></i>
+                Ver Detalhes
+              </button>
+              <button onclick="showCalendar('${quarto.id}')" class="btn-agendamentos bg-gray-100 text-gray-600 p-2 rounded-lg hover:bg-blue-100 transition-all duration-300">
+                <i class="fas fa-clock"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * Função para renderizar cards de quartos
+     * Implementa dados mock de COCAO_QUARTO
+     */
+    function renderQuartos() {
+      const quartosGrid = document.getElementById('quartos-grid');
+      if (!quartosGrid) return;
+      
+      // Gerar cards usando a função reutilizável
+      const quartosHTML = quartosData.map(quarto => criarCardQuarto(quarto)).join('');
+      
+      quartosGrid.innerHTML = quartosHTML;
+    }
+
+    // ========== DEV TOOLS - SIMULAÇÃO DDL ==========
+    
+    // src/types - Interface definitions (TypeScript simulation)
+    /*
+    interface Hospede {
+      ID_USUARIO: number;
+      NOME_HOSPEDE: string;
+      CPF: string;
+      RG: string;
+      SEXO: string;
+      DATA_NASCIMENTO: string;
+      EMAIL: string;
+      TELEFONE: string;
+      TIPO: number; // 0=hóspede, 1=funcionário
+      ATIVO: boolean;
+    }
+    */
+
+    // src/services - Mock API simulation
+    const mockApi = {
+      // Mock data arrays - simulating database tables
+      hospedes: [
+        {
+          ID_USUARIO: 1,
+          NOME_HOSPEDE: 'João Silva Santos',
+          CPF: '12345678901',
+          RG: 'MG1234567',
+          SEXO: 'M',
+          DATA_NASCIMENTO: '1985-03-15',
+          EMAIL: 'joao.silva@email.com',
+          TELEFONE: '(11) 99999-1234',
+          TIPO: 1, // funcionário
+          ATIVO: true
+        },
+        {
+          ID_USUARIO: 2,
+          NOME_HOSPEDE: 'Maria Oliveira Costa',
+          CPF: '98765432109',
+          RG: 'SP9876543',
+          SEXO: 'F',
+          DATA_NASCIMENTO: '1990-07-22',
+          EMAIL: 'maria.costa@email.com',
+          TELEFONE: '(11) 88888-5678',
+          TIPO: 0, // hóspede
+          ATIVO: true
+        }
+      ],
+      
+      funcionarios: [
+        {
+          ID_USUARIO: 1,
+          CODIGO_FUNCAO: 1,
+          NOME_LOGIN: 'gerente',
+          DATA_CONTRATACAO: '2023-10-15',
+          ATIVO: true
+        }
+      ],
+      
+      funcoes: [
+        {
+          CODIGO_FUNCAO: 1,
+          NOME_FUNCAO: 'Gerente Geral',
+          DESCRICAO: 'Responsável pela gestão geral do hotel',
+          NIVEL_ACESSO: 3
+        },
+        {
+          CODIGO_FUNCAO: 2,
+          NOME_FUNCAO: 'Recepcionista',
+          DESCRICAO: 'Atendimento aos hóspedes',
+          NIVEL_ACESSO: 2
+        }
+      ],
+      
+      tiposQuarto: [
+        {
+          CODIGO_TIPO_QUARTO: 1,
+          NOME_TIPO: 'Standard',
+          CAPACIDADE_MAXIMA: 2,
+          VALOR_DIARIA: 250.00
+        },
+        {
+          CODIGO_TIPO_QUARTO: 2,
+          NOME_TIPO: 'Luxo',
+          CAPACIDADE_MAXIMA: 3,
+          VALOR_DIARIA: 450.00
+        }
+      ],
+      
+      quartos: [
+        {
+          ID_QUARTO: 1,
+          CODIGO_TIPO_QUARTO: 1,
+          NUMERO: '201',
+          STATUS_QUARTO: 'LIVRE',
+          ANDAR: '2º'
+        },
+        {
+          ID_QUARTO: 2,
+          CODIGO_TIPO_QUARTO: 2,
+          NUMERO: '301',
+          STATUS_QUARTO: 'OCUPADO',
+          ANDAR: '3º'
+        }
+      ],
+      
+      statusReserva: [
+        {
+          CODIGO_STATUS: 1,
+          DESCRICAO: 'Confirmada'
+        },
+        {
+          CODIGO_STATUS: 2,
+          DESCRICAO: 'Check-in'
+        },
+        {
+          CODIGO_STATUS: 3,
+          DESCRICAO: 'Check-out'
+        }
+      ],
+      
+      reservas: [
+        {
+          ID_RESERVA: 1,
+          CODIGO_STATUS: 2,
+          ID_USUARIO: 2,
+          ID_QUARTO: 2,
+          DATA_CHECK_IN: '2025-10-31',
+          DATA_CHECK_OUT: '2025-11-03',
+          NUMERO_HOSPEDES: 2,
+          VALOR_TOTAL: 1350.00,
+          NUMERO_DIARIAS: 3
+        }
+      ],
+      
+      servicos: [
+        {
+          CODIGO_SERVICO: 1,
+          NOME_SERVICO: 'Restaurante',
+          PRECO: 45.00,
+          ATIVO: true
+        },
+        {
+          CODIGO_SERVICO: 2,
+          NOME_SERVICO: 'Spa & Massagem',
+          PRECO: 120.00,
+          ATIVO: true
+        }
+      ],
+      
+      hospedeServico: [
+        {
+          ID_SOLICITACAO: 1,
+          ID_USUARIO: 2,
+          CODIGO_SERVICO: 1,
+          ID_RESERVA: 1,
+          DATA_SOLICITACAO: '2025-10-31',
+          QUANTIDADE: 2
+        }
+      ]
+    };
+
+    // src/services - CRUD operations simulation
+    const devToolsService = {
+      // Simulate POST request
+      create: (table, data) => {
+        console.log(`🔧 Dev Tools: Creating ${table}`, data);
+        
+        // Simulate triggers
+        if (table === 'reservas') {
+          console.log('🔄 Trigger T15: Validando conflito de datas');
+          if (new Date(data.DATA_CHECK_OUT) <= new Date(data.DATA_CHECK_IN)) {
+            throw new Error('Data de check-out deve ser posterior ao check-in');
+          }
+        }
+        
+        const newId = Math.max(...mockApi[table].map(item => 
+          item.ID_USUARIO || item.ID_QUARTO || item.ID_RESERVA || item.CODIGO_FUNCAO || 
+          item.CODIGO_TIPO_QUARTO || item.CODIGO_STATUS || item.CODIGO_SERVICO || 
+          item.ID_SOLICITACAO || 0
+        )) + 1;
+        
+        const newItem = { ...data };
+        if ('ID_USUARIO' in newItem) newItem.ID_USUARIO = newId;
+        if ('ID_QUARTO' in newItem) newItem.ID_QUARTO = newId;
+        if ('ID_RESERVA' in newItem) newItem.ID_RESERVA = newId;
+        if ('CODIGO_FUNCAO' in newItem) newItem.CODIGO_FUNCAO = newId;
+        if ('CODIGO_TIPO_QUARTO' in newItem) newItem.CODIGO_TIPO_QUARTO = newId;
+        if ('CODIGO_STATUS' in newItem) newItem.CODIGO_STATUS = newId;
+        if ('CODIGO_SERVICO' in newItem) newItem.CODIGO_SERVICO = newId;
+        if ('ID_SOLICITACAO' in newItem) newItem.ID_SOLICITACAO = newId;
+        
+        mockApi[table].push(newItem);
+        return newItem;
+      },
+      
+      // Simulate PUT request
+      update: (table, id, data) => {
+        console.log(`🔧 Dev Tools: Updating ${table} ID ${id}`, data);
+        
+        const index = mockApi[table].findIndex(item => 
+          item.ID_USUARIO === id || item.ID_QUARTO === id || item.ID_RESERVA === id ||
+          item.CODIGO_FUNCAO === id || item.CODIGO_TIPO_QUARTO === id || 
+          item.CODIGO_STATUS === id || item.CODIGO_SERVICO === id || item.ID_SOLICITACAO === id
+        );
+        
+        if (index !== -1) {
+          mockApi[table][index] = { ...mockApi[table][index], ...data };
+          return mockApi[table][index];
+        }
+        throw new Error('Item não encontrado');
+      },
+      
+      // Simulate DELETE request
+      delete: (table, id) => {
+        console.log(`🔧 Dev Tools: Deleting ${table} ID ${id}`);
+        
+        const index = mockApi[table].findIndex(item => 
+          item.ID_USUARIO === id || item.ID_QUARTO === id || item.ID_RESERVA === id ||
+          item.CODIGO_FUNCAO === id || item.CODIGO_TIPO_QUARTO === id || 
+          item.CODIGO_STATUS === id || item.CODIGO_SERVICO === id || item.ID_SOLICITACAO === id
+        );
+        
+        if (index !== -1) {
+          const deleted = mockApi[table].splice(index, 1)[0];
+          return deleted;
+        }
+        throw new Error('Item não encontrado');
+      }
+    };
+
+    // src/components - Table component simulation
+    function TableComponent(config) {
+      const { data, columns, tableName, onEdit, onDelete } = config;
+      
+      return `
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900">${tableName}</h3>
+            <div class="flex space-x-2">
+              <input type="text" id="search-${tableName}" placeholder="Buscar..." 
+                     class="px-3 py-1 border border-gray-300 rounded text-sm"
+                     onkeyup="filterTable('${tableName}', this.value)">
+              <button onclick="openCreateModal('${tableName}')" 
+                      class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">
+                <i class="fas fa-plus mr-1"></i>Criar
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="dev-table w-full">
+              <thead>
+                <tr>
+                  ${columns.map(col => `<th>${col}</th>`).join('')}
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-${tableName}">
+                ${data.map(item => generateTableRow(item, columns, tableName)).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function generateTableRow(item, columns, tableName) {
+      return `
+        <tr>
+          ${columns.map(col => {
+            let value = item[col];
+            
+            // Format special columns
+            if (col === 'STATUS_QUARTO') {
+              const statusClass = value === 'LIVRE' ? 'status-livre' : 
+                                 value === 'OCUPADO' ? 'status-ocupado' : 'status-manutencao';
+              value = `<span class="${statusClass}">${value}</span>`;
+            } else if (col === 'ATIVO' || col === 'TIPO') {
+              value = value ? 'Sim' : 'Não';
+            } else if (col.includes('DATA')) {
+              value = new Date(value).toLocaleDateString('pt-BR');
+            } else if (col.includes('VALOR') || col === 'PRECO') {
+              value = `R$ ${parseFloat(value).toFixed(2)}`;
+            }
+            
+            return `<td>${value || '-'}</td>`;
+          }).join('')}
+          <td>
+            <button onclick="openEditModal('${tableName}', ${getItemId(item)})" 
+                    class="text-blue-600 hover:text-blue-800 mr-2">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteItem('${tableName}', ${getItemId(item)})" 
+                    class="text-red-600 hover:text-red-800">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function getItemId(item) {
+      return item.ID_USUARIO || item.ID_QUARTO || item.ID_RESERVA || 
+             item.CODIGO_FUNCAO || item.CODIGO_TIPO_QUARTO || 
+             item.CODIGO_STATUS || item.CODIGO_SERVICO || item.ID_SOLICITACAO;
+    }
+
+    // src/views - DevToolsView simulation
+    let currentDevTab = 'usuarios';
+
+    function initDevTools() {
+      console.log('🔧 Dev Tools: Inicializando painel de administração');
+      showDevTab('usuarios');
+    }
+
+    function showDevTab(tabName) {
+      currentDevTab = tabName;
+      
+      // Update tab styles
+      document.querySelectorAll('.dev-tab').forEach(tab => {
+        tab.classList.remove('active', 'border-blue-600', 'text-blue-600');
+        tab.classList.add('border-transparent', 'text-gray-500');
+      });
+      
+      const activeTab = document.getElementById(`tab-${tabName}`);
+      if (activeTab) {
+        activeTab.classList.add('active', 'border-blue-600', 'text-blue-600');
+        activeTab.classList.remove('border-transparent', 'text-gray-500');
+      }
+      
+      // Render content
+      renderDevContent(tabName);
+    }
+
+    function renderDevContent(tabName) {
+      const contentDiv = document.getElementById('dev-content');
+      let content = '';
+      
+      switch(tabName) {
+        case 'usuarios':
+          content = TableComponent({
+            data: mockApi.hospedes,
+            columns: ['ID_USUARIO', 'NOME_HOSPEDE', 'CPF', 'RG', 'SEXO', 'DATA_NASCIMENTO', 'EMAIL', 'TELEFONE', 'TIPO', 'ATIVO'],
+            tableName: 'hospedes',
+          });
+          break;
+          
+        case 'hospedes':
+          const hospedes = mockApi.hospedes.filter(h => h.TIPO === 0);
+          content = TableComponent({
+            data: hospedes,
+            columns: ['ID_USUARIO', 'NOME_HOSPEDE', 'CPF', 'RG', 'SEXO', 'DATA_NASCIMENTO', 'EMAIL', 'TELEFONE', 'ATIVO'],
+            tableName: 'hospedes',
+          });
+          break;
+          
+        case 'funcionarios':
+          const funcionarios = mockApi.funcionarios.map(f => {
+            const hospede = mockApi.hospedes.find(h => h.ID_USUARIO === f.ID_USUARIO);
+            return { ...f, NOME_HOSPEDE: hospede?.NOME_HOSPEDE || 'N/A' };
+          });
+          content = TableComponent({
+            data: funcionarios,
+            columns: ['ID_USUARIO', 'NOME_HOSPEDE', 'CODIGO_FUNCAO', 'NOME_LOGIN', 'DATA_CONTRATACAO', 'ATIVO'],
+            tableName: 'funcionarios',
+          });
+          break;
+          
+        case 'funcoes':
+          content = TableComponent({
+            data: mockApi.funcoes,
+            columns: ['CODIGO_FUNCAO', 'NOME_FUNCAO', 'DESCRICAO', 'NIVEL_ACESSO'],
+            tableName: 'funcoes',
+          });
+          break;
+          
+        case 'tipos-quarto':
+          content = TableComponent({
+            data: mockApi.tiposQuarto,
+            columns: ['CODIGO_TIPO_QUARTO', 'NOME_TIPO', 'CAPACIDADE_MAXIMA', 'VALOR_DIARIA'],
+            tableName: 'tiposQuarto',
+          });
+          break;
+          
+        case 'quartos':
+          content = TableComponent({
+            data: mockApi.quartos,
+            columns: ['ID_QUARTO', 'CODIGO_TIPO_QUARTO', 'NUMERO', 'STATUS_QUARTO', 'ANDAR'],
+            tableName: 'quartos',
+          });
+          break;
+          
+        case 'status-reserva':
+          content = TableComponent({
+            data: mockApi.statusReserva,
+            columns: ['CODIGO_STATUS', 'DESCRICAO'],
+            tableName: 'statusReserva',
+          });
+          break;
+          
+        case 'reservas':
+          content = TableComponent({
+            data: mockApi.reservas,
+            columns: ['ID_RESERVA', 'CODIGO_STATUS', 'ID_USUARIO', 'ID_QUARTO', 'DATA_CHECK_IN', 'DATA_CHECK_OUT', 'NUMERO_HOSPEDES', 'VALOR_TOTAL', 'NUMERO_DIARIAS'],
+            tableName: 'reservas',
+          });
+          break;
+          
+        case 'servicos':
+          content = TableComponent({
+            data: mockApi.servicos,
+            columns: ['CODIGO_SERVICO', 'NOME_SERVICO', 'PRECO', 'ATIVO'],
+            tableName: 'servicos',
+          });
+          break;
+          
+        case 'hospede-servico':
+          content = TableComponent({
+            data: mockApi.hospedeServico,
+            columns: ['ID_SOLICITACAO', 'ID_USUARIO', 'CODIGO_SERVICO', 'ID_RESERVA', 'DATA_SOLICITACAO', 'QUANTIDADE'],
+            tableName: 'hospedeServico',
+          });
+          break;
+      }
+      
+      contentDiv.innerHTML = content;
+    }
+
+    // CRUD Operations
+    function openCreateModal(tableName) {
+      // Simple prompt-based modal for demo
+      const fields = getTableFields(tableName);
+      const data = {};
+      
+      for (const field of fields) {
+        if (field.includes('ID_') || field.includes('CODIGO_')) continue; // Skip auto-generated IDs
+        
+        let value = prompt(`${field}:`);
+        if (value === null) return; // User cancelled
+        
+        // Basic validation
+        if (field === 'CPF' && value && !/^\d{11}$/.test(value)) {
+          showToast('CPF deve ter 11 dígitos numéricos', 'error');
+          return;
+        }
+        if (field === 'EMAIL' && value && !/\S+@\S+\.\S+/.test(value)) {
+          showToast('Email inválido', 'error');
+          return;
+        }
+        
+        // Type conversion
+        if (field === 'ATIVO' || field === 'TIPO') {
+          data[field] = value === 'true' || value === '1';
+        } else if (field.includes('VALOR') || field === 'PRECO' || field === 'NIVEL_ACESSO' || field === 'CAPACIDADE_MAXIMA' || field === 'NUMERO_HOSPEDES' || field === 'NUMERO_DIARIAS') {
+          data[field] = parseFloat(value) || 0;
+        } else {
+          data[field] = value;
+        }
+      }
+      
+      try {
+        devToolsService.create(tableName, data);
+        showToast('Item criado com sucesso!', 'success');
+        renderDevContent(currentDevTab);
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    function openEditModal(tableName, id) {
+      const item = mockApi[tableName].find(item => getItemId(item) === id);
+      if (!item) return;
+      
+      const fields = getTableFields(tableName);
+      const data = {};
+      
+      for (const field of fields) {
+        if (field.includes('ID_') || field.includes('CODIGO_')) {
+          data[field] = item[field]; // Keep IDs unchanged
+          continue;
+        }
+        
+        let currentValue = item[field];
+        if (field.includes('DATA')) {
+          currentValue = new Date(currentValue).toISOString().split('T')[0];
+        }
+        
+        let value = prompt(`${field}:`, currentValue);
+        if (value === null) return; // User cancelled
+        
+        // Type conversion (same as create)
+        if (field === 'ATIVO' || field === 'TIPO') {
+          data[field] = value === 'true' || value === '1';
+        } else if (field.includes('VALOR') || field === 'PRECO' || field === 'NIVEL_ACESSO' || field === 'CAPACIDADE_MAXIMA' || field === 'NUMERO_HOSPEDES' || field === 'NUMERO_DIARIAS') {
+          data[field] = parseFloat(value) || 0;
+        } else {
+          data[field] = value;
+        }
+      }
+      
+      try {
+        devToolsService.update(tableName, id, data);
+        showToast('Item atualizado com sucesso!', 'success');
+        renderDevContent(currentDevTab);
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    function deleteItem(tableName, id) {
+      if (!confirm('Tem certeza que deseja excluir este item?')) return;
+      
+      try {
+        devToolsService.delete(tableName, id);
+        showToast('Item excluído com sucesso!', 'success');
+        renderDevContent(currentDevTab);
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    function filterTable(tableName, searchTerm) {
+      const tbody = document.getElementById(`tbody-${tableName}`);
+      const rows = tbody.getElementsByTagName('tr');
+      
+      for (let row of rows) {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm.toLowerCase()) ? '' : 'none';
+      }
+    }
+
+    function getTableFields(tableName) {
+      const fieldMap = {
+        hospedes: ['ID_USUARIO', 'NOME_HOSPEDE', 'CPF', 'RG', 'SEXO', 'DATA_NASCIMENTO', 'EMAIL', 'TELEFONE', 'TIPO', 'ATIVO'],
+        funcionarios: ['ID_USUARIO', 'CODIGO_FUNCAO', 'NOME_LOGIN', 'DATA_CONTRATACAO', 'ATIVO'],
+        funcoes: ['CODIGO_FUNCAO', 'NOME_FUNCAO', 'DESCRICAO', 'NIVEL_ACESSO'],
+        tiposQuarto: ['CODIGO_TIPO_QUARTO', 'NOME_TIPO', 'CAPACIDADE_MAXIMA', 'VALOR_DIARIA'],
+        quartos: ['ID_QUARTO', 'CODIGO_TIPO_QUARTO', 'NUMERO', 'STATUS_QUARTO', 'ANDAR'],
+        statusReserva: ['CODIGO_STATUS', 'DESCRICAO'],
+        reservas: ['ID_RESERVA', 'CODIGO_STATUS', 'ID_USUARIO', 'ID_QUARTO', 'DATA_CHECK_IN', 'DATA_CHECK_OUT', 'NUMERO_HOSPEDES', 'VALOR_TOTAL', 'NUMERO_DIARIAS'],
+        servicos: ['CODIGO_SERVICO', 'NOME_SERVICO', 'PRECO', 'ATIVO'],
+        hospedeServico: ['ID_SOLICITACAO', 'ID_USUARIO', 'CODIGO_SERVICO', 'ID_RESERVA', 'DATA_SOLICITACAO', 'QUANTIDADE']
+      };
+      return fieldMap[tableName] || [];
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+      toast.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas ${type === 'success' ? 'fa-check' : 'fa-exclamation-triangle'} mr-2"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // ========== FUNÇÕES DAS PÁGINAS ==========
+
+    /**
+     * Inicializa página de login
+     * Implementa heurística de Prevenção de Erros
+     */
+    function initLogin() {
+      console.log('🔐 Login: Inicializando página de login');
+      
+      const loginForm = document.getElementById('loginForm');
+      const usuarioInput = document.getElementById('usuario');
+      const senhaInput = document.getElementById('senha');
+      const toggleSenha = document.getElementById('toggleSenha');
+      
+      // Toggle mostrar/esconder senha
+      if (toggleSenha) {
+        toggleSenha.addEventListener('click', function() {
+          const tipo = senhaInput.type === 'password' ? 'text' : 'password';
+          senhaInput.type = tipo;
+          const icon = toggleSenha.querySelector('i');
+          icon.className = tipo === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        });
+      }
+      
+      // Validação em tempo real
+      if (usuarioInput) {
+        usuarioInput.addEventListener('input', function() {
+          validateField('usuario', this.value);
+        });
+      }
+      
+      if (senhaInput) {
+        senhaInput.addEventListener('input', function() {
+          validateField('senha', this.value);
+        });
+      }
+      
+      // Submit do formulário
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          handleLogin();
+        });
+      }
+    }
+
+    /**
+     * Valida campos do formulário de login
+     * Implementa heurística de Prevenção de Erros
+     */
+    function validateField(fieldName, value) {
+      const field = document.getElementById(fieldName);
+      const errorDiv = document.getElementById(`${fieldName}-error`);
+      const errorSpan = errorDiv.querySelector('span');
+      
+      let isValid = true;
+      let errorMessage = '';
+      
+      if (fieldName === 'usuario') {
+        if (value.length < 3) {
+          isValid = false;
+          errorMessage = 'Usuário deve ter pelo menos 3 caracteres';
+        }
+      } else if (fieldName === 'senha') {
+        if (value.length < 6) {
+          isValid = false;
+          errorMessage = 'Senha deve ter pelo menos 6 caracteres';
+        }
+      }
+      
+      // Aplicar estilos visuais
+      if (isValid) {
+        field.classList.remove('invalid');
+        field.classList.add('valid');
+        errorDiv.classList.add('hidden');
+      } else {
+        field.classList.remove('valid');
+        field.classList.add('invalid');
+        errorSpan.textContent = errorMessage;
+        errorDiv.classList.remove('hidden');
+      }
+      
+      return isValid;
+    }
+
+    /**
+     * Processa login do usuário
+     * Implementa heurística de Visibilidade do Status do Sistema
+     */
+    function handleLogin() {
+      const usuario = document.getElementById('usuario').value;
+      const senha = document.getElementById('senha').value;
+      const btnEntrar = document.getElementById('btnEntrar');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const alertContainer = document.getElementById('alertContainer');
+      
+      // Validar campos
+      const usuarioValido = validateField('usuario', usuario);
+      const senhaValida = validateField('senha', senha);
+      
+      if (!usuarioValido || !senhaValida) {
+        showAlert('Por favor, corrija os erros antes de continuar', 'error');
+        return;
+      }
+      
+      // Mostrar loading
+      btnText.textContent = 'Entrando...';
+      btnSpinner.classList.remove('hidden');
+      btnEntrar.disabled = true;
+      
+      // Simular login (dados mock)
+      setTimeout(() => {
+        const credenciaisValidas = (usuario === 'gerente' && senha === 'gerente') ||
+                                  (usuario === 'recepcionista' && senha === 'recepcionista') ||
+                                  (usuario === 'camareira' && senha === 'camareira');
+        
+        if (credenciaisValidas) {
+          showAlert('Login realizado com sucesso!', 'success');
+          
+          // Salvar no localStorage se "Lembrar-me" estiver marcado
+          const lembrarMe = document.getElementById('lembrarMe').checked;
+          if (lembrarMe) {
+            localStorage.setItem('hotelCocao_usuario', usuario);
+          }
+          
+          // Redirecionar para home após 1.5s
+          setTimeout(() => {
+            mostrarPagina('home');
+          }, 1500);
+        } else {
+          showAlert('Usuário ou senha incorretos', 'error');
+        }
+        
+        // Restaurar botão
+        btnText.textContent = 'Entrar';
+        btnSpinner.classList.add('hidden');
+        btnEntrar.disabled = false;
+      }, 2000);
+    }
+
+    /**
+     * Exibe alertas de feedback
+     * Implementa heurística de Visibilidade do Status do Sistema
+     */
+    function showAlert(message, type) {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+      const icon = type === 'success' ? 'fa-check' : 'fa-exclamation-triangle';
+      
+      const alertHTML = `
+        <div class="alert ${alertClass}">
+          <i class="fas ${icon} mr-2"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      
+      alertContainer.innerHTML = alertHTML;
+      
+      // Remover alert após 5 segundos
+      setTimeout(() => {
+        alertContainer.innerHTML = '';
+      }, 5000);
+    }
+
+    /**
+     * Inicializa página de funcionários
+     * Implementa heurística de Reconhecimento vs Memorização
+     */
+    function initFuncionarios() {
+      console.log('👥 Funcionários: Inicializando página de funcionários');
+      renderFuncionarios();
+    }
+
+    /**
+     * Renderiza cards de funcionários
+     * Implementa dados mock de COCAO_FUNCIONARIO
+     */
+    function renderFuncionarios() {
+      const funcionariosGrid = document.getElementById('funcionarios-grid');
+      if (!funcionariosGrid) return;
+      
+      let funcionariosHTML = '';
+      
+      funcionariosMock.forEach(funcionario => {
+        // Determinar classe do nível
+        let nivelClass = '';
+        let nivelTexto = '';
+        
+        switch(funcionario.funcao.nivel_acesso) {
+          case 1:
+            nivelClass = 'nivel-basico';
+            nivelTexto = 'Básico';
+            break;
+          case 2:
+            nivelClass = 'nivel-intermediario';
+            nivelTexto = 'Intermediário';
+            break;
+          case 3:
+            nivelClass = 'nivel-gerencial';
+            nivelTexto = 'Gerencial';
+            break;
+        }
+        
+        // Gerar card do funcionário
+        funcionariosHTML += `
+          <div class="funcionario-card bg-white rounded-xl shadow-lg p-6 text-center">
+            <!-- Foto placeholder -->
+            <div class="foto-funcionario rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-user text-4xl text-white"></i>
+            </div>
+            
+            <!-- Informações -->
+            <h3 class="text-xl font-bold text-gray-800 mb-2">${funcionario.nome_hospede}</h3>
+            <p class="text-lg font-semibold text-blue-600 mb-2">${funcionario.funcao.nome_funcao}</p>
+            <p class="text-gray-600 text-sm mb-4">${funcionario.funcao.descricao}</p>
+            
+            <!-- Badges -->
+            <div class="flex justify-center space-x-2 mb-4">
+              <span class="nivel-badge ${nivelClass}">
+                Nível ${funcionario.funcao.nivel_acesso} - ${nivelTexto}
+              </span>
+            </div>
+            
+            <!-- Detalhes -->
+            <div class="text-sm text-gray-500 space-y-1">
+              <p><i class="fas fa-calendar mr-2"></i>Desde ${new Date(funcionario.data_contratacao).toLocaleDateString('pt-BR')}</p>
+              <p><i class="fas fa-user-circle mr-2"></i>Login: ${funcionario.nome_login}</p>
+              <p><i class="fas fa-circle mr-2 ${funcionario.ativo ? 'text-green-500' : 'text-red-500'}"></i>${funcionario.ativo ? 'Ativo' : 'Inativo'}</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      funcionariosGrid.innerHTML = funcionariosHTML;
+    }
+
+    /**
+     * Inicializa página FAQ
+     * Implementa heurística de Ajuda e Documentação
+     */
+    function initFAQ() {
+      console.log('❓ FAQ: Inicializando página FAQ');
+      renderFAQ();
+      initFAQSearch();
+    }
+
+    /**
+     * Renderiza accordion do FAQ
+     */
+    function renderFAQ() {
+      const faqAccordion = document.getElementById('faq-accordion');
+      if (!faqAccordion) return;
+      
+      let faqHTML = '';
+      
+      faqData.forEach((item, index) => {
+        faqHTML += `
+          <div class="faq-item" data-categoria="${item.categoria}">
+            <div class="faq-question" onclick="toggleAccordion(${index})">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800">${item.pergunta}</h3>
+              </div>
+              <i class="fas fa-chevron-down faq-icon text-blue-600" id="faq-icon-${index}"></i>
+            </div>
+            <div class="faq-answer" id="faq-answer-${index}">
+              <p class="text-gray-600 leading-relaxed">${item.resposta}</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      faqAccordion.innerHTML = faqHTML;
+    }
+
+    /**
+     * Toggle accordion FAQ
+     * Implementa heurística de Controle e Liberdade do Usuário
+     */
+    function toggleAccordion(index) {
+      const question = document.querySelector(`#faq-accordion .faq-item:nth-child(${index + 1}) .faq-question`);
+      const answer = document.getElementById(`faq-answer-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      
+      const isActive = answer.classList.contains('active');
+      
+      // Fechar todos os outros accordions
+      document.querySelectorAll('.faq-answer.active').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.faq-question.active').forEach(el => {
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.faq-icon.rotated').forEach(el => {
+        el.classList.remove('rotated');
+      });
+      
+      // Toggle o accordion clicado
+      if (!isActive) {
+        question.classList.add('active');
+        answer.classList.add('active');
+        icon.classList.add('rotated');
+      }
+    }
+
+    /**
+     * Inicializa busca no FAQ
+     */
+    function initFAQSearch() {
+      const searchInput = document.getElementById('searchFaq');
+      if (!searchInput) return;
+      
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+          const pergunta = item.querySelector('.faq-question h3').textContent.toLowerCase();
+          const resposta = item.querySelector('.faq-answer p').textContent.toLowerCase();
+          
+          if (pergunta.includes(searchTerm) || resposta.includes(searchTerm)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // ========== INICIALIZAÇÃO ==========
+
+    /**
+     * Inicialização da aplicação
+     * Implementa heurística de Consistência e Padrões
+     */
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🏨 Hotel Cocao: Inicializando aplicação');
+      
+      // Renderizar quartos na página inicial
+      renderQuartos();
+      
+      // Configurar seção inicial (quartos visível)
+      toggleSections('quartos');
+      
+      // Mostrar página home por padrão
+      mostrarPagina('home');
+      
+      console.log('✅ Hotel Cocao: Aplicação inicializada com sucesso');
+    });
+
+    // ========== CONFIGURAÇÃO ELEMENT SDK ==========
+
+    /**
+     * Configuração do Element SDK para customização
+     */
+    async function onConfigChange(config) {
+      // Atualizar textos editáveis
+      const hotelName = document.getElementById('hotel-name');
+      if (hotelName) hotelName.textContent = config.hotel_name || defaultConfig.hotel_name;
+      
+      const bannerTitle = document.getElementById('banner-title');
+      if (bannerTitle) bannerTitle.textContent = config.banner_title || defaultConfig.banner_title;
+      
+      const bannerSubtitle = document.getElementById('banner-subtitle');
+      if (bannerSubtitle) bannerSubtitle.textContent = config.banner_subtitle || defaultConfig.banner_subtitle;
+      
+      const bannerCta = document.getElementById('banner-cta');
+      if (bannerCta) bannerCta.textContent = config.banner_cta || defaultConfig.banner_cta;
+      
+      // Aplicar cores customizáveis
+      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      
+      // Aplicar fonte customizável
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${customFont}, Arial, sans-serif`;
+      document.body.style.fontSize = `${baseSize}px`;
+    }
+
+    /**
+     * Mapeamento de capacidades editáveis
+     */
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              config.surface_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ surface_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              config.primary_action_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ primary_action_color: value });
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              config.secondary_action_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ secondary_action_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            if (window.elementSdk) window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    /**
+     * Mapeamento de valores do painel de edição
+     */
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["hotel_name", config.hotel_name || defaultConfig.hotel_name],
+        ["banner_title", config.banner_title || defaultConfig.banner_title],
+        ["banner_subtitle", config.banner_subtitle || defaultConfig.banner_subtitle],
+        ["banner_cta", config.banner_cta || defaultConfig.banner_cta]
+      ]);
+    }
+
+    // Inicializar Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99895b5c508051ed',t:'MTc2MjE0NjUzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
