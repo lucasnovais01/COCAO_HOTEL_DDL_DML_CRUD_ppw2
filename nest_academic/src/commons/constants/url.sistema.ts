@@ -1,14 +1,34 @@
-// import { Cidade } from "src/cidade/entity/cidade.entity";
-import { ALUNO, CIDADE, PROFESSOR, USUARIO } from './constants.sistema';
+// Objetivo: Gerar rotas RESTful completas e padronizadas.
+
+import {
+  HOSPEDE,
+  FUNCIONARIO,
+  FUNCAO,
+  TIPO_QUARTO,
+  QUARTO,
+  RESERVA,
+  STATUS_RESERVA,
+  SERVICO,
+  HOSPEDE_SERVICO,
+} from './constants.sistema';
+
+// URLs do Sistema COCAO HOTEL
 
 export const SERVIDOR = 'http://localhost:8000';
 export const CLIENTE = 'http://localhost:3000';
 
-const ROTA_SISTEMA = 'rest/sistema';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ROTA_AUTH = 'rest/auth';
+// Aqui eu coloquei a versão da API para facilitar futuras manutenções
+// Coloquei mais informação no arquivo zSobre o V1.md
 
-// Padrões do sistema:
+// Pode ser retirad, só deletar API_VERSION e usar:
+// const ROTA_SISTEMA = 'rest/sistema';
+// const ROTA_AUTH = 'rest/auth';
+
+const API_VERSION = 'v1';
+const ROTA_SISTEMA = `rest/sistema/${API_VERSION}`;
+const ROTA_AUTH = `rest/auth/${API_VERSION}`;
+
+// Ações REST padronizadas
 
 const LIST = 'listar';
 const CREATE = 'criar';
@@ -16,32 +36,53 @@ const BY_ID = 'buscar';
 const UPDATE = 'alterar';
 const DELETE = 'excluir';
 
-// /rest/sistema/cidade
+// Gera rotas completas para uma entidade. Exemplo: /rest/sistema/v1/hospede/listar
+// Retorna um objeto com todas as rotas para a entidade fornecida
+// o base serve como base para as outras rotas
+// pois é a junção da rota do sistema com o nome da entidade
+
+// Exemplo: gerarRotasSistema('hospede') retorna:
+// {
+//   BASE: '/rest/sistema/v1/hospede',
+//   LIST: '/rest/sistema/v1/hospede/listar',
+//   CREATE: '/rest/sistema/v1/hospede/criar',
+//   BY_ID: '/rest/sistema/v1/hospede/buscar/:id',
+//   UPDATE: '/rest/sistema/v1/hospede/alterar/:id',
+//   DELETE: '/rest/sistema/v1/hospede/excluir/:id',
+// }
 
 function gerarRotasSistema(entity: string) {
-  const base = `/${ROTA_SISTEMA}/${entity}`; // que é o rota sistema
+  const base = `/${ROTA_SISTEMA}/${entity}`;
   return {
     BASE: base,
-    LIST: `/${LIST}`,
-    CREATE: `/${CREATE}`,
-    BY_ID: `/${BY_ID}/:id`, // Os dois pontos está falando pro nestjs que é um parâmetro de URL
-    UPDATE: `/${UPDATE}/:id`,
-    DELETE: `/${DELETE}/:id`,
+    LIST: `${base}/${LIST}`,
+    CREATE: `${base}/${CREATE}`,
+    BY_ID: `${base}/${BY_ID}/:id`,
+    UPDATE: `${base}/${UPDATE}/:id`,
+    DELETE: `${base}/${DELETE}/:id`,
   };
 }
 
-// /rest/sistema/cidade/listar
+// Rotas do sistema (entidades)
 
 export const ROTA = {
-  USUARIO: gerarRotasSistema(USUARIO),
-  PROFESSOR: gerarRotasSistema(PROFESSOR),
-  CIDADE: gerarRotasSistema(CIDADE),
-  ALUNO: gerarRotasSistema(ALUNO),
+  HOSPEDE:          gerarRotasSistema(HOSPEDE),
+  FUNCIONARIO:      gerarRotasSistema(FUNCIONARIO),
+  FUNCAO:           gerarRotasSistema(FUNCAO),
+  TIPO_QUARTO:      gerarRotasSistema(TIPO_QUARTO),
+  QUARTO:           gerarRotasSistema(QUARTO),
+  RESERVA:          gerarRotasSistema(RESERVA),
+  STATUS_RESERVA:   gerarRotasSistema(STATUS_RESERVA),
+  SERVICO:          gerarRotasSistema(SERVICO),
+  HOSPEDE_SERVICO:  gerarRotasSistema(HOSPEDE_SERVICO),
 };
 
-// Criar rotas de forma dinâmica para os endpoints
-// recurso, URL, URI...
-// E como funciona: Ela vai concatenar = '/rest/sistema/cidade/buscar/:id'
+// Rotas de autenticação (separadas para evitar conflito). Observação: Futuro AuthModule
 
-// http:localhost:8000/v1/cidade
-// /rest/auth
+export const AUTH_ROUTES = {
+  BASE: `/${ROTA_AUTH}`,
+  LOGIN: `/${ROTA_AUTH}/login`,
+  LOGOUT: `/${ROTA_AUTH}/logout`,
+  ME: `/${ROTA_AUTH}/me`,
+  REFRESH: `/${ROTA_AUTH}/refresh`,
+};
