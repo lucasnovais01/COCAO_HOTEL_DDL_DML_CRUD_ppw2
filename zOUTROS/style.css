@@ -1,0 +1,5991 @@
+/* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>
+    /* Reset e configurações globais */
+    body {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animações de fade-in para banner */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    /* Banner com gradiente animado */
+    .banner-principal {
+      background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+      background-size: 200% 200%;
+      animation: gradientWave 8s ease infinite;
+      position: relative;
+    }
+
+    @keyframes gradientWave {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Sombra 3D premium */
+    .shadow-3d {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 15px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Botões de navegação */
+    .nav-btn {
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      transform: scale(1.05);
+      color: #1E40AF;
+    }
+
+    .nav-btn.active {
+      color: #1E40AF;
+      border-bottom: 3px solid #1E40AF;
+    }
+
+    /* Botão de login com glow */
+    .login-btn:hover {
+      box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* Botão CTA do banner */
+    .cta-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botões de toggle de seção */
+    .section-toggle-btn {
+      background: #D1D5DB;
+      color: #4B5563;
+    }
+
+    .section-toggle-btn.active {
+      background: #1E40AF;
+      color: white;
+      box-shadow: 0 4px 15px rgba(30, 64, 175, 0.4);
+    }
+
+    .section-toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Cards de quartos com efeito 3D */
+    .room-card {
+      transition: all 0.3s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .status-disponivel {
+      background: #22C55E;
+      color: white;
+      animation: bounce 2s infinite;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    .status-manutencao {
+      background: #6B7280;
+      color: white;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+      }
+      40%, 43% {
+        transform: translate3d(0, -5px, 0);
+      }
+      70% {
+        transform: translate3d(0, -3px, 0);
+      }
+      90% {
+        transform: translate3d(0, -1px, 0);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+      }
+      20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+      }
+    }
+
+    /* Botão de agendamentos (ícone relógio) */
+    .btn-agendamentos {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agendamentos:hover {
+      transform: scale(1.1);
+      color: #1E40AF;
+    }
+
+    .btn-agendamentos.active {
+      color: #1E40AF;
+      background: #DBEAFE;
+      border-radius: 50%;
+    }
+
+    /* Cards de serviços */
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Calendário */
+    .calendario-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .calendario-table th {
+      background: #1E40AF;
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .calendario-table td {
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #E5E7EB;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .calendario-table td:hover {
+      background: #DBEAFE;
+    }
+
+    .dia-ocupado {
+      background: #FEE2E2 !important;
+      color: #991B1B;
+      font-weight: 600;
+    }
+
+    .dia-ocupado:hover::after {
+      content: 'Ocupado';
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2937;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .dia-vazio {
+      background: #F9FAFB;
+      cursor: default;
+    }
+
+    .dia-atual {
+      background: #3B82F6 !important;
+      color: white !important;
+      font-weight: bold;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .dia-atual::before {
+      content: '●';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 8px;
+      color: #FCD34D;
+    }
+
+    /* Transições suaves para seções */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Ícones sociais */
+    .social-icon {
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Páginas */
+    .pagina-content {
+      display: block;
+    }
+
+    .pagina-content.hidden {
+      display: none;
+    }
+
+    /* Estilos específicos para login */
+    .login-card {
+      transform: translateY(-20px);
+      animation: slideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .alert-success {
+      background-color: #DCFCE7;
+      border: 1px solid #22C55E;
+      color: #166534;
+    }
+
+    .alert-error {
+      background-color: #FEE2E2;
+      border: 1px solid #EF4444;
+      color: #991B1B;
+    }
+
+    /* Estilos para funcionários */
+    .funcionario-card {
+      transition: all 0.3s ease;
+    }
+
+    .funcionario-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .foto-funcionario {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nivel-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .nivel-basico {
+      background: #22C55E;
+      color: white;
+    }
+
+    .nivel-intermediario {
+      background: #3B82F6;
+      color: white;
+    }
+
+    .nivel-gerencial {
+      background: #F59E0B;
+      color: white;
+    }
+
+    /* Estilos para FAQ */
+    .faq-item {
+      border: 1px solid #E5E7EB;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-question {
+      background: white;
+      padding: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      background: #F9FAFB;
+    }
+
+    .faq-question.active {
+      background: #EBF8FF;
+      border-bottom: 1px solid #E5E7EB;
+    }
+
+    .faq-answer {
+      background: #F9FAFB;
+      padding: 0 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-answer.active {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .faq-icon.rotated {
+      transform: rotate(180deg);
+    }
+
+    /* Estilos para Dev Tools */
+    .dev-tab {
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .dev-tab.active {
+      border-color: #2563EB;
+      color: #2563EB;
+    }
+
+    .dev-table {
+      min-width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dev-table th {
+      background: #F3F4F6;
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .dev-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #E5E7EB;
+      white-space: nowrap;
+    }
+
+    .status-livre {
+      background: #22C55E;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-ocupado {
+      background: #EF4444;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-manutencao {
+      background: #F59E0B;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      background: white;
+      border-left: 4px solid #22C55E;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      animation: slideInRight 0.3s ease-out;
+    }
+
+    .toast.error {
+      border-left-color: #EF4444;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsividade adicional */
+    @media (max-width: 768px) {
+      .banner-principal h1 {
+        font-size: 2.5rem;
+      }
+      
+      .banner-principal p {
+        font-size: 1.125rem;
+      }
+    }
+  </style>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'998982b2766c6242',t:'MTc2MjE0ODE1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+ </body>
+</html> 
+
+Vou te pedir uma coisa, preciso de sua ajuda para fazer o experimento com o canva, mas pra isto vc precisa entrar no canva, e gerar um site lá, use sua ferramenta de browse page, para gerar o site, no canva, use o prompt 1, para gerar o site. Por favor, entre no canva, gere o site e me mostre o código gerado.
