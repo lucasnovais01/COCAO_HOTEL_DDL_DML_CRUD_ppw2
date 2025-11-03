@@ -30,3 +30,26 @@ void bootstrap();
 // http://localhost:8000/cidade/criar
 // http://localhost:8000/cidade/atualizar/1
 // http://localhost:8000/cidade/remover/1
+
+
+/**
+ * ==============================================================
+ * MAIN.TS – PONTO DE ENTRADA DA APLICAÇÃO
+ * ==============================================================
+ * 
+ * O que é?
+ *   Arquivo que inicia o servidor NestJS.
+ * 
+ * Para que serve?
+ *   1. Cria a aplicação com AppModule
+ *   2. Registra o filtro global de erros (HttpExceptionFilter)
+ *   3. Libera CORS para o React (localhost:3000)
+ *   4. Inicia o servidor na porta 8000
+ * 
+ * Importante:
+ *   - CORS: permite que o frontend acesse a API
+ *   - Filtro global: padroniza TODOS os erros
+ *   - Porta: 8000 (React usa 3000)
+ * 
+ * ==============================================================
+ */
