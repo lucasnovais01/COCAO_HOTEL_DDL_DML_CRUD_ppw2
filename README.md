@@ -25,48 +25,59 @@ para testar no postman
 }
 
 
-Lista do instaladores:
+Abrir o terminal (cmd) por exemplo aqui:
+C:\Users\Lucas\Downloads\COCAO_HOTEL_DDL_DML_CRUD_ppw2\nest_academic e rodar:
+ 
+Lista de instaladores (ordem correta):
 
-nest:
-
-npm i @nestjs/typeorm --save
-
-# Para integrar com Oracle via TypeORM:
-npm i oracledb --save
-
-npm i class-transformer --save
-npm i class-validator --save
-
-# Para ler .env e validar variáveis com Joi:
-npm i @nestjs/config joi --save
-
-para instalar esta biblioteca
-
-
--------------------------
-npm i class-transformer --save
-npm i @nest/swagger --save
-npm i swagger-ui-express --save
-npm i class-transformer --save
---------------------------
-
-
-dica de instalador:
-
-# 1. Base do NestJS
+# 1. Base do NestJS, pacotes principais do NestJS e as ferramentas de reflexão
 npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs
 
-# 2. Tipos do Node e Express
+# 2. Tipos de desenvolvimento para o ambiente Node/Express (necessário para o TypeScript)
 npm install --save-dev @types/node @types/express
 
-# 3. Banco de dados (TypeORM + Oracle)
-npm install typeorm @nestjs/typeorm oracledb
 
-# 4. Validação e transformação de DTOs
-npm install class-validator class-transformer
+# ORM e Conexão com o Banco de Dados Oracle:
 
-# 5. Configuração e variáveis de ambiente
-npm install @nestjs/config joi
+# 3. Instala o módulo do TypeORM para NestJS
+npm install @nestjs/typeorm
 
-# 6. Swagger (documentação)
-npm install @nestjs/swagger swagger-ui-express
+# 4. Instala o TypeORM (core ORM)
+npm install typeorm
+
+# 5. Instala o driver nativo do Oracle para Node.js
+npm install oracledb
+
+# 6. Instala as definições de tipo do TypeScript para o driver Oracle
+npm install --save-dev @types/oracledb
+
+
+# Configuração, Variáveis de Ambiente e Validação:
+
+# 7. Instala o módulo oficial de configuração do NestJS
+npm install @nestjs/config
+
+# 8. Instala a biblioteca Joi, usada para validação de schema do .env
+npm install joi
+
+# 9. Instala as definições de tipo do TypeScript para o Joi
+npm install --save-dev @types/joi
+
+# Explicando, O @nestjs/config carrega o .env. O joi valida as variáveis de ambiente no app.module.ts. O @types/joi garante que o TypeScript entenda o joi.
+
+
+# Validação e Transformação de DTOs:
+
+# Adiciona funcionalidade de validação (regras @IsString(), @IsNumber(), etc.) aos DTOs
+npm install class-validator
+
+# Adiciona funcionalidade de transformação de objetos e DTOs
+npm install class-transformer
+
+
+
+
+
+/** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
+O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
+

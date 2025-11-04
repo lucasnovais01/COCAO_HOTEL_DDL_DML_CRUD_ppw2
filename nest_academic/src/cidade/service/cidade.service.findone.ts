@@ -15,6 +15,15 @@ export class CidadeServiceFindOne {
     private cidadeRepository: Repository<Cidade>,
   ) {}
 
+
+
+
+
+
+
+
+
+  
   async findById(idCidade: number): Promise<CidadeResponse> {
     const cidade = await this.cidadeRepository.findOne({ where: { idCidade } });
     /*

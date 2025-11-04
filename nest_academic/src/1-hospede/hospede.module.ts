@@ -1,54 +1,71 @@
-// src/1-hospede/hospede.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Hospede } from './entity/hospede.entity';
-import { HospedeController } from './controller/hospede.controller';
+// Importação dos Controllers:
+import { HospedeControllerFindAll } from './controllers/hospede.controller.findall';
+import { HospedeControllerFindOne } from './controllers/hospede.controller.findone';
+import { HospedeControllerCreate } from './controllers/hospede.controller.create';
+import { HospedeControllerUpdate } from './controllers/hospede.controller.update';
+import { HospedeControllerRemove } from './controllers/hospede.controller.remove';
+// Importação dos Services:
 import { HospedeServiceCreate } from './service/hospede.service.create';
-// Importe aqui os outros services (FindOne, Update, Delete) à medida que os criarmos.
+import { HospedeServiceUpdate } from './service/hospede.service.update';
+import { HospedeServiceRemove } from './service/hospede.service.remove';
+import { HospedeServiceFindAll } from './service/hospede.service.findall';
+import { HospedeServiceFindOne } from './service/hospede.service.findone';
 
-/**
- * Módulo principal para a entidade COCAO_HOSPEDE.
- * * Responsabilidades:
- * 1. Importar TypeOrmModule.forFeature, registrando a entidade Hospede.
- * 2. Declarar o Controller (HospedeController) para expor as rotas HTTP.
- * 3. Declarar os Services (Provedores) para encapsular a lógica de negócios e injeção do repositório.
- */
+const hospedeControllers = [      // Constante para agrupar os controllers
+  HospedeControllerFindAll,
+  HospedeControllerFindOne,
+  HospedeControllerCreate,
+  HospedeControllerUpdate,
+  HospedeControllerRemove,
+];
+
+const hospedeServices = [         // Constante para agrupar os services
+  HospedeServiceCreate,   
+  HospedeServiceUpdate,
+  HospedeServiceRemove,
+  HospedeServiceFindAll,
+  HospedeServiceFindOne,
+];
+
 @Module({
   imports: [
-    // 1. Registra a entidade Hospede para que o TypeORM possa injetar o repositório
+    // 1. Registra a entidade Hospede no TypeORM  // Isso permite que @InjectRepository(Hospede) funcione nos services.
     TypeOrmModule.forFeature([Hospede]),
   ],
   controllers: [
-    // 2. Registra o Controller para que o NestJS mapeie as rotas
-    HospedeController,
+    // 2. Registra todos os controllers do array
+    ...hospedeControllers, // Floreio, usa o spread operator (...)
   ],
   providers: [
-    // 3. Registra os Services/Provedores de lógica de negócios
-    HospedeServiceCreate,
-    // [ADICIONAR OUTROS SERVICES AQUI]
+    // 3. Registra todos os services como provedores de injeção de dependência
+    ...hospedeServices,
   ],
-  // Opcional: Se outros módulos precisarem usar HospedeServiceCreate, adicione-o em 'exports'
   exports: [
-    TypeOrmModule.forFeature([Hospede]), 
-    HospedeServiceCreate // Exporta o service para uso em outros módulos (se necessário)
-  ]
+    // 4. Exporta os services (e o TypeOrmModule) para que outros módulos possam usá-los (se necessário)
+    TypeOrmModule, // Exporta o acesso ao repositório de Hospede
+    ...hospedeServices,
+  ],
 })
 export class HospedeModule {}
 
 /*
  * ==============================================================
- * TUTORIAL RÁPIDO: hospede.module.ts
+ * TUTORIAL: hospede.module.ts
  * ==============================================================
  * * O que é?
- * - Contêiner de dependências para o recurso Hóspede.
+ * - O Módulo é o "contêiner" do NestJS para o recurso Hóspede.
+ * - Ele agrupa e organiza todos os arquivos relacionados (Controllers, Services, Entidades).
  * * Para que serve?
- * - Organiza o código: Agrupa controller, services e repositório.
- * - Permite Injeção: O TypeOrmModule.forFeature([Hospede]) permite que você use 
- * @InjectRepository(Hospede) no seu service.
- * - Ponto de entrada: Precisa ser importado no AppModule (Módulo principal) para funcionar.
- * * Dicas:
- * - Use 'controllers' para classes que lidam com HTTP.
- * - Use 'providers' para classes que lidam com lógica de negócios (Services).
+ * 1. `imports`: Traz dependências externas (como o `TypeOrmModule` para a entidade `Hospede`).
+ * 2. `controllers`: Declara quais classes são responsáveis por lidar com as rotas HTTP (API).
+ * 3. `providers`: Declara quais classes devem ser injetáveis (como os `Services` que contêm a lógica de negócios).
+ * 4. `exports`: (Opcional) Torna os `providers` (ou o `TypeOrmModule`) disponíveis para outros módulos que importem o `HospedeModule`.
+ * * Padrão do Professor:
+ * - O uso de arrays `hospedeControllers` e `hospedeServices` com o spread operator (`...`) é um 
+ * estilo de organização para manter a declaração `@Module` limpa, 
+ * especialmente em módulos grandes.
  * * ==============================================================
  */
