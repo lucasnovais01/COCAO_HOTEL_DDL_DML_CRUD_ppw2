@@ -11,7 +11,9 @@ import { HospedeServiceCreate } from '../service/hospede.service.create';
 import { ROTA } from 'src/commons/constants/url.sistema';
 import { HospedeResponse } from '../dto/response/hospede.response';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
+
 import type { Request } from 'express';
+
 import { Result } from 'src/commons/mensagem/mensagem';
 
 @Controller(ROTA.HOSPEDE.BASE)
@@ -21,7 +23,7 @@ export class HospedeControllerCreate {
   @HttpCode(HttpStatus.CREATED) // 201
   @Post(ROTA.HOSPEDE.CREATE)
   async create(
-    @Req() res: Request,
+    @Req() req: Request,
     @Body() hospedeRequest: HospedeRequest,
   ): Promise<Result<HospedeResponse>> {
     const response = await this.hospedeServiceCreate.create(hospedeRequest);
@@ -29,7 +31,8 @@ export class HospedeControllerCreate {
       HttpStatus.CREATED,
       'Hóspede cadastrado com sucesso!!!',
       response,
-      res.path,
+      ROTA.HOSPEDE.CREATE, // Antes: res.path , para pegar o caminho da requisição, mas tava dando erro de tipo
+                           // Agora é o mesmo valor do decorator @Post(ROTA.HOSPEDE.CREATE)
       null,
     );
   }

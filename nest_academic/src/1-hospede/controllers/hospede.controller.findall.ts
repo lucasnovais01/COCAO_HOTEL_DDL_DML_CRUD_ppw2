@@ -19,7 +19,7 @@ export class HospedeControllerFindAll {
       HttpStatus.OK,
       'Lista de hóspedes gerada com sucesso!',
       response,
-      res.path,
+      ROTA.HOSPEDE.LIST,
       null,
     );
   }

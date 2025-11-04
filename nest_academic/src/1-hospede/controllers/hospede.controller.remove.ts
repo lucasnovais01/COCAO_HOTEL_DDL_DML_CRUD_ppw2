@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { HospedeServiceRemove } from '../service/hospede.service.remove';
 import { ROTA } from 'src/commons/constants/url.sistema';
+
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import type { Request } from 'express';
@@ -16,7 +17,6 @@ import type { Request } from 'express';
 @Controller(ROTA.HOSPEDE.BASE)
 export class HospedeControllerRemove {
   constructor(private readonly hospedeServiceRemove: HospedeServiceRemove) {}
-
   // Retornar 204 é o mais apropriado para delete sem corpo
   @HttpCode(HttpStatus.NO_CONTENT) //O correto é o NO_CONTENT, foi trocado (HttpStatus.OK)
   @Delete(ROTA.HOSPEDE.DELETE)
@@ -27,9 +27,7 @@ export class HospedeControllerRemove {
     await this.hospedeServiceRemove.remove(id);
     // 204: não retornar corpo
 
-    // const adicionado recentemente pra ver se conserta o delete
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const rawPath = (req as any).path ?? (req as any).url ?? req.originalUrl;
+    const rawPath = (req as any).path ?? (req as any).url ?? (req as any).originalUrl;
     const path: string | null = typeof rawPath === 'string' ? rawPath : null;
 
     return MensagemSistema.showMensagem(

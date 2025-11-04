@@ -32,7 +32,7 @@ export class HospedeControllerUpdate {
       HttpStatus.OK,
       'O hóspede foi alterado com sucesso !',
       response,
-      res.path,
+      ROTA.HOSPEDE.UPDATE,
       null,
     );
   }

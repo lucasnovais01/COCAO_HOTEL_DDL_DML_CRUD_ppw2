@@ -30,7 +30,7 @@ export class HospedeControllerFindOne {
       HttpStatus.OK,
       'Hóspede localizado com sucesso!',
       response,
-      req.path,
+      ROTA.HOSPEDE.BY_ID,
       null,
     );
   }
