@@ -1,102 +1,249 @@
-/* Login/Signup form */
+/* src/assets/css/layout.css */
 
-#defaultLayout {
+/* ========================================
+   HEADER FIXO
+   ======================================== */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-white);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+  transition: var(--transition-normal);
+}
+
+.header .container {
   display: flex;
-  height: 100vh; /* Mantenha este */
-  font-weight: 600;
-  color: #5b08a7;
-}
-
-#defaultLayout aside {
-  width: 240px;
-  background-color: #5b08a7;
-  padding: 1rem;
-  padding-top: 80px;
-  display: flex;
-  flex-direction: column;
-  font-size: 1.2rem;
-}
-
-#defaultLayout aside > a {
-  display: block;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  color: white;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-#defaultLayout aside > a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-#defaultLayout .content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5f5;
-}
-
-#defaultLayout header {
-  height: 80px;
-  padding: 0 2rem;
-  background-color: white;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
-  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  padding: 1rem;
+  height: 5rem; /* h-20 = 80px */
 }
 
-
-#defaultLayout header .username {
-  font-weight: 500;
-  color: #333;
+.header.scrolled {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
-#defaultLayout header .user-info {
+/* Logo */
+.logo {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+}
+
+.logo i {
+  font-size: 1.875rem; /* text-3xl */
+  color: var(--text-blue-700);
+}
+
+.logo span {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700;
+  color: var(--text-gray-800);
+}
+
+/* Navegação */
+.nav {
+  display: none;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    display: flex;
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-lg);
+  font-weight: 500;
+  color: #4b5563;
+  transition: var(--transition-normal);
+}
+
+.nav-btn:hover {
+  transform: scale(1.05);
+  color: var(--primary);
+}
+
+.nav-btn.active {
+  color: var(--primary);
+  border-bottom: 3px solid var(--primary);
+  padding-bottom: calc(0.5rem - 3px);
+}
+
+.nav-btn i {
+  font-size: 1.125rem;
+}
+
+/* Botão Login */
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  background-color: var(--text-blue-700);
+  color: white;
+  border-radius: var(--border-radius-lg);
+  font-weight: 600;
+  transition: var(--transition-normal);
+}
+
+.login-btn:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 20px rgba(30, 64, 175, 0.6);
+  transform: translateY(-2px);
+}
+
+.login-btn i {
+  font-size: 1.125rem;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.footer {
+  background-color: var(--bg-gray-900);
+  color: white;
+  padding: 3rem 0 1.5rem;
+  margin-top: 5rem; /* mt-20 */
+}
+
+.footer .container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .footer .container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Logo no footer */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo i {
+  font-size: 1.875rem;
+  color: #60a5fa;
+}
+
+.footer-logo span {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.footer-description {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Seções do footer */
+.footer-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-bottom: 1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+  color: #9ca3af;
+  transition: var(--transition-fast);
+}
+
+.footer-section a:hover {
+  color: white;
+}
+
+.footer-section i {
+  margin-right: 0.5rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+/* Redes sociais */
+.social-links {
+  display: flex;
   gap: 1rem;
 }
 
-#defaultLayout header .btn-logout {
-  padding: 0.5rem 1rem;
-  background-color: #5b08a7;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  transition: background-color 0.2s;
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #1f2937;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  transition: var(--transition-normal);
 }
 
-#defaultLayout header .btn-logout:hover {
-  background-color: #480982;
+.social-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-#defaultLayout main {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
+.social-icon.facebook:hover { background-color: #3b5998; }
+.social-icon.instagram:hover { background-color: #e4405f; }
+.social-icon.twitter:hover { background-color: #1da1f2; }
+.social-icon.whatsapp:hover { background-color: #25d366; }
+
+/* Copyright */
+.footer-copyright {
+  border-top: 1px solid #374151;
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
-.animated {
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
-  -webkit-animation-fill-mode: both;
-  animation-fill-mode: both;
+/* ========================================
+   PÁGINA CONTENT (espaço para header fixo)
+   ======================================== */
+.page-content {
+  min-height: 100vh;
+  padding-top: 5rem; /* h-20 */
 }
 
-.fadeInDown {
-  -webkit-animation-name: fadeInDown;
-  animation-name: fadeInDown;
-}
-
-@keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
+/* Responsividade */
+@media (max-width: 767px) {
+  .header .container {
+    flex-direction: column;
+    gap: 1rem;
+    height: auto;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .login-btn {
+    order: 2;
   }
 }

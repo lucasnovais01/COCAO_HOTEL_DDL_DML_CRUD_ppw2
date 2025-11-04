@@ -24,7 +24,11 @@ export class HospedeControllerFindOne {
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Result<HospedeResponse | null>> {
+
+
+
     const response = await this.hospedeServiceFindOne.findById(+id);
+
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,

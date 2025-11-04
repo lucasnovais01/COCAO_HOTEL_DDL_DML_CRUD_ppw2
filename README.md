@@ -77,6 +77,37 @@ npm install class-transformer
 
 
 
+# PRO REACT
+
+# 1. Criar projeto
+npm create vite@latest . -- --template react-ts
+
+# 2. Instalar base
+npm install
+
+# 3. React Router
+npm install react-router-dom
+
+# 4. Tailwind CSS
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+# 5. Font Awesome
+npm install @fortawesome/fontawesome-svg-core
+npm install @fortawesome/free-solid-svg-icons
+npm install @fortawesome/free-regular-svg-icons
+npm install @fortawesome/free-brands-svg-icons
+npm install @fortawesome/react-fontawesome
+
+# 6. Date-fns (calendário)
+npm install date-fns
+
+# 7. Axios (API)
+npm install axios
+
+# 8. Formulários (opcional)
+npm install react-hook-form zod @hookform/resolvers
+
 
 /** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
 O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
