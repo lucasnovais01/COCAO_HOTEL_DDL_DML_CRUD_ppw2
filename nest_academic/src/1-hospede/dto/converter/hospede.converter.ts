@@ -1,7 +1,7 @@
 import { plainToInstance } from 'class-transformer';
 import { Hospede } from 'src/1-hospede/entity/hospede.entity';
-import { HospedeRequest } from './request/hospede.request';
-import { HospedeResponse } from './response/hospede.response';
+import { HospedeRequest } from '../request/hospede.request';
+import { HospedeResponse } from '../response/hospede.response';
 
 /**
  * Conversor para Hospede.

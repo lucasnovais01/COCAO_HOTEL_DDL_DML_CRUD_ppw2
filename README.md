@@ -68,10 +68,10 @@ npm install --save-dev @types/joi
 
 # Validação e Transformação de DTOs:
 
-# Adiciona funcionalidade de validação (regras @IsString(), @IsNumber(), etc.) aos DTOs
+# 10. Adiciona funcionalidade de validação (regras @IsString(), @IsNumber(), etc.) aos DTOs
 npm install class-validator
 
-# Adiciona funcionalidade de transformação de objetos e DTOs
+# 11. Adiciona funcionalidade de transformação de objetos e DTOs
 npm install class-transformer
 
 
