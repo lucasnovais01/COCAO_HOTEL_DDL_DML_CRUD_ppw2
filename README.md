@@ -25,6 +25,11 @@ para testar no postman
 }
 
 
+/** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
+O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
+
+
+
 Abrir o terminal (cmd) por exemplo aqui:
 C:\Users\Lucas\Downloads\COCAO_HOTEL_DDL_DML_CRUD_ppw2\nest_academic e rodar:
  
@@ -76,7 +81,6 @@ npm install class-transformer
 
 
 
-
 # PRO REACT
 
 # 1. Criar projeto
@@ -109,6 +113,17 @@ npm install axios
 npm install react-hook-form zod @hookform/resolvers
 
 
-/** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
-O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
 
+## RESUMO DA ADAPTAÇÃO DO REACT
+
+Peguei o HTML completo do site original (um único arquivo com tudo: HTML, CSS, JS, Tailwind CDN, Font Awesome, etc.)
+Quebrei em partes:
+
+Layout.tsx → Header + Footer fixos
+Dashboard.tsx → Home com Banner, Quartos, Serviços, Calendário Modal
+App.tsx → Rotas com React Router
+
+Convertemos tudo para React + TypeScript + Vite + Tailwind
+
+Substituído o JS puro por React (useState, useEffect, etc.)
+Removido CDN → instalamos Tailwind e Font Awesome localmente
