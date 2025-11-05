@@ -3,7 +3,7 @@ export default function Dashboard() {
     <div className="display">
       <div className="card animated fadeInDown">
         <h1>Dashboard</h1>
-        <p>Bem-vindo ao sistema acadêmico!</p>
+        <p>Bem-vindo ao sistema de hotel</p>
       </div>
     </div>
   );

@@ -4,8 +4,9 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'  // IMPORTA AQUI
 
 // CSS
-import './assets/css/style.css'
-import './assets/css/index.css'
+
+// import './assets/css/index.css' - modularizado
+import './assets/css/0-style.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

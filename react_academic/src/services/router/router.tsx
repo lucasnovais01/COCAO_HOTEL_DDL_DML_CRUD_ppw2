@@ -1,47 +1,49 @@
 import type { RouteObject } from "react-router-dom";
 
-// import Layout from "../../xOUTROS/antigo Layout/JORGE";
-// import Dashboard from "../../xOUTROS/DashboardAntigo";
+import Layout from "../../components/layout/Layout";
+import Dashboard from "../../views/Dashboard";
 
-import ListarCidade from "../../views/cidade/Listar";
-import CriarCidade from "../../views/cidade/Criar";
-import AlterarCidade from "../../views/cidade/Alterar";
-import ExcluirCidade from "../../views/cidade/Excluir";
-import ConsultarCidade from "../../views/cidade/Consultar";
+// Importações do módulo Hóspede
+import ListarHospede from "../../views/1-hospede/Listar";
+import CriarHospede from "../../views/1-hospede/Criar";
+import AlterarHospede from "../../views/1-hospede/Alterar";
+import ExcluirHospede from "../../views/1-hospede/Excluir";
+import ConsultarHospede from "../../views/1-hospede/Consultar";
+
 import { ROTA } from "./url";
 
-// este é o servidor do REACT
-//http://localhost:3000/sistema/cidade/listar
-
-export const routes:RouteObject[] = [
+// ============================================================
+// CORREÇÃO: Usar <Outlet /> no Layout (padrão do professor)
+// Remover {children} do Layout.tsx
+// ============================================================
+export const routes: RouteObject[] = [
   {
     path: '/sistema',
-    element: <Layout />,  // componente PAI
+    element: <Layout />, // SEM children
     children: [
       {
         path: '/sistema/dashboard',
-        element: <Dashboard />, //componente a ser carregado (FILHO)
+        element: <Dashboard />,
       },
       {
-        path: ROTA.CIDADE.LISTAR,
-        element: <ListarCidade />,
-      },
-
-      {
-        path: ROTA.CIDADE.CRIAR,
-        element: <CriarCidade />,
+        path: ROTA.HOSPEDE.LISTAR,
+        element: <ListarHospede />,
       },
       {
-        path: `${ROTA.CIDADE.ATUALIZAR}/:idCidade`,
-        element: <AlterarCidade />,
+        path: ROTA.HOSPEDE.CRIAR,
+        element: <CriarHospede />,
       },
       {
-        path: `${ROTA.CIDADE.EXCLUIR}/:idCidade`,
-        element: <ExcluirCidade />,
+        path: `${ROTA.HOSPEDE.ATUALIZAR}/:idUsuario`,
+        element: <AlterarHospede />,
       },
       {
-        path: `${ROTA.CIDADE.POR_ID}/:idCidade`,
-        element: <ConsultarCidade />,
+        path: `${ROTA.HOSPEDE.EXCLUIR}/:idUsuario`,
+        element: <ExcluirHospede />,
+      },
+      {
+        path: `${ROTA.HOSPEDE.POR_ID}/:idUsuario`,
+        element: <ConsultarHospede />,
       },
     ],
   },

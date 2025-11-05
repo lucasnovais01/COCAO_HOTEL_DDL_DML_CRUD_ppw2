@@ -1,9 +1,8 @@
-import { CIDADE } from "../cidade/constants/cidade.constants";
+import { HOSPEDE } from "../1-hospede/constants/hospede.constants";
 
 const ROTA_SISTEMA = 'sistema';
 
 export const DASHBOARD = `/${ROTA_SISTEMA}/dashboard`;
-
 
 const LISTAR = `listar`;
 const CRIAR = `criar`;
@@ -11,7 +10,7 @@ const POR_ID = `buscar`;
 const ATUALIZAR = `atualizar`;
 const EXCLUIR = `excluir`;
 
-function gerarRotaSistema(entity: string){
+function gerarRotaSistema(entity: string) {
   const base = `${ROTA_SISTEMA}/${entity}`;
   
   return {
@@ -20,9 +19,9 @@ function gerarRotaSistema(entity: string){
     POR_ID: `/${base}/${POR_ID}`,
     ATUALIZAR: `/${base}/${ATUALIZAR}`,
     EXCLUIR: `/${base}/${EXCLUIR}`,
-  }
+  };
 }
 
 export const ROTA = {
-  CIDADE: gerarRotaSistema(CIDADE.ALIAS),
-}
+  HOSPEDE: gerarRotaSistema(HOSPEDE.ALIAS),
+};

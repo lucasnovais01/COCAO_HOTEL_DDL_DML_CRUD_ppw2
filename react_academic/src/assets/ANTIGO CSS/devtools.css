@@ -1,0 +1,75 @@
+/* src/assets/css/pages/devtools.css */
+/* Estilos específicos da página DevTools */
+.devtools-page {
+  padding: 2rem 1rem; /* Correção 8: Espaçamento uniforme na página */
+}
+
+/* Banner - Correção 1: Gradiente vibrante e animação */
+.devtools-banner {
+  background: linear-gradient(135deg, var(--bg-blue-600), var(--bg-gray-900)); /* Gradiente mais vibrante */
+  background-size: 200% 200%;
+  animation: gradientWave var(--animation-duration) ease infinite; /* Animação dinâmica */
+  padding: 4rem 2rem;
+  border-radius: var(--border-radius-xl);
+  text-align: center;
+  color: var(--text-white);
+  margin-bottom: 1.5rem; /* Correção 8: Espaçamento consistente */
+}
+
+.devtools-banner i {
+  font-size: var(--font-size-5xl); /* Ícone grande e visível */
+  margin-bottom: 1rem;
+  color: var(--text-white); /* Contraste claro */
+}
+
+.devtools-banner h1 {
+  font-size: var(--font-size-4xl); /* Título impactante */
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.devtools-banner p {
+  font-size: var(--font-size-lg);
+  color: var(--text-gray-100);
+}
+
+/* Tabs - Correção 2: Alinhamento e destaque */
+.devtools-tabs {
+  display: flex;
+  overflow-x: auto;
+  background: var(--bg-white);
+  border-radius: var(--border-radius-xl);
+  margin-bottom: 1.5rem; /* Correção 8: Espaçamento consistente */
+  box-shadow: var(--shadow-sm);
+}
+
+.devtools-tab {
+  padding: 1rem 1.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-gray-500);
+  border-bottom: 3px solid transparent; /* Borda mais grossa */
+  white-space: nowrap;
+  transition: var(--transition-fast); /* Transição suave */
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.devtools-tab:hover {
+  color: var(--text-gray-700);
+}
+
+.devtools-tab.active {
+  color: var(--text-blue-600);
+  border-bottom-color: var(--text-blue-600); /* Destaque na aba ativa */
+  font-weight: 600;
+}
+
+/* Card da Tabela - Correção 8: Espaçamento interno */
+.devtools-card {
+  background: var(--bg-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 2rem; /* Padding uniforme */
+}

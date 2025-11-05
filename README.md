@@ -112,7 +112,8 @@ npm install axios
 # 8. Formulários (opcional)
 npm install react-hook-form zod @hookform/resolvers
 
-
+# 9.
+npm install react-icons
 
 ## RESUMO DA ADAPTAÇÃO DO REACT
 
