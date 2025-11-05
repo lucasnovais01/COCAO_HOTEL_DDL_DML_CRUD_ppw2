@@ -1,8 +1,13 @@
 // src/components/layout/Layout.tsx
-import { NavLink, Outlet } from "react-router-dom";
+import type { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
 // Vantagem: O NavLink adiciona a classe active automaticamente.
 
-export default function Layout() {
+type LayoutProps = {
+  children: ReactNode;
+};
+
+export default function Layout({ children }: LayoutProps) {
   return (
     <>
       {/* HEADER FIXO (seu estilo original) */}
@@ -30,7 +35,7 @@ export default function Layout() {
 
       {/* CONTEÚDO (espaço para header) */}
       <div className="page-content">
-        <Outlet />
+        {children}
       </div>
 
       {/* FOOTER (seu estilo original) */}

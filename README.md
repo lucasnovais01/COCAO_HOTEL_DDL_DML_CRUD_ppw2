@@ -25,8 +25,17 @@ para testar no postman
 }
 
 
-/** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
+# /** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
 O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
+
+
+# Devo trocar o CDN do Font Awesome por uma dependência local (npm install @fortawesome/fontawesome-free) para evitar depender do CDN?
+
+
+
+
+
+
 
 
 

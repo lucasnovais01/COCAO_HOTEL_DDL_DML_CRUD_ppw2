@@ -7,8 +7,10 @@ import DevTools from './views/DevTools.tsx'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout><Dashboard /></Layout>} />
-      <Route path="/devtools" element={<Layout><DevTools /></Layout>} />
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="devtools" element={<DevTools />} />
+      </Route>
     </Routes>
   )
 }

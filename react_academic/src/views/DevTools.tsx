@@ -1,5 +1,7 @@
 // src/views/DevTools.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import type { ReactNode } from "react";
 
 const mockApi: { [key: string]: any[] } = {
   usuarios: [
@@ -52,21 +54,65 @@ export default function DevTools() {
   const [activeTab, setActiveTab] = useState("usuarios");
   const [searchTerm, setSearchTerm] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  // Toggle this to false to fetch from backend instead of using mock data
+  const USE_MOCK = true;
+
+  // apiData holds either mock data (default) or remote data when fetching
+  const [apiData, setApiData] = useState<{ [key: string]: any[] }>(mockApi);
 
   const currentTab = tabs.find(t => t.key === activeTab)!;
-  let data: any[] = mockApi[activeTab] || [];
+  let data: any[] = [];
 
-  // Filtro para hóspedes
-  if (activeTab === "hospedes") {
-    data = data.filter((d: any) => d.TIPO === 0);
-  }
+  // If 'usuarios' tab, merge users/hospedes/funcionarios and deduplicate by ID_USUARIO
+  if (activeTab === "usuarios") {
+    const map = new Map<number | string, any>();
 
-  // Filtro para funcionários (join com hospedes)
-  if (activeTab === "funcionarios") {
-    data = data.map((f: any) => {
-      const h = mockApi.usuarios.find((u: any) => u.ID_USUARIO === f.ID_USUARIO);
-      return { ...f, NOME_HOSPEDE: h?.NOME_HOSPEDE || "N/A" };
+    const pushIfNew = (item: any) => {
+      const id = item?.ID_USUARIO;
+      if (id == null) return;
+      if (!map.has(id)) map.set(id, item);
+      else {
+        // merge missing fields from item into existing entry
+        const existing = map.get(id);
+        map.set(id, { ...item, ...existing });
+      }
+    };
+
+    (apiData.usuarios || []).forEach(pushIfNew);
+    (apiData.hospedes || []).forEach(pushIfNew);
+    // map funcionarios to user-like shape before pushing
+    (apiData.funcionarios || []).forEach((f: any) => {
+      const item = {
+        ID_USUARIO: f.ID_USUARIO,
+        NOME_HOSPEDE: f.NOME_LOGIN || f.NOME_HOSPEDE || "N/A",
+        CPF: f.CPF ?? undefined,
+        RG: f.RG ?? undefined,
+        SEXO: f.SEXO ?? undefined,
+        DATA_NASCIMENTO: f.DATA_NASCIMENTO ?? undefined,
+        EMAIL: f.EMAIL ?? undefined,
+        TELEFONE: f.TELEFONE ?? undefined,
+        TIPO: 1,
+        ATIVO: f.ATIVO ?? true,
+      };
+      pushIfNew(item);
     });
+
+    data = Array.from(map.values());
+  } else {
+    data = apiData[activeTab] || [];
+
+    // Filtro para hóspedes
+    if (activeTab === "hospedes") {
+      data = data.filter((d: any) => d.TIPO === 0);
+    }
+
+    // Filtro para funcionários (join com hospedes)
+    if (activeTab === "funcionarios") {
+      data = data.map((f: any) => {
+        const h = apiData.usuarios.find((u: any) => u.ID_USUARIO === f.ID_USUARIO);
+        return { ...f, NOME_HOSPEDE: h?.NOME_HOSPEDE || "N/A" };
+      });
+    }
   }
 
   const filteredData = data.filter((item: any) =>
@@ -80,15 +126,32 @@ export default function DevTools() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // When not using mock, fetch the current tab's data from backend
+  useEffect(() => {
+    if (USE_MOCK) return;
+    const fetchData = async () => {
+      try {
+        const url = `/${activeTab}`; // expects backend endpoints like /usuarios, /hospedes, /funcionarios...
+        const res = await axios.get(url);
+        setApiData(prev => ({ ...prev, [activeTab]: res.data }));
+      } catch (err) {
+        console.error(err);
+        showToast('Erro ao carregar dados do servidor', 'error');
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
   const handleCreate = () => showToast("Funcionalidade de criação em desenvolvimento", "success");
   const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
   const handleDelete = (id: number) => {
-    if (confirm("Tem certeza que deseja excluir?")) {
-      showToast("Item excluído com sucesso!", "success");
+    if (confirm(`Tem certeza que deseja excluir o item ID: ${id}?`)) {
+      showToast(`Item ID ${id} excluído com sucesso!`, "success");
     }
   };
 
-  const formatValue = (key: string, value: any): string | JSX.Element => {
+  const formatValue = (key: string, value: any): string | ReactNode => {
     if (value === true) return "Sim";
     if (value === false) return "Não";
     if (key.includes("DATA")) return new Date(value).toLocaleDateString("pt-BR");
