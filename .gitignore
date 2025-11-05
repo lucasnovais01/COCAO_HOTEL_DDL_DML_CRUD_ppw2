@@ -16,15 +16,10 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# O comando abaixo foi adicionado dia 05/09/2025 - para proteger os dados sensíveis, 
-# conforme solicitado pelo professor da disciplina
+# nest_academic/src/app/app.module.ts
+# Foi feito .env
 
-# Ignorar arquivo de configuração com dados sensíveis
-nest_academic/src/app/app.module.ts
-
-
-
-✅ Resultado final sugerido (.gitignore completo)
+Resultado final sugerido (.gitignore completo)
 # Ignorar dependências
 node_modules/
 
