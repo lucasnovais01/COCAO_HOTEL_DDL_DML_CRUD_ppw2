@@ -58,7 +58,3 @@ Thumbs.db
 # Uploads e arquivos pesados
 uploads/
 public/uploads/
-
-# O comando abaixo foi adicionado dia 05/09/2025 - para proteger os dados sensíveis, 
-# conforme solicitado pelo professor da disciplina
-nest_academic/src/app/app.module.ts

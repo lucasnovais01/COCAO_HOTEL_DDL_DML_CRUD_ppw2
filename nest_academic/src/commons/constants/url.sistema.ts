@@ -2,12 +2,12 @@
 
 import {
   HOSPEDE,
-  FUNCIONARIO,
   FUNCAO,
+  FUNCIONARIO,
   TIPO_QUARTO,
   QUARTO,
-  RESERVA,
   STATUS_RESERVA,
+  RESERVA,
   SERVICO,
   HOSPEDE_SERVICO,
 } from './constants.sistema';
@@ -65,14 +65,16 @@ function gerarRotasSistema(entity: string) {
 
 // Rotas do sistema (entidades)
 
+// Preciso ajeitar a ordem
+
 export const ROTA = {
   HOSPEDE:          gerarRotasSistema(HOSPEDE),
-  FUNCIONARIO:      gerarRotasSistema(FUNCIONARIO),
   FUNCAO:           gerarRotasSistema(FUNCAO),
+  FUNCIONARIO:      gerarRotasSistema(FUNCIONARIO),
   TIPO_QUARTO:      gerarRotasSistema(TIPO_QUARTO),
   QUARTO:           gerarRotasSistema(QUARTO),
-  RESERVA:          gerarRotasSistema(RESERVA),
   STATUS_RESERVA:   gerarRotasSistema(STATUS_RESERVA),
+  RESERVA:          gerarRotasSistema(RESERVA),
   SERVICO:          gerarRotasSistema(SERVICO),
   HOSPEDE_SERVICO:  gerarRotasSistema(HOSPEDE_SERVICO),
 };
