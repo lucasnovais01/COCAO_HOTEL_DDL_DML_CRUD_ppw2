@@ -1,6 +1,6 @@
 import type { RouteObject } from "react-router-dom";
-import Layout from "../../components/layout/JORGE";
-import Dashboard from "../../views/ANTIGODASH";
+import Layout from "../../xOUTROS/antigo Layout/JORGE";
+import Dashboard from "../../xOUTROS/DashboardAntigo";
 import ListarCidade from "../../views/cidade/Listar";
 import CriarCidade from "../../views/cidade/Criar";
 import AlterarCidade from "../../views/cidade/Alterar";

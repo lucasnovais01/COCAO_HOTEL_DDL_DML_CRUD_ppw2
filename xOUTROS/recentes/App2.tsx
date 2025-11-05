@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/layout/Layout";
-import DevTools from "./views/DevTools";
+import Layout from "../antigo Layout/Layout";
+import DevTools from "../DevTools";
 
 function App() {
   return (

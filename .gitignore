@@ -19,7 +19,7 @@ Thumbs.db
 # nest_academic/src/app/app.module.ts
 # Foi feito .env
 
-Resultado final sugerido (.gitignore completo)
+
 # Ignorar dependências
 node_modules/
 

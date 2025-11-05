@@ -1,180 +1,77 @@
 // src/components/layout/Layout.tsx
-import React, { ReactNode, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import '../../assets/css/style.css';
-import '../../assets/css/layout.css';
+import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
-interface LayoutProps {
+type LayoutProps = {
   children: ReactNode;
-}
+};
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [activePage, setActivePage] = useState('home');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // Mapear rota para página ativa
-  useEffect(() => {
-    const path = location.pathname;
-    const pageMap: { [key: string]: string } = {
-      '/': 'home',
-      '/funcionarios': 'funcionarios',
-      '/sobre': 'sobre',
-      '/faq': 'faq',
-      '/devtools': 'devtools',
-      '/login': 'login',
-    };
-    setActivePage(pageMap[path] || 'home');
-  }, [location]);
-
-  // Detectar scroll para sombra no header
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleNavClick = (page: string) => {
-    setActivePage(page);
-    const routeMap: { [key: string]: string } = {
-      home: '/',
-      funcionarios: '/funcionarios',
-      sobre: '/sobre',
-      faq: '/faq',
-      devtools: '/devtools',
-      login: '/login',
-    };
-    navigate(routeMap[page]);
-  };
-
+export default function Layout({ children }: LayoutProps) {
   return (
     <>
-      {/* HEADER FIXO */}
-      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+      {/* HEADER FIXO (seu estilo original) */}
+      <header className="header">
         <div className="container">
-          {/* Logo */}
           <div className="logo">
             <i className="fas fa-hotel"></i>
-            <span id="hotel-name">Hotel Cocao</span>
+            <span>Hotel Cocao</span>
           </div>
 
-          {/* Navegação */}
           <nav className="nav">
-            <button
-              id="nav-home"
-              className={`nav-btn ${activePage === 'home' ? 'active' : ''}`}
-              onClick={() => handleNavClick('home')}
-            >
-              <i className="fas fa-home"></i>
-              <span>Home</span>
-            </button>
-            <button
-              id="nav-funcionarios"
-              className={`nav-btn ${activePage === 'funcionarios' ? 'active' : ''}`}
-              onClick={() => handleNavClick('funcionarios')}
-            >
-              <i className="fas fa-users"></i>
-              <span>Funcionários</span>
-            </button>
-            <button
-              id="nav-sobre"
-              className={`nav-btn ${activePage === 'sobre' ? 'active' : ''}`}
-              onClick={() => handleNavClick('sobre')}
-            >
-              <i className="fas fa-info-circle"></i>
-              <span>Sobre</span>
-            </button>
-            <button
-              id="nav-faq"
-              className={`nav-btn ${activePage === 'faq' ? 'active' : ''}`}
-              onClick={() => handleNavClick('faq')}
-            >
-              <i className="fas fa-question-circle"></i>
-              <span>FAQ</span>
-            </button>
-            <button
-              id="nav-devtools"
-              className={`nav-btn ${activePage === 'devtools' ? 'active' : ''}`}
-              onClick={() => handleNavClick('devtools')}
-            >
-              <i className="fas fa-tools"></i>
-              <span>Dev Tools</span>
-            </button>
+            <Link to="/devtools" className="nav-btn active">
+              <i className="fas fa-tools"></i> <span>Dev Tools</span>
+            </Link>
           </nav>
 
-          {/* Botão Login */}
-          <button
-            id="btn-login"
-            className="login-btn"
-            onClick={() => handleNavClick('login')}
-          >
-            <i className="fas fa-sign-in-alt"></i>
-            <span>Login</span>
+          <button className="login-btn">
+            <i className="fas fa-sign-in-alt"></i> <span>Login</span>
           </button>
         </div>
       </header>
 
-      {/* CONTEÚDO PRINCIPAL */}
-      <main className="page-content">
+      {/* CONTEÚDO (espaço para header) */}
+      <div className="page-content">
         {children}
-      </main>
+      </div>
 
-      {/* FOOTER */}
+      {/* FOOTER (seu estilo original) */}
       <footer className="footer">
         <div className="container">
-          {/* Logo e Descrição */}
-          <div>
-            <div className="footer-logo">
-              <i className="fas fa-hotel"></i>
-              <span>Hotel Cocao</span>
-            </div>
-            <p className="footer-description">
-              Conforto e elegância para sua estadia perfeita.
-            </p>
+          <div className="footer-logo">
+            <i className="fas fa-hotel"></i> <span>Hotel Cocao</span>
           </div>
+          <p className="footer-description">Conforto e elegância para sua estadia perfeita.</p>
 
-          {/* Contatos */}
           <div className="footer-section">
             <h3>Contatos</h3>
-            <ul>
-              <li><i className="fas fa-phone"></i>(11) 3456-7890</li>
-              <li><i className="fas fa-envelope"></i>contato@hotelcocao.com</li>
-              <li><i className="fas fa-map-marker-alt"></i>Av. Oceânica, 123 - São Paulo, SP</li>
-            </ul>
+            <p><i className="fas fa-phone"></i> (11) 3456-7890</p>
+            <p><i className="fas fa-envelope"></i> contato@hotelcocao.com</p>
+            <p><i className="fas fa-map-marker-alt"></i> Av. Oceânica, 123 - São Paulo, SP</p>
           </div>
 
-          {/* Links Úteis */}
           <div className="footer-section">
             <h3>Links Úteis</h3>
-            <ul>
-              <li><a href="#">Política de Privacidade</a></li>
-              <li><a href="#">Termos de Uso</a></li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Suporte</a></li>
-            </ul>
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">FAQ</a>
+            <a href="#">Suporte</a>
           </div>
 
-          {/* Redes Sociais */}
           <div className="footer-section">
             <h3>Redes Sociais</h3>
             <div className="social-links">
-              <a href="#" className="social-icon facebook"><i className="fab fa-facebook"></i></a>
-              <a href="#" className="social-icon instagram"><i className="fab fa-instagram"></i></a>
-              <a href="#" className="social-icon twitter"><i className="fab fa-twitter"></i></a>
-              <a href="#" className="social-icon whatsapp"><i className="fab fa-whatsapp"></i></a>
+              <a href="#" className="social-icon"><i className="fab fa-facebook"></i></a>
+              <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
+              <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
+              <a href="#" className="social-icon"><i className="fab fa-whatsapp"></i></a>
             </div>
           </div>
         </div>
 
         <div className="footer-copyright">
-          <p>© 2024 Hotel Cocao. Todos os direitos reservados.</p>
+          <p>© 2025 Hotel Cocao. Todos os direitos reservados.</p>
         </div>
       </footer>
     </>
   );
-};
-
-export default Layout;
+}
