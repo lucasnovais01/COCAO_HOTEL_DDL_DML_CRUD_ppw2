@@ -1,6 +1,7 @@
 // src/components/layout/Layout.tsx
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+// Vantagem: O NavLink adiciona a classe active automaticamente.
 
 type LayoutProps = {
   children: ReactNode;
@@ -17,11 +18,14 @@ export default function Layout({ children }: LayoutProps) {
             <span>Hotel Cocao</span>
           </div>
 
-          <nav className="nav">
-            <Link to="/devtools" className="nav-btn active">
-              <i className="fas fa-tools"></i> <span>Dev Tools</span>
-            </Link>
-          </nav>
+          <NavLink 
+            to="/devtools" 
+            className="nav-btn"
+            // className será "nav-btn" + "active" quando estiver na rota
+          >
+            <i className="fas fa-tools"></i>
+            <span>DevTools</span>
+          </NavLink>
 
           <button className="login-btn">
             <i className="fas fa-sign-in-alt"></i> <span>Login</span>
