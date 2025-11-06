@@ -3,6 +3,40 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import type { ReactNode } from "react";
 
+/*
+  DevTools - Comentários Didáticos
+
+  1) Interruptor de mock (único)
+     - Procure a constante `USE_MOCK` abaixo (perto do topo do componente).
+     - Defina `USE_MOCK = true` para usar os dados mock em memória (sem chamadas ao backend).
+     - Defina `USE_MOCK = false` para habilitar chamadas HTTP reais para a API do backend.
+
+  2) Por que esse interruptor existe
+     - Útil durante o trabalho na interface quando o backend não está em execução
+       ou quando você quer prototipar telas rapidamente sem acessar o servidor.
+     - Manter um único interruptor torna óbvio onde alternar o comportamento
+       para testes e demos.
+
+  3) Onde os endpoints reais estão definidos
+     - Quando `USE_MOCK` é false o componente mapeia as chaves das abas locais
+       (ex.: "funcoes") para endpoints REST completos do backend (veja o `backendMap` dentro do `useEffect`).
+     - O backend espera requisições sob o prefixo `/rest/sistema/v1/...` e
+       responde com um envelope (ex.: `{ sucesso: true, dados: [...] }`), por isso o
+       código desembrulha `res.data.dados` quando presente.
+
+  4) O que foi removido/alterado e por quê
+     - O código anterior usava URLs relativas como `axios.get(`/${activeTab}`)` que
+       acabavam chamando rotas do frontend (ou esperando caminhos diferentes).
+       Isso não correspondia à estrutura de rotas do NestJS (`/rest/sistema/v1/...`) e
+       causava falhas ou retorno de dados incorretos. Para resolver, mapeamos
+       explicitamente as abas para os endpoints corretos e chamamos host+path completos.
+
+  Nota didática (06/11/2025):
+  - Prefira manter um mapeamento pequeno e bem documentado em código de desenvolvimento
+    em vez de adivinhar endpoints. Para produção ou aplicativos maiores, centralize
+    os endpoints em um arquivo de constantes compartilhado e evite duplicar strings de caminho.
+*/
+
 const mockApi: { [key: string]: any[] } = {
   usuarios: [
     { ID_USUARIO: 1, NOME_HOSPEDE: "João Silva Santos", CPF: "12345678901", RG: "MG1234567", SEXO: "M", DATA_NASCIMENTO: "1985-03-15", EMAIL: "joao@email.com", TELEFONE: "(11) 99999-1234", TIPO: 1, ATIVO: true },
@@ -129,16 +163,65 @@ export default function DevTools() {
   // When not using mock, fetch the current tab's data from backend
   useEffect(() => {
     if (USE_MOCK) return;
+
+    const BACKEND_BASE = 'http://localhost:8000'; // adjust if your API is hosted elsewhere
+
+    // Map local tab keys to backend REST endpoints (full path after host)
+    const backendMap: { [key: string]: string | string[] } = {
+      usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
+      hospedes: '/rest/sistema/v1/hospede/listar',
+      funcionarios: '/rest/sistema/v1/funcionario/listar',
+      funcoes: '/rest/sistema/v1/funcao/listar',
+      'tipos-quarto': '/rest/sistema/v1/tipo-quarto/listar',
+      quartos: '/rest/sistema/v1/quarto/listar',
+      'status-reserva': '/rest/sistema/v1/status-reserva/listar',
+      reservas: '/rest/sistema/v1/reserva/listar',
+      servicos: '/rest/sistema/v1/servico/listar',
+      'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
+    };
+
     const fetchData = async () => {
-      try {
-        const url = `/${activeTab}`; // expects backend endpoints like /usuarios, /hospedes, /funcionarios...
-        const res = await axios.get(url);
-        setApiData(prev => ({ ...prev, [activeTab]: res.data }));
+    try {
+    // Nota histórica: o trecho abaixo mostra a abordagem anterior que usava
+    // caminhos relativos como `/${activeTab}`. Isso falhava porque a API do backend
+    // usa um prefixo e formato diferentes. Mantemos o trecho comentado aqui apenas
+    // como referência. O código abaixo mapeia cada aba para o endpoint do backend
+    // correto e desembrulha o envelope de resposta.
+    /*
+    const url = `/${activeTab}`; // esperava endpoints como /usuarios, /hospedes, /funcionarios...
+    const res = await axios.get(url);
+    setApiData(prev => ({ ...prev, [activeTab]: res.data }));
+    */
+        const mapping = backendMap[activeTab];
+
+        if (!mapping) {
+          showToast('Endpoint backend não mapeado para esta aba', 'error');
+          return;
+        }
+
+        // support single or multiple endpoints (e.g., usuarios)
+        const endpoints = Array.isArray(mapping) ? mapping : [mapping];
+        const results: any[] = [];
+
+        for (const ep of endpoints) {
+          const fullUrl = `${BACKEND_BASE}${ep}`;
+          const res = await axios.get(fullUrl);
+          // Backend wraps results in a Mensagem/result object -> actual data usually in res.data.dados
+          const payload = res?.data?.dados ?? res?.data ?? [];
+          // If payload is an object with the list under 'dados' again, try unwrap
+          results.push(Array.isArray(payload) ? payload : [payload]);
+        }
+
+        // merge results (flatten) for tabs that fetched multiple endpoints
+        const merged = ([] as any[]).concat(...results);
+
+        setApiData(prev => ({ ...prev, [activeTab]: merged }));
       } catch (err) {
         console.error(err);
         showToast('Erro ao carregar dados do servidor', 'error');
       }
     };
+
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
