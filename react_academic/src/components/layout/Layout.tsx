@@ -1,22 +1,25 @@
-// src/components/layout/Layout.tsx
 import { NavLink, Outlet } from "react-router-dom";
 // Vantagem: O NavLink adiciona a classe active automaticamente.
 
 export default function Layout() {
   return (
     <>
-      {/* HEADER FIXO (seu estilo original) */}
+      {/* HEADER FIXO */}
       <header className="header">
         <div className="container">
-          <div className="logo">
+          {/* Link para Dashboard (Home) */}
+          <NavLink
+            to="/sistema/dashboard"
+            className="logo"
+          >
             <i className="fas fa-hotel"></i>
             <span>Hotel Cocao</span>
-          </div>
+          </NavLink>
 
-          <NavLink 
-            to="/devtools" 
+          {/* Link para DevTools */}
+          <NavLink
+            to="/sistema/devtools"
             className="nav-btn"
-            // className será "nav-btn" + "active" quando estiver na rota
           >
             <i className="fas fa-tools"></i>
             <span>DevTools</span>
@@ -26,30 +29,39 @@ export default function Layout() {
             <i className="fas fa-sign-in-alt"></i> <span>Login</span>
           </button>
         </div>
+
       </header>
 
-      {/* CONTEÚDO (espaço para header) */}
+      {/* CONTEÚDO (espaço, abaixo do header) */}
       <div className="page-content">
         <Outlet />
       </div>
 
-      {/* FOOTER (seu estilo original) */}
+      {/* FOOTER, simples */}
       <footer className="footer">
         <div className="container">
-          <div className="footer-logo">
+          <NavLink to="/sistema/dashboard" className="footer-logo">
             <i className="fas fa-hotel"></i> <span>Hotel Cocao</span>
-          </div>
+          </NavLink>
           <p className="footer-description">Conforto e elegância para sua estadia perfeita.</p>
 
           <div className="footer-section">
             <h3>Contatos</h3>
-            <p><i className="fas fa-phone"></i> (11) 3456-7890</p>
+            <p><i className="fas fa-phone"></i> (18) 99999-9999</p>
             <p><i className="fas fa-envelope"></i> contato@hotelcocao.com</p>
-            <p><i className="fas fa-map-marker-alt"></i> Av. Oceânica, 123 - São Paulo, SP</p>
+            <p><i className="fas fa-map-marker-alt"></i> Rua Pedro Cavalo, 709 - Residencial Portal da Pérola II, Birigui - SP, 16201-407</p>
           </div>
 
           <div className="footer-section">
             <h3>Links Úteis</h3>
+            <NavLink 
+              to="/sistema/dashboard"
+              className={({ isActive }) => 
+                isActive ? "text-blue-700" : "text-blue-600 hover:text-blue-700"
+              }
+            >
+              Home
+            </NavLink>
             <a href="#">Política de Privacidade</a>
             <a href="#">Termos de Uso</a>
             <a href="#">FAQ</a>
@@ -69,6 +81,8 @@ export default function Layout() {
 
         <div className="footer-copyright">
           <p>© 2025 Hotel Cocao. Todos os direitos reservados.</p>
+          <br></br>
+          <p>Trabalho de escola ppw2 - IFSP - Campus Birigui</p>
         </div>
       </footer>
     </>

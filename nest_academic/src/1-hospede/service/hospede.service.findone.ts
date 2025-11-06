@@ -8,7 +8,7 @@ import { ConverterHospede } from '../dto/converter/hospede.converter';
 @Injectable()
 export class HospedeServiceFindOne {
   // idUsuario: any; // Removido, pois não é injetado, apenas passado como parâmetro.
-  // Não é preenchida no constructor, não é usada em lugar nenhum.
+  // Não era preenchida no constructor, não era usada em lugar nenhum.
   // idUsuario: any;     // ← perde tipagem
   constructor(
     @InjectRepository(Hospede)

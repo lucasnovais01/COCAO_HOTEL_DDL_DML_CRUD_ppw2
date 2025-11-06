@@ -20,7 +20,7 @@ export class HospedeServiceUpdate {
     hospedeRequest: HospedeRequest,
   ): Promise<HospedeResponse | null> {
     
-    /* ANTIGO, o novo 1. está entre o 3. e o 4.
+    /* ANTIGO, o novo 1. está entre o 3. e o 4. - POSTMAN Update não está funcionando (tentava INSERT ao invés de UPDATE)
 
     // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
     let hospede = ConverterHospede.toHospede(hospedeRequest);

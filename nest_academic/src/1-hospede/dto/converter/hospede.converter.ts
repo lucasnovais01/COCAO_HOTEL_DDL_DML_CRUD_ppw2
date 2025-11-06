@@ -56,6 +56,8 @@ export class ConverterHospede {
 
   static toHospedeResponse(hospede: Hospede): HospedeResponse {
     /*
+    // como tava antes: alternativa manual comentada
+
     return painToInstance(HospedeResponse, hospede, {
       excludeExtraneousValues: true,
     });

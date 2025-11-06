@@ -2,6 +2,10 @@ import type { RouteObject } from "react-router-dom";
 
 import Layout from "../../components/layout/Layout";
 import Dashboard from "../../views/Dashboard";
+import DevTools from "../../views/DevTools";
+// Observação: vamos usar um redirect da raiz para o DevTools para que
+// acessar '/' não gere erro de rota inexistente.
+import { Navigate } from "react-router-dom";
 
 // Importações do módulo Hóspede
 import ListarHospede from "../../views/1-hospede/Listar";
@@ -17,6 +21,14 @@ import { ROTA } from "./url";
 // Remover {children} do Layout.tsx
 // ============================================================
 export const routes: RouteObject[] = [
+  // Redirecionamento da raiz '/' para o DevTools
+  // Motivo (pt-BR): abrir http://localhost:5173/ (ou :5174) deve levar ao
+  // DevTools; sem esse redirect a aplicação retorna "No route matches URL '/'".
+  {
+    path: '/',
+    element: <Navigate to="/sistema/devtools" replace />,
+  },
+
   {
     path: '/sistema',
     element: <Layout />, // SEM children
@@ -24,6 +36,10 @@ export const routes: RouteObject[] = [
       {
         path: '/sistema/dashboard',
         element: <Dashboard />,
+      },
+      {
+        path: '/sistema/devtools',
+        element: <DevTools />,
       },
       {
         path: ROTA.HOSPEDE.LISTAR,

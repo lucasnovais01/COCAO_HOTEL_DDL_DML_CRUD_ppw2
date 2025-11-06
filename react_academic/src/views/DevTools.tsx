@@ -1,7 +1,8 @@
-// src/views/DevTools.tsx
 import { useState, useEffect } from "react";
 import axios from "axios";
 import type { ReactNode } from "react";
+import { useNavigate, NavLink } from "react-router-dom";
+import { ROTA } from "../services/router/url";
 
 /*
   DevTools - Comentários Didáticos
@@ -39,37 +40,89 @@ import type { ReactNode } from "react";
 
 const mockApi: { [key: string]: any[] } = {
   usuarios: [
-    { ID_USUARIO: 1, NOME_HOSPEDE: "João Silva Santos", CPF: "12345678901", RG: "MG1234567", SEXO: "M", DATA_NASCIMENTO: "1985-03-15", EMAIL: "joao@email.com", TELEFONE: "(11) 99999-1234", TIPO: 1, ATIVO: true },
-    { ID_USUARIO: 2, NOME_HOSPEDE: "Maria Oliveira", CPF: "98765432109", RG: "SP9876543", SEXO: "F", DATA_NASCIMENTO: "1990-07-22", EMAIL: "maria@email.com", TELEFONE: "(11) 88888-5678", TIPO: 0, ATIVO: true },
+    { ID_USUARIO: 1, 
+      NOME_HOSPEDE: "João Silva Santos", 
+      CPF: "12345678901", RG: "MG1234567", 
+      SEXO: "M", DATA_NASCIMENTO: "1985-03-15", 
+      EMAIL: "joao@email.com", 
+      TELEFONE: "(11) 99999-1234", 
+      TIPO: 1, 
+      ATIVO: true },
+
+    { ID_USUARIO: 2, 
+      NOME_HOSPEDE: "Maria Oliveira", 
+      CPF: "98765432109", 
+      RG: "SP9876543", 
+      SEXO: "F", 
+      DATA_NASCIMENTO: "1990-07-22", 
+      EMAIL: "maria@email.com", 
+      TELEFONE: "(11) 88888-5678", 
+      TIPO: 0, 
+      ATIVO: true },
   ],
+
+/*
   hospedes: [
     { ID_USUARIO: 1, NOME_HOSPEDE: "Ana Lima", CPF: "11122233344", RG: "RJ111222", SEXO: "F", DATA_NASCIMENTO: "1995-05-10", EMAIL: "ana@email.com", TELEFONE: "(21) 98765-4321", TIPO: 0, ATIVO: true },
   ],
   funcionarios: [
     { ID_USUARIO: 1, NOME_LOGIN: "gerente", CODIGO_FUNCAO: 1, DATA_CONTRATACAO: "2023-10-15", ATIVO: true },
   ],
+*/
+
   funcoes: [
-    { CODIGO_FUNCAO: 1, NOME_FUNCAO: "Gerente Geral", DESCRICAO: "Gestão geral", NIVEL_ACESSO: 3 },
+    { CODIGO_FUNCAO: 1, 
+      NOME_FUNCAO: "Gerente Geral", 
+      DESCRICAO: "Gestão geral", 
+      NIVEL_ACESSO: 3 },
   ],
   tiposQuarto: [
-    { CODIGO_TIPO_QUARTO: 1, NOME_TIPO: "Standard", CAPACIDADE_MAXIMA: 2, VALOR_DIARIA: 250.00 },
+    { CODIGO_TIPO_QUARTO: 1, 
+      NOME_TIPO: "Standard", 
+      CAPACIDADE_MAXIMA: 2, 
+      VALOR_DIARIA: 250.00 },
   ],
   quartos: [
-    { ID_QUARTO: 1, NUMERO: "201", CODIGO_TIPO_QUARTO: 1, STATUS_QUARTO: "LIVRE", ANDAR: "2º" },
+    { ID_QUARTO: 1, 
+      NUMERO: "201", 
+      CODIGO_TIPO_QUARTO: 1, 
+      STATUS_QUARTO: "LIVRE", 
+      ANDAR: "2º" },
   ],
   statusReserva: [
-    { CODIGO_STATUS: 1, DESCRICAO: "Confirmada" },
+    { CODIGO_STATUS: 1, 
+      DESCRICAO: "Confirmada" },
   ],
   reservas: [
-    { ID_RESERVA: 1, ID_USUARIO: 2, ID_QUARTO: 1, DATA_CHECK_IN: "2025-11-01", DATA_CHECK_OUT: "2025-11-05", NUMERO_HOSPEDES: 2, VALOR_TOTAL: 1250.00, NUMERO_DIARIAS: 5, CODIGO_STATUS: 1 },
+    { ID_RESERVA: 1, 
+      ID_USUARIO: 2, 
+      ID_QUARTO: 1, 
+      DATA_CHECK_IN: "2025-11-01", 
+      DATA_CHECK_OUT: "2025-11-05", 
+      NUMERO_HOSPEDES: 2, 
+      VALOR_TOTAL: 1250.00, 
+      NUMERO_DIARIAS: 5, 
+      CODIGO_STATUS: 1 },
   ],
   servicos: [
-    { CODIGO_SERVICO: 1, NOME_SERVICO: "Café da Manhã", PRECO: 25.00, ATIVO: true },
+    { CODIGO_SERVICO: 1, 
+      NOME_SERVICO: "Café da Manhã", 
+      PRECO: 25.00, 
+      ATIVO: true },
   ],
   hospedeServico: [
-    { ID_SOLICITACAO: 1, ID_USUARIO: 2, CODIGO_SERVICO: 1, ID_RESERVA: 1, DATA_SOLICITACAO: "2025-11-01", QUANTIDADE: 2 },
+    { ID_SOLICITACAO: 1, 
+      ID_USUARIO: 2, 
+      CODIGO_SERVICO: 1, 
+      ID_RESERVA: 1, 
+      DATA_SOLICITACAO: "2025-11-01", 
+      QUANTIDADE: 2 },
   ],
 };
+
+// ============================================================
+// Parte 2 - Abas / dados mock
+// ============================================================
 
 const tabs = [
   { key: "usuarios", label: "Usuários (Todos)", columns: ["ID_USUARIO", "NOME_HOSPEDE", "CPF", "RG", "SEXO", "DATA_NASCIMENTO", "EMAIL", "TELEFONE", "TIPO", "ATIVO"] },
@@ -85,11 +138,18 @@ const tabs = [
 ];
 
 export default function DevTools() {
+
+  // ============================================================
+  // Parte 3 - ATIVA OU DESAVIA O MOCK, E Hooks e estado
+  // ============================================================
+
   const [activeTab, setActiveTab] = useState("usuarios");
   const [searchTerm, setSearchTerm] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
-  // Toggle this to false to fetch from backend instead of using mock data
-  const USE_MOCK = true;
+  const navigate = useNavigate();
+
+  // Se colocar false, ativa chamadas reais ao backend, e se colocar true, usa dados mock em memória
+  const USE_MOCK = false;
 
   // apiData holds either mock data (default) or remote data when fetching
   const [apiData, setApiData] = useState<{ [key: string]: any[] }>(mockApi);
@@ -160,6 +220,12 @@ export default function DevTools() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // ============================================================
+  // Parte 4 - Helpers de ação (criar/editar/excluir)
+  // - Mantivemos a exibição de toast original para compatibilidade.
+  // - Agora o handleEdit também realiza navegação para a view de atualização.
+  // ============================================================
+
   // When not using mock, fetch the current tab's data from backend
   useEffect(() => {
     if (USE_MOCK) return;
@@ -167,6 +233,8 @@ export default function DevTools() {
     const BACKEND_BASE = 'http://localhost:8000'; // adjust if your API is hosted elsewhere
 
     // Map local tab keys to backend REST endpoints (full path after host)
+    // Extramamente importante:
+
     const backendMap: { [key: string]: string | string[] } = {
       usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
       hospedes: '/rest/sistema/v1/hospede/listar',
@@ -223,11 +291,27 @@ export default function DevTools() {
     };
 
     fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
+  
+  // Ao clicar no botão "Criar", mostra a mensagem de toast
+
   const handleCreate = () => showToast("Funcionalidade de criação em desenvolvimento", "success");
-  const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
+
+  // como tava antes:
+  // const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
+  const handleEdit = (id: number) => {
+    try {
+      // Navega para a rota de atualização de hóspede (adaptação direta)
+      navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
+    } catch (err) {
+      console.error('Erro ao navegar:', err);
+    }
+    // Mantemos a toast original para feedback rápido (não removido)
+    showToast(`Editar item ID: ${id}`, "success");
+  };
   const handleDelete = (id: number) => {
     if (confirm(`Tem certeza que deseja excluir o item ID: ${id}?`)) {
       showToast(`Item ID ${id} excluído com sucesso!`, "success");
@@ -251,7 +335,12 @@ export default function DevTools() {
       {/* Breadcrumb */}
       <nav className="breadcrumb">
         <div className="container flex items-center space-x-2 text-sm">
-          <a href="/" className="text-blue-600 hover:text-blue-700">Home</a>
+          <NavLink 
+            to="/sistema/dashboard"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Home
+          </NavLink>
           <i className="fas fa-chevron-right text-gray-400"></i>
           <span className="text-gray-600">Dev Tools</span>
         </div>
@@ -318,6 +407,7 @@ export default function DevTools() {
               >
                 <i className="fas fa-plus mr-1"></i>Criar
               </button>
+
             </div>
           </div>
           <div className="table-container">
@@ -345,13 +435,17 @@ export default function DevTools() {
                         {currentTab.columns.map(col => (
                           <td key={col}>{formatValue(col, item[col])}</td>
                         ))}
+
                         <td className="actions">
+
                           <button onClick={() => handleEdit(id)} className="btn-edit">
                             <i className="fas fa-edit"></i>
                           </button>
+
                           <button onClick={() => handleDelete(id)} className="btn-delete">
                             <i className="fas fa-trash"></i>
                           </button>
+
                         </td>
                       </tr>
                     );
