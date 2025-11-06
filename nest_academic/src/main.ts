@@ -5,37 +5,34 @@ import { HttpExceptionFilter } from './commons/exceptions/filter/http.exception.
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Configuração de filtros globais
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // Habilitar CORS para permitir que o frontend (React) se conecte
   app.enableCors({
-    // libera o cors
-
     origin: ['http://localhost:3000', 'http://localhost:8000'], // endereço do react
     methods: 'GET, POST, PUT, DELETE',
-    allowedheaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Accept',
     credentials: false,
   });
 
-  await app.listen(process.env.PORT ?? 8000); // Default to port 8000, pq no react é 3000
+  // ERRADO: O código original não estava configurando o prefixo global da API, o que causava o erro 404.
+  // O NestJS não sabia como mapear corretamente as rotas sem esse prefixo global.
+  //
+  // CORRIGIDO: Adicionamos a configuração `app.setGlobalPrefix('rest/sistema/v1')` 
+  // para que todas as rotas da API sejam prefixadas corretamente.
+  app.setGlobalPrefix('rest/sistema/v1'); // Configura o prefixo global para todas as rotas (ex.: /rest/sistema/v1/hospede)
+
+  // Inicia o servidor na porta 8000
+  await app.listen(process.env.PORT ?? 8000);
 }
 
 void bootstrap();
 
-// http://localhost:8000/rest/sistema/cidade/criar
-
-// http://localhost:8000
-
-// http://localhost:8000/cidade/listar
-// http://localhost:8000/cidade/listar/1
-// http://localhost:8000/cidade/criar
-// http://localhost:8000/cidade/atualizar/1
-// http://localhost:8000/cidade/remover/1
-
-
-/**
- * ==============================================================
+/*
+ * ============================================================== 
  * MAIN.TS – PONTO DE ENTRADA DA APLICAÇÃO
- * ==============================================================
+ * ============================================================== 
  * 
  * O que é?
  *   Arquivo que inicia o servidor NestJS.
@@ -50,6 +47,7 @@ void bootstrap();
  *   - CORS: permite que o frontend acesse a API
  *   - Filtro global: padroniza TODOS os erros
  *   - Porta: 8000 (React usa 3000)
+ *   - **Novo**: Prefixo global adicionado para rotas da API, agora `/rest/sistema/v1/`
  * 
- * ==============================================================
+ * ============================================================== 
  */

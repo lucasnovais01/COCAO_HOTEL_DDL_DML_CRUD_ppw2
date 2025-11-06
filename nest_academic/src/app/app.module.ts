@@ -19,18 +19,18 @@ import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.modu
 // Configuração do Oracle Client
 const oracledb = require('oracledb');
 
-/*
+
 oracledb.initOracleClient({
   libDir: 'D:/.Lucas Novais/oracle/client',
 });
-*/
+
 
 // Em casa:
-
+/*
 oracledb.initOracleClient({
   libDir: 'C:\\Oracle client\\instantclient_23_9', 
 });
-
+*/
 
 
 // IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
