@@ -24,7 +24,13 @@ export class HospedeServiceFindOne {
 
   // Utiliza o método findOne do TypeORM, que é o mais simples para busca por PK/Unique.
   // { where: { idUsuario } } é a forma abreviada de { where: { idUsuario: idUsuario } }
+
+  /*
+  como estava antes: 
+  
   async findById(idUsuario: number): Promise<HospedeResponse> {
+  */
+  async findById(idUsuario: number): Promise<Hospede> {
     const hospede = await this.hospedeRepository.findOne({
       where: { idUsuario },
     });
@@ -34,8 +40,17 @@ export class HospedeServiceFindOne {
       throw new HttpException('Hóspede não cadastrado', HttpStatus.NOT_FOUND);
     }
 
-    // Converte a entidade encontrada para o DTO de resposta e retorna.
+    /*
+    Como era o return antes: 
+    
     return ConverterHospede.toHospedeResponse(hospede);
+    */
+
+    // Retorna a entidade encontrada (não o DTO). Controllers que precisarem do
+    // DTO devem chamar ConverterHospede.toHospedeResponse(hospede) — isso evita
+    // que o service retorne instâncias de DTO que podem confundir o TypeORM
+    // quando usadas em operações de save/merge.
+    return hospede;
   }
 }
 /*

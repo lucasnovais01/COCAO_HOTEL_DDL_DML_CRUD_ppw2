@@ -1,4 +1,4 @@
-import { plainToInstance } from 'class-transformer';
+import { plainToInstance, instanceToPlain } from 'class-transformer';
 import { Hospede } from 'src/1-hospede/entity/hospede.entity';
 import { HospedeRequest } from '../request/hospede.request';
 import { HospedeResponse } from '../response/hospede.response';
@@ -55,10 +55,22 @@ export class ConverterHospede {
   }
 
   static toHospedeResponse(hospede: Hospede): HospedeResponse {
-    // Converte entidade para DTO de response, expondo apenas @Expose().
-    return plainToInstance(HospedeResponse, hospede, {
+    /*
+    return painToInstance(HospedeResponse, hospede, {
       excludeExtraneousValues: true,
     });
+    */
+    // Converte entidade para um objeto plain (JSON) respeitando @Expose().
+    // Processo seguro em duas etapas:
+    // 1) plainToInstance cria uma instância de HospedeResponse aplicando @Expose/@Transform
+    //    e removendo campos extras (excludeExtraneousValues).
+    // 2) instanceToPlain transforma essa instância em um POJO pronto para serialização.
+    // Isso produz um objeto JSON limpo para controllers, sem expor metadados de classe
+    // que poderiam confundir o TypeORM se usados indevidamente em operações de save.
+    const inst = plainToInstance(HospedeResponse, hospede, {
+      excludeExtraneousValues: true,
+    });
+    return instanceToPlain(inst) as unknown as HospedeResponse;
   }
 
   static toListHospedeResponse(hospedes: Hospede[] = []): HospedeResponse[] {

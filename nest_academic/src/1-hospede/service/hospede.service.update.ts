@@ -19,8 +19,14 @@ export class HospedeServiceUpdate {
     idUsuario: number,
     hospedeRequest: HospedeRequest,
   ): Promise<HospedeResponse | null> {
+    
+    /* ANTIGO, o novo 1. está entre o 3. e o 4.
+
     // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
     let hospede = ConverterHospede.toHospede(hospedeRequest);
+    */
+
+
 
     // 2. Busca o cadastro existente usando o service FindOne.
     const hospedeCadastrado =
@@ -30,6 +36,13 @@ export class HospedeServiceUpdate {
     if (!hospedeCadastrado) {
       throw new HttpException('Hóspede não cadastrado', HttpStatus.NOT_FOUND);
     }
+
+    // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
+    // Garantindo que o ID seja mantido durante o update
+    let hospede = ConverterHospede.toHospede({
+      ...hospedeRequest,
+      idUsuario: hospedeCadastrado.idUsuario,  // Mantém o ID original
+    });
 
     // 4. Mescla os novos dados (Entidade 'hospede') sobre o cadastro encontrado (Response 'hospedeCadastrado')
     const hospedeAtualizado = Object.assign(hospedeCadastrado, hospede);
@@ -63,4 +76,34 @@ export class HospedeServiceUpdate {
  * - A injeção de outro service (`HospedeServiceFindOne`) promove a reutilização de código.
  * - O uso de `HttpException` é a forma base do NestJS para retornar erros HTTP.
  * * ==============================================================
+ */
+
+/*
+ * ==============================================================
+ * NOTA SOBRE UPDATE E TYPEORM: Preservando IDs
+ * ==============================================================
+ * 
+ * Problema encontrado:
+ * - Ao tentar fazer update, o TypeORM tentava executar um INSERT,
+ *   resultando em ORA-00001 (unique constraint violation).
+ * - A ordem das operações (converter DTO → buscar → mesclar) fazia o
+ *   ID se perder durante as transformações.
+ * 
+ * Como funciona a solução:
+ * 1. Primeiro busca o registro existente (para ter certeza que existe
+ *    e para ter uma entidade com ID válido).
+ * 2. Depois converte o DTO para entidade e mescla com Object.assign.
+ * 3. TypeORM vê o ID na entidade e faz UPDATE em vez de INSERT.
+ * 
+ * Resultado:
+ * - UPDATE funciona corretamente.
+ * - Mantém consistência do banco (sem duplicar CPFs).
+ * - Mantém o padrão do professor (findById → assign → save).
+ * 
+ * Dica importante:
+ * - Sempre preserve o ID ao fazer updates com TypeORM.
+ * - Object.assign deve ter como primeiro parâmetro um objeto que já
+ *   tem o ID (por isso buscamos primeiro).
+ * - Se o ID for perdido, TypeORM tenta INSERT em vez de UPDATE.
+ * ==============================================================
  */

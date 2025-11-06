@@ -8,6 +8,9 @@ import {
   Req,
 } from '@nestjs/common';
 import { HospedeServiceFindOne } from '../service/hospede.service.findone';
+
+import { ConverterHospede } from '../dto/converter/hospede.converter'; // novo
+
 import { ROTA } from 'src/commons/constants/url.sistema';
 import { HospedeResponse } from '../dto/response/hospede.response';
 import { Result } from 'src/commons/mensagem/mensagem';
@@ -27,7 +30,14 @@ export class HospedeControllerFindOne {
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Result<HospedeResponse | null>> {
-    const response = await this.hospedeServiceFindOne.findById(+id);
+
+    // trocado (antes era):
+    // const response = await this.hospedeServiceFindOne.findById(+id);
+
+    const entidade = await this.hospedeServiceFindOne.findById(+id);
+
+    // Converte entidade para DTO de response antes de enviar ao cliente.
+    const response = ConverterHospede.toHospedeResponse(entidade);
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,

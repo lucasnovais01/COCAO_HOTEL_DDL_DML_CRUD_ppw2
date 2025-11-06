@@ -15,28 +15,11 @@ PARA O NEST É
 PARA O REACTJS
     npm run dev
 
-
-para testar no postman
-
-{
-    "idCidade": 1,
-    "nomeCidade": "Araçatuba",
-    "codCidade": "COD120"
-}
-
-
 # /** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
 O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
 
 
 # Devo trocar o CDN do Font Awesome por uma dependência local (npm install @fortawesome/fontawesome-free) para evitar depender do CDN?
-
-
-
-
-
-
-
 
 
 Abrir o terminal (cmd) por exemplo aqui:

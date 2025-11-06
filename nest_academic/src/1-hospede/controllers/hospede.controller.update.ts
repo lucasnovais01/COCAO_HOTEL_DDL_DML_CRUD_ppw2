@@ -75,3 +75,10 @@ export class HospedeControllerUpdate {
 
  * ==============================================================
  */
+
+
+/*
+agora o log mostra exatamente o problema: o TypeORM está tentando fazer um INSERT em vez de UPDATE. 
+Vejo que o Object.assign não está mantendo o idUsuario. Vou ajustar o ConverterHospede.toHospede para preservar o 
+ID quando estiver fazendo update
+*/
