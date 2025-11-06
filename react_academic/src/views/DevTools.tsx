@@ -1,42 +1,26 @@
+// ============================================================
+// Parte 1 - Importações e Dependências
+// ============================================================
+// 1. Importa hooks essenciais do React (`useState`, `useEffect`) para gerenciar estado e efeitos colaterais.
+// 2. Importa `axios` para realizar requisições HTTP ao backend quando o mock estiver desativado.
+// 3. Importa `ReactNode` para tipagem de elementos renderizáveis em funções de formatação.
+// 4. Importa ferramentas de navegação do React Router (`useNavigate`, `NavLink`) para redirecionamentos e links.
+// 5. Importa constantes de rotas (`ROTA`) para padronizar URLs de navegação no sistema.
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import type { ReactNode } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { ROTA } from "../services/router/url";
 
-/*
-  DevTools - Comentários Didáticos
-
-  1) Interruptor de mock (único)
-     - Procure a constante `USE_MOCK` abaixo (perto do topo do componente).
-     - Defina `USE_MOCK = true` para usar os dados mock em memória (sem chamadas ao backend).
-     - Defina `USE_MOCK = false` para habilitar chamadas HTTP reais para a API do backend.
-
-  2) Por que esse interruptor existe
-     - Útil durante o trabalho na interface quando o backend não está em execução
-       ou quando você quer prototipar telas rapidamente sem acessar o servidor.
-     - Manter um único interruptor torna óbvio onde alternar o comportamento
-       para testes e demos.
-
-  3) Onde os endpoints reais estão definidos
-     - Quando `USE_MOCK` é false o componente mapeia as chaves das abas locais
-       (ex.: "funcoes") para endpoints REST completos do backend (veja o `backendMap` dentro do `useEffect`).
-     - O backend espera requisições sob o prefixo `/rest/sistema/v1/...` e
-       responde com um envelope (ex.: `{ sucesso: true, dados: [...] }`), por isso o
-       código desembrulha `res.data.dados` quando presente.
-
-  4) O que foi removido/alterado e por quê
-     - O código anterior usava URLs relativas como `axios.get(`/${activeTab}`)` que
-       acabavam chamando rotas do frontend (ou esperando caminhos diferentes).
-       Isso não correspondia à estrutura de rotas do NestJS (`/rest/sistema/v1/...`) e
-       causava falhas ou retorno de dados incorretos. Para resolver, mapeamos
-       explicitamente as abas para os endpoints corretos e chamamos host+path completos.
-
-  Nota didática (06/11/2025):
-  - Prefira manter um mapeamento pequeno e bem documentado em código de desenvolvimento
-    em vez de adivinhar endpoints. Para produção ou aplicativos maiores, centralize
-    os endpoints em um arquivo de constantes compartilhado e evite duplicar strings de caminho.
-*/
+// ============================================================
+// Parte 2 - Configuração Inicial de Mock e Estrutura de Dados
+// ============================================================
+// 1. Define o objeto `mockApi` com dados simulados para todas as entidades do sistema.
+// 2. Cada chave representa uma tabela/endpoint (ex: `usuarios`, `quartos`, `reservas`).
+// 3. Os dados seguem o formato esperado pelo backend, permitindo prototipação sem conexão real.
+// 4. Inclui comentários internos com exemplos desativados para expansão futura.
+// 5. Serve como base para testes locais e demonstração da UI sem dependência de servidor.
 
 const mockApi: { [key: string]: any[] } = {
   usuarios: [
@@ -60,15 +44,6 @@ const mockApi: { [key: string]: any[] } = {
       TIPO: 0, 
       ATIVO: true },
   ],
-
-/*
-  hospedes: [
-    { ID_USUARIO: 1, NOME_HOSPEDE: "Ana Lima", CPF: "11122233344", RG: "RJ111222", SEXO: "F", DATA_NASCIMENTO: "1995-05-10", EMAIL: "ana@email.com", TELEFONE: "(21) 98765-4321", TIPO: 0, ATIVO: true },
-  ],
-  funcionarios: [
-    { ID_USUARIO: 1, NOME_LOGIN: "gerente", CODIGO_FUNCAO: 1, DATA_CONTRATACAO: "2023-10-15", ATIVO: true },
-  ],
-*/
 
   funcoes: [
     { CODIGO_FUNCAO: 1, 
@@ -121,8 +96,13 @@ const mockApi: { [key: string]: any[] } = {
 };
 
 // ============================================================
-// Parte 2 - Abas / dados mock
+// Parte 3 - Definição das Abas da Interface
 // ============================================================
+// 1. Array `tabs` define todas as abas visíveis no painel DevTools.
+// 2. Cada aba tem `key` (correspondente ao nome no `mockApi` ou endpoint), `label` (texto exibido) e `columns` (campos a mostrar).
+// 3. Permite controle total sobre quais dados são exibidos em cada aba.
+// 4. Facilita a manutenção: adicionar nova aba exige apenas uma nova entrada no array.
+// 5. Usado tanto com mock quanto com dados reais do backend.
 
 const tabs = [
   { key: "usuarios", label: "Usuários (Todos)", columns: ["ID_USUARIO", "NOME_HOSPEDE", "CPF", "RG", "SEXO", "DATA_NASCIMENTO", "EMAIL", "TELEFONE", "TIPO", "ATIVO"] },
@@ -137,11 +117,16 @@ const tabs = [
   { key: "hospede-servico", label: "Solicitações", columns: ["ID_SOLICITACAO", "ID_USUARIO", "CODIGO_SERVICO", "ID_RESERVA", "DATA_SOLICITACAO", "QUANTIDADE"] },
 ];
 
-export default function DevTools() {
+// ============================================================
+// Parte 4 - Início do Componente Principal e Estado Local
+// ============================================================
+// 1. Declaração do componente funcional `DevTools` com exportação padrão.
+// 2. Inicializa estados com `useState`: aba ativa, termo de busca, toast de feedback e dados da API.
+// 3. Usa `useNavigate` para redirecionamento programático (ex: edição de registro).
+// 4. Define constante `USE_MOCK` como interruptor global entre dados reais e simulados.
+// 5. Inicializa `apiData` com `mockApi` como fallback seguro quando não houver dados carregados.
 
-  // ============================================================
-  // Parte 3 - ATIVA OU DESAVIA O MOCK, E Hooks e estado
-  // ============================================================
+export default function DevTools() {
 
   const [activeTab, setActiveTab] = useState("usuarios");
   const [searchTerm, setSearchTerm] = useState("");
@@ -151,13 +136,22 @@ export default function DevTools() {
   // Se colocar false, ativa chamadas reais ao backend, e se colocar true, usa dados mock em memória
   const USE_MOCK = false;
 
-  // apiData holds either mock data (default) or remote data when fetching
+  // apiData contém dados mock (padrão) ou dados remotos carregados do backend
   const [apiData, setApiData] = useState<{ [key: string]: any[] }>(mockApi);
+
+// ============================================================
+// Parte 5 - Lógica de Preparação e Filtragem de Dados
+// ============================================================
+// 1. Busca a configuração da aba atual (`currentTab`) com base no `activeTab`.
+// 2. Para a aba "usuarios", mescla hóspedes e funcionários, deduplicando por `ID_USUARIO`.
+// 3. Aplica filtros específicos: hóspedes (`TIPO === 0`) e enriquecimento de funcionários com nome do hóspede.
+// 4. Implementa busca global em todos os campos do item atual.
+// 5. Garante que `filteredData` sempre contenha apenas os registros relevantes e buscados.
 
   const currentTab = tabs.find(t => t.key === activeTab)!;
   let data: any[] = [];
 
-  // If 'usuarios' tab, merge users/hospedes/funcionarios and deduplicate by ID_USUARIO
+  // Se a aba for 'usuarios', mesclar users/hospedes/funcionarios e deduplicar por ID_USUARIO
   if (activeTab === "usuarios") {
     const map = new Map<number | string, any>();
 
@@ -166,7 +160,7 @@ export default function DevTools() {
       if (id == null) return;
       if (!map.has(id)) map.set(id, item);
       else {
-        // merge missing fields from item into existing entry
+        // mesclar campos faltantes do item no registro já existente
         const existing = map.get(id);
         map.set(id, { ...item, ...existing });
       }
@@ -174,7 +168,7 @@ export default function DevTools() {
 
     (apiData.usuarios || []).forEach(pushIfNew);
     (apiData.hospedes || []).forEach(pushIfNew);
-    // map funcionarios to user-like shape before pushing
+  // mapear funcionários para formato similar a usuário antes de inserir
     (apiData.funcionarios || []).forEach((f: any) => {
       const item = {
         ID_USUARIO: f.ID_USUARIO,
@@ -215,25 +209,37 @@ export default function DevTools() {
     )
   );
 
+// ============================================================
+// Parte 6 - Utilitário de Feedback Visual (Toast)
+// ============================================================
+// 1. Função `showToast` exibe mensagens temporárias de sucesso ou erro.
+// 2. Define tipo do toast (`success` ou `error`) e limpa automaticamente após 3 segundos.
+// 3. Usada por todas as ações de UI para dar feedback imediato ao usuário.
+// 4. Centraliza o comportamento de notificações, evitando repetição de código.
+// 5. Integrada diretamente nas funções de ação (criar, editar, excluir).
+
   const showToast = (message: string, type: "success" | "error" = "success") => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   };
 
-  // ============================================================
-  // Parte 4 - Helpers de ação (criar/editar/excluir)
-  // - Mantivemos a exibição de toast original para compatibilidade.
-  // - Agora o handleEdit também realiza navegação para a view de atualização.
-  // ============================================================
+// ============================================================
+// Parte 7 - Carregamento de Dados do Backend (quando USE_MOCK = false)
+// ============================================================
+// 1. `useEffect` monitora mudanças em `activeTab` e dispara requisições apenas se mock estiver desativado.
+// 2. Define base URL do backend e mapeamento detalhado de abas para endpoints REST reais.
+// 3. Suporta endpoints únicos ou múltiplos (ex: "usuarios" consulta dois endpoints).
+// 4. Desembrulha envelope de resposta padrão do backend (`res.data.dados`) com fallback seguro.
+// 5. Trata erros com toast e console, mantendo a UI estável mesmo com falhas de rede.
 
-  // When not using mock, fetch the current tab's data from backend
+  // Quando NÃO usar mock, buscar os dados da aba atual no backend
   useEffect(() => {
     if (USE_MOCK) return;
 
     const BACKEND_BASE = 'http://localhost:8000'; // adjust if your API is hosted elsewhere
 
-    // Map local tab keys to backend REST endpoints (full path after host)
-    // Extramamente importante:
+    // Mapear chaves locais das abas para endpoints REST no backend (caminho completo após o host)
+    // Extremamente importante:
 
     const backendMap: { [key: string]: string | string[] } = {
       usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
@@ -250,16 +256,6 @@ export default function DevTools() {
 
     const fetchData = async () => {
     try {
-    // Nota histórica: o trecho abaixo mostra a abordagem anterior que usava
-    // caminhos relativos como `/${activeTab}`. Isso falhava porque a API do backend
-    // usa um prefixo e formato diferentes. Mantemos o trecho comentado aqui apenas
-    // como referência. O código abaixo mapeia cada aba para o endpoint do backend
-    // correto e desembrulha o envelope de resposta.
-    /*
-    const url = `/${activeTab}`; // esperava endpoints como /usuarios, /hospedes, /funcionarios...
-    const res = await axios.get(url);
-    setApiData(prev => ({ ...prev, [activeTab]: res.data }));
-    */
         const mapping = backendMap[activeTab];
 
         if (!mapping) {
@@ -267,20 +263,21 @@ export default function DevTools() {
           return;
         }
 
-        // support single or multiple endpoints (e.g., usuarios)
-        const endpoints = Array.isArray(mapping) ? mapping : [mapping];
-        const results: any[] = [];
+  // suportar endpoint único ou múltiplos (ex.: 'usuarios' que junta 2 endpoints)
+  const endpoints = Array.isArray(mapping) ? mapping : [mapping];
+  const results: any[] = [];
 
         for (const ep of endpoints) {
           const fullUrl = `${BACKEND_BASE}${ep}`;
           const res = await axios.get(fullUrl);
-          // Backend wraps results in a Mensagem/result object -> actual data usually in res.data.dados
+          // O backend normalmente devolve um envelope (ex.: { sucesso: true, dados: [...] })
+          // portanto tentamos desembrulhar `res.data.dados` quando presente.
           const payload = res?.data?.dados ?? res?.data ?? [];
-          // If payload is an object with the list under 'dados' again, try unwrap
+          // Se o payload não for array, colocamos no array para manter a uniformidade
           results.push(Array.isArray(payload) ? payload : [payload]);
         }
 
-        // merge results (flatten) for tabs that fetched multiple endpoints
+        // mesclar resultados (flatten) quando a aba consultou múltiplos endpoints
         const merged = ([] as any[]).concat(...results);
 
         setApiData(prev => ({ ...prev, [activeTab]: merged }));
@@ -295,7 +292,15 @@ export default function DevTools() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  
+// ============================================================
+// Parte 8 - Funções de Ação do Usuário (CRUD Simulado)
+// ============================================================
+// 1. `handleCreate`: exibe toast informando que a criação está em desenvolvimento.
+// 2. `handleEdit`: navega para tela de atualização via `ROTA` e exibe toast de confirmação.
+// 3. `handleDelete`: solicita confirmação via `confirm()` e exibe toast de sucesso simulado.
+// 4. Todas as funções mantêm feedback visual imediato via `showToast`.
+// 5. Estrutura preparada para integração futura com chamadas reais ao backend.
+
   // Ao clicar no botão "Criar", mostra a mensagem de toast
 
   const handleCreate = () => showToast("Funcionalidade de criação em desenvolvimento", "success");
@@ -309,7 +314,8 @@ export default function DevTools() {
     } catch (err) {
       console.error('Erro ao navegar:', err);
     }
-    // Mantemos a toast original para feedback rápido (não removido)
+
+    // O TOAST é importante para para feedback rápido (não deve ser removido), e eu gostei dele também
     showToast(`Editar item ID: ${id}`, "success");
   };
   const handleDelete = (id: number) => {
@@ -317,6 +323,15 @@ export default function DevTools() {
       showToast(`Item ID ${id} excluído com sucesso!`, "success");
     }
   };
+
+// ============================================================
+// Parte 9 - Formatação de Valores para Exibição
+// ============================================================
+// 1. Função `formatValue` recebe chave e valor, retornando representação amigável.
+// 2. Converte booleanos para "Sim"/"Não", datas para formato brasileiro, valores monetários com R$.
+// 3. Aplica badges estilizados para status de quarto com classes CSS específicas.
+// 4. Retorna fallback "-" para valores nulos ou indefinidos.
+// 5. Garante consistência visual em toda a tabela, independentemente da origem dos dados.
 
   const formatValue = (key: string, value: any): string | ReactNode => {
     if (value === true) return "Sim";
@@ -329,6 +344,15 @@ export default function DevTools() {
     }
     return value?.toString() || "-";
   };
+
+// ============================================================
+// Parte 10 - Renderização JSX (Estrutura Visual Completa)
+// ============================================================
+// 1. Container principal com classes semânticas para estilização.
+// 2. Breadcrumb com navegação para dashboard e indicação de página atual.
+// 3. Banner com ícone, título e subtítulo explicativo do propósito da ferramenta.
+// 4. Seção de abas com rolagem horizontal e destaque visual da aba ativa.
+// 5. Área principal com busca, botão de criação, tabela responsiva, ações por linha e toast flutuante.
 
   return (
     <div className="devtools-page">

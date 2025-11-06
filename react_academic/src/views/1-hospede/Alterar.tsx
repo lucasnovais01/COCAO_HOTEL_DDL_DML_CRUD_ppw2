@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 
 import { apiGetHospede, apiPutHospede } from "../../services/1-hospede/api/api.hospede";
 import type { Hospede } from "../../type/1-hospede";
@@ -92,6 +92,26 @@ export default function AlterarHospede() {
   return (
     <div className="display">
       <div className="card animated fadeInDown">
+        {/* Breadcrumb: Home > DevTools > Alterar */}
+        <nav className="breadcrumb mb-4">
+          <div className="container flex items-center space-x-2 text-sm">
+            <NavLink to="/sistema/dashboard" className="text-blue-600 hover:text-blue-700">Home</NavLink>
+            <i className="fas fa-chevron-right text-gray-400"></i>
+            <NavLink to="/sistema/devtools" className="text-blue-600 hover:text-blue-700">DevTools</NavLink>
+            <i className="fas fa-chevron-right text-gray-400"></i>
+            <span className="text-gray-600">Alterar</span>
+          </div>
+        </nav>
+
+        {/* Banner idêntico ao DevTools (contexto: páginas administrativas) */}
+        <section className="devtools-banner mb-6">
+          <div className="container text-center">
+            <i className="fas fa-tools text-6xl mb-4"></i>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Dev Tools</h1>
+            <p className="text-xl">Painel de Administração - Simulação DDL</p>
+          </div>
+        </section>
+
         <h2>{HOSPEDE.TITULO.ATUALIZAR}</h2>
 
         <form onSubmit={onSubmitForm}>

@@ -21,12 +21,12 @@ import { ROTA } from "./url";
 // Remover {children} do Layout.tsx
 // ============================================================
 export const routes: RouteObject[] = [
-  // Redirecionamento da raiz '/' para o DevTools
+  // Redirecionamento da raiz '/' para o Dashboard
   // Motivo (pt-BR): abrir http://localhost:5173/ (ou :5174) deve levar ao
-  // DevTools; sem esse redirect a aplicação retorna "No route matches URL '/'".
+  // Dashboard do sistema; sem esse redirect a aplicação retorna "No route matches URL '/'".
   {
     path: '/',
-    element: <Navigate to="/sistema/devtools" replace />,
+    element: <Navigate to="/sistema/dashboard" replace />,
   },
 
   {

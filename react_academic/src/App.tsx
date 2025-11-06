@@ -1,6 +1,6 @@
 // Não estou usando o import abaixo mais, pq o App não cria mais as rotas diretamente.
 
-import { useRoutes } from 'react-router-dom'
+// import { useRoutes } from 'react-router-dom'
 
 // Nota: o Layout é usado pela configuração de rotas centralizada em
 // `src/services/router/router.tsx` (via element: <Layout />). Mantemos
