@@ -1,33 +1,52 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('COCAO_FUNCAO')
 export class Funcao extends BaseEntity {
-  @PrimaryGeneratedColumn('identity', {
-    name: 'ID_FUNCAO',
+  @PrimaryColumn({
+    name: 'CODIGO_FUNCAO',
     type: 'number',
+    precision: 4,
   })
-  // Chave primária gerada automaticamente pelo Oracle (IDENTITY).
-  idFuncao?: number;
+  codigoFuncao?: number;
 
   @Column({
     name: 'NOME_FUNCAO',
     type: 'varchar2',
-    length: 100,
+    length: 60,
     nullable: false,
   })
-  // Nome da função (cargo) do funcionário (ex: 'Recepcionista', 'Gerente').
   nomeFuncao: string = '';
 
   @Column({
-    name: 'ATIVO',
-    type: 'number',
-    nullable: false,
-    default: 1,
+    name: 'DESCRICAO',
+    type: 'varchar2',
+    length: 200,
+    nullable: true,
   })
-  // Status ativo: 1 = Ativo, 0 = Inativo (check no banco).
-  ativo: number = 1;
+  descricao?: string;
 
-  // Construtor para inicialização de objetos parciais (uso em DTOs ou testes).
+  @Column({
+    name: 'NIVEL_ACESSO',
+    type: 'number',
+    precision: 1,
+    nullable: false,
+  })
+  nivelAcesso: number = 1;
+
+  @Column({
+    name: 'CREATED_AT',
+    type: 'timestamp',
+    nullable: false,
+  })
+  createdAt?: Date;
+
+  @Column({
+    name: 'UPDATED_AT',
+    type: 'timestamp',
+    nullable: false,
+  })
+  updatedAt?: Date;
+
   constructor(data: Partial<Funcao> = {}) {
     super();
     Object.assign(this, data);

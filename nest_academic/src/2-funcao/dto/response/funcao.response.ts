@@ -2,22 +2,26 @@ import { Expose } from 'class-transformer';
 
 export class FuncaoResponse {
   @Expose()
-  // ID gerado pelo banco.
-  idFuncao?: number;
+  // Código da função (chave primária).
+  codigoFuncao?: number;
 
   @Expose()
   // Nome da função (cargo).
   nomeFuncao: string = '';
 
   @Expose()
-  // Ativo: 1 = Sim, 0 = Não.
-  ativo: number = 1;
+  // Descrição da função
+  descricao?: string;
 
   @Expose()
-  // Timestamp de criação (herdados de BaseEntity).
+  // Nível de acesso: 1=Básico, 2=Intermediário, 3=Gerencial
+  nivelAcesso: number = 1;
+
+  @Expose()
+  // Timestamp de criação
   createdAt: Date = new Date();
 
   @Expose()
-  // Timestamp de atualização (herdados de BaseEntity).
+  // Timestamp de atualização
   updatedAt: Date = new Date();
 }

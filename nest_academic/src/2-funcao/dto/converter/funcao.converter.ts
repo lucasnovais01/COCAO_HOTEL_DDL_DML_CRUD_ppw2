@@ -12,17 +12,14 @@ export class FuncaoConverter {
   static toFuncao(funcaoRequest: FuncaoRequest): Funcao {
     const funcao = new Funcao();
 
-    // ID só para updates; banco gerencia creates.
-    if (funcaoRequest.idFuncao != null) {
-      funcao.idFuncao = funcaoRequest.idFuncao;
+    // Código da função para creates e updates
+    if (funcaoRequest.codigoFuncao != null) {
+      funcao.codigoFuncao = funcaoRequest.codigoFuncao;
     }
 
     funcao.nomeFuncao = funcaoRequest.nomeFuncao;
-
-    // Campo opcional (ativo): só atribui se definido na request.
-    if (funcaoRequest.ativo !== undefined) {
-      funcao.ativo = funcaoRequest.ativo;
-    }
+    funcao.descricao = funcaoRequest.descricao;
+    funcao.nivelAcesso = funcaoRequest.nivelAcesso;
 
     return funcao;
   }
