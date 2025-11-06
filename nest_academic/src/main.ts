@@ -19,7 +19,6 @@ async function bootstrap() {
   }));
   
   // Configuração de filtros globais
-  // para tratamento de exceções
   app.useGlobalFilters(new HttpExceptionFilter());
   
   // Habilitar CORS para permitir que o frontend (React) se conecte
