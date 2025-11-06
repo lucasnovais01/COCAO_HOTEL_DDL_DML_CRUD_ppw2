@@ -31,25 +31,25 @@ export class HospedeControllerFindAll {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.controller.findall.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Controller específico para a operação de FIND ALL (GET) no módulo Hospede.
- * 
+
  * Como funciona?
  *   1. @Controller define a base da rota (ex.: /rest/sistema/v1/hospede).
  *   2. @Get adiciona o endpoint /listar, com HTTP 200 (OK).
  *   3. Injeta HospedeServiceFindAll no constructor para chamar o service.
  *   4. Método findAll recebe @Req() (para path) e chama service.findAll.
  *   5. Retorna lista de responses via MensagemSistema (status, mensagem, dados).
- * 
+
  * Por quê separado?
  *   - Organização: Cada operação em arquivo próprio para clareza.
  *   - Facilita manutenção, testes e escalabilidade.
- * 
+
  * Dicas:
  *   - Não precisa de @Body() pois é GET sem parâmetros.
  *   - Erros são capturados pelo HttpExceptionFilter global.
  *   - Integra com ROTA para URLs padronizadas.
- * 
+ *
  * ==============================================================
  */

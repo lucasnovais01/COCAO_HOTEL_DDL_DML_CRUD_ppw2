@@ -32,7 +32,7 @@ export class HospedeControllerCreate {
       'Hóspede cadastrado com sucesso!!!',
       response,
       ROTA.HOSPEDE.CREATE, // Antes: res.path , para pegar o caminho da requisição, mas tava dando erro de tipo
-                           // Agora é o mesmo valor do decorator @Post(ROTA.HOSPEDE.CREATE)
+      // Agora é o mesmo valor do decorator @Post(ROTA.HOSPEDE.CREATE)
       null,
     );
   }
@@ -44,10 +44,10 @@ export class HospedeControllerCreate {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.controller.create.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Controller específico para a operação de CREATE (POST) no módulo Hospede.
- * 
+
  * Como funciona?
  *   1. @Controller define a base da rota (ex.: /rest/sistema/v1/hospede).
  *   2. @Post adiciona o endpoint /criar, com HTTP 201 (Created).
@@ -55,11 +55,11 @@ export class HospedeControllerCreate {
  *   4. Método create recebe @Body() (DTO validado) e @Req() (para path).
  *   5. Chama service.create para lógica de negócios.
  *   6. Retorna resposta padronizada via MensagemSistema (status, mensagem, dados).
- * 
+
  * Por quê separado?
  *   - Organização: Cada operação (create, find, etc.) em arquivo próprio.
  *   - Facilita manutenção e testes unitários.
- * 
+
  * Dicas:
  *   - Validação do DTO ocorre automaticamente via ValidationPipe global.
  *   - Erros (ex.: validação falha) são capturados pelo HttpExceptionFilter.

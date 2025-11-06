@@ -9,22 +9,22 @@ import { HospedeResponse } from '../dto/response/hospede.response';
 
 @Injectable()
 export class HospedeServiceUpdate {
-
   constructor(
     @InjectRepository(Hospede)
     private hospedeRepository: Repository<Hospede>,
-    private hospedeServiceFindOne: HospedeServiceFindOne,     // Injeta o service de busca (FindOne) para reutilizar a lógica de validação
+    private hospedeServiceFindOne: HospedeServiceFindOne, // Injeta o service de busca (FindOne) para reutilizar a lógica de validação
   ) {}
 
   async update(
     idUsuario: number,
     hospedeRequest: HospedeRequest,
-  ): Promise<HospedeResponse | null> {    
+  ): Promise<HospedeResponse | null> {
     // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
     let hospede = ConverterHospede.toHospede(hospedeRequest);
 
     // 2. Busca o cadastro existente usando o service FindOne.
-    const hospedeCadastrado = await this.hospedeServiceFindOne.findById(idUsuario);
+    const hospedeCadastrado =
+      await this.hospedeServiceFindOne.findById(idUsuario);
 
     // 3. Validação de existência: se não existir, lança uma exceção HTTP 404 (Not Found)
     if (!hospedeCadastrado) {
@@ -34,9 +34,9 @@ export class HospedeServiceUpdate {
     // 4. Mescla os novos dados (Entidade 'hospede') sobre o cadastro encontrado (Response 'hospedeCadastrado')
     const hospedeAtualizado = Object.assign(hospedeCadastrado, hospede);
 
-    // 5. Salva o objeto mesclado. 
-    // O TypeORM 'save' é flexível: ele aceita o objeto 'hospedeAtualizado' 
-    // (que é uma mistura de Response+Entity) e executa o UPDATE 
+    // 5. Salva o objeto mesclado.
+    // O TypeORM 'save' é flexível: ele aceita o objeto 'hospedeAtualizado'
+    // (que é uma mistura de Response+Entity) e executa o UPDATE
     // porque reconhece a chave primária (idUsuario) nele.
     hospede = await this.hospedeRepository.save(hospedeAtualizado);
 

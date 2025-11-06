@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Hospede } from '../entity/hospede.entity';
 import { Repository } from 'typeorm';
 
-
 @Injectable()
 export class HospedeServiceRemove {
   constructor(

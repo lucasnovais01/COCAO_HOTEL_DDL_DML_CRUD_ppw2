@@ -56,6 +56,8 @@ export class Mensagem<T> {
   }
 }
 
+// Problema em todos os Unknows: 'unknown' overrides all other types in this union type.eslint@typescript-eslint/no-redundant-type-constituents
+
 /*
     if (this.mensagem != null && this.mensagem !== undefined && this.erro !== unknown) {
       result.mensagem = this.mensagem;

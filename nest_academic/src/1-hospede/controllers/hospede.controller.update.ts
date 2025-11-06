@@ -47,10 +47,10 @@ export class HospedeControllerUpdate {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.controller.update.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Controller específico para a operação de UPDATE (PUT por ID) no módulo Hospede.
- * 
+
  * Como funciona?
  *   1. @Controller define a base da rota (ex.: /rest/sistema/v1/hospede).
  *   2. @Put adiciona o endpoint /alterar/:id, com HTTP 200 (OK).
@@ -58,16 +58,16 @@ export class HospedeControllerUpdate {
  *   4. Método update recebe @Param('id') (validado como número via ParseIntPipe), @Body() (DTO validado) e @Req() (para path).
  *   5. Chama service.update para atualizar por ID com novos dados.
  *   6. Retorna response atualizada via MensagemSistema (status, mensagem, dados).
- * 
+
  * Por quê separado?
  *   - Organização: Cada operação em arquivo próprio para clareza.
  *   - Facilita manutenção, testes e escalabilidade.
- * 
+
  * Dicas:
  *   - PUT para atualizações completas; DTO valida os dados de entrada.
  *   - ParseIntPipe garante :id numérico; lança erro se inválido.
  *   - Erros (ex.: não encontrado) são lançados no service e capturados pelo filter global.
  *   - Integra com ROTA para URLs padronizadas.
- * 
+
  * ==============================================================
  */

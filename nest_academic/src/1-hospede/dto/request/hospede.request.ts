@@ -15,29 +15,22 @@ import { Type } from 'class-transformer';
 /**
  * DTO de requisição para Hospede.
  * Valida dados de entrada para create/update no controller.
- * 
  * - Baseado nas constraints do DDL de COCAO_HOSPEDE.
  * - Usa class-validator para regras (NOT NULL, lengths, regex, etc.).
  * - Campos opcionais: rg, email, telefone.
  * - Defaults no DDL (tipo=0, ativo=1) são validados, mas permitidos vazios se não enviados.
- * 
  * Observações:
  * - Validações regex alinhadas ao CHECK no banco (ex.: CPF 11 dígitos).
  * - Datas: Transformadas via @Type(() => Date).
  * - Erros: Mensagens customizadas para usuário.
  */
 
-/* 
+/*
  * Diferenças em relação ao modelo antigo ('CidadeRequest'):
- * 
  * 1. Mais campos e validações: Antigo simples (2 strings obrigatórias). Aqui, incluímos dates, numbers, regex (CPF/RG/email/telefone), enums (sexo/tipo/ativo), email validation.
- * 
  * 2. @Type: Expandido para numbers e dates (ex.: @Type(() => Date) para dataNascimento).
- * 
  * 3. Regex/Checks: Adicionados @Matches para constraints do DDL (ausente no antigo).
- * 
  * 4. Opcionais: Mais uso de @IsOptional + '?' para campos NULLABLE.
- * 
  * 5. Construtor: Mantido com Object.assign para inicialização parcial.
  */
 

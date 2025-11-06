@@ -31,12 +31,11 @@ void bootstrap();
 // http://localhost:8000/cidade/atualizar/1
 // http://localhost:8000/cidade/remover/1
 
-
 /**
  * ==============================================================
  * MAIN.TS – PONTO DE ENTRADA DA APLICAÇÃO
  * ==============================================================
- * 
+ 
  * O que é?
  *   Arquivo que inicia o servidor NestJS.
  * 

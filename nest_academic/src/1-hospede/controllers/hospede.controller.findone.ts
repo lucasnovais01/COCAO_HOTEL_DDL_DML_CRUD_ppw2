@@ -24,11 +24,7 @@ export class HospedeControllerFindOne {
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Result<HospedeResponse | null>> {
-
-
-
     const response = await this.hospedeServiceFindOne.findById(+id);
-
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
@@ -46,10 +42,10 @@ export class HospedeControllerFindOne {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.controller.findone.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Controller específico para a operação de FIND ONE (GET por ID) no módulo Hospede.
- * 
+
  * Como funciona?
  *   1. @Controller define a base da rota (ex.: /rest/sistema/v1/hospede).
  *   2. @Get adiciona o endpoint /buscar/:id, com HTTP 200 (OK).

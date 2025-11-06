@@ -38,25 +38,21 @@ export class HospedeServiceCreate {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.service.create.ts
  * ==============================================================
- * 
  * O que é?
  *   - Service específico para a operação de CREATE no módulo Hospede.
- * 
  * Como funciona?
  *   1. Injeta repositório TypeORM para Hospede.
  *   2. Converte HospedeRequest para entidade via converter.
  *   3. Verifica duplicidade por CPF (UNIQUE no DDL); lança HttpException se existir.
  *   4. Salva a entidade no banco via repository.save.
  *   5. Converte entidade salva para HospedeResponse e retorna.
- * 
  * Por quê separado?
  *   - Organização: Lógica de negócios isolada por operação.
  *   - Facilita injeção, testes e reutilização.
- * 
  * Dicas:
  *   - Validações do DTO já ocorreram no controller.
  *   - Erros são propagados para o filter global formatar.
  *   - Integra com converter para mapear DTO ↔ entity.
- * 
+
  * ==============================================================
  */

@@ -27,20 +27,19 @@ export class HospedeServiceFindAll {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.service.findall.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Service específico para a operação de FIND ALL no módulo Hospede.
- * 
  * Como funciona?
  *   1. Injeta repositório TypeORM para Hospede.
  *   2. Usa createQueryBuilder para buscar todos os registros (getMany).
  *   3. Converte a lista de entidades para lista de HospedeResponse via converter.
  *   4. Retorna a lista de responses.
- * 
+
  * Por quê separado?
  *   - Organização: Lógica de negócios isolada por operação.
  *   - Facilita injeção, testes e reutilização.
- * 
+
  * Dicas:
  *   - Pode expandir query com filtros/order se necessário.
  *   - Erros (ex.: banco offline) propagados para controller/filter.

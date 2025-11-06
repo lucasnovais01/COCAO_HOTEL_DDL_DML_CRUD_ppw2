@@ -14,7 +14,8 @@ import { HospedeServiceRemove } from './service/hospede.service.remove';
 import { HospedeServiceFindAll } from './service/hospede.service.findall';
 import { HospedeServiceFindOne } from './service/hospede.service.findone';
 
-const hospedeControllers = [      // Constante para agrupar os controllers
+const hospedeControllers = [
+  // Constante para agrupar os controllers
   HospedeControllerFindAll,
   HospedeControllerFindOne,
   HospedeControllerCreate,
@@ -22,8 +23,9 @@ const hospedeControllers = [      // Constante para agrupar os controllers
   HospedeControllerRemove,
 ];
 
-const hospedeServices = [         // Constante para agrupar os services
-  HospedeServiceCreate,   
+const hospedeServices = [
+  //Constante para agrupar os services
+  HospedeServiceCreate,
   HospedeServiceUpdate,
   HospedeServiceRemove,
   HospedeServiceFindAll,
@@ -64,8 +66,8 @@ export class HospedeModule {}
  * 3. `providers`: Declara quais classes devem ser injetáveis (como os `Services` que contêm a lógica de negócios).
  * 4. `exports`: (Opcional) Torna os `providers` (ou o `TypeOrmModule`) disponíveis para outros módulos que importem o `HospedeModule`.
  * * Padrão do Professor:
- * - O uso de arrays `hospedeControllers` e `hospedeServices` com o spread operator (`...`) é um 
- * estilo de organização para manter a declaração `@Module` limpa, 
+ * - O uso de arrays `hospedeControllers` e `hospedeServices` com o spread operator (`...`) é um
+ * estilo de organização para manter a declaração `@Module` limpa,
  * especialmente em módulos grandes.
  * * ==============================================================
  */

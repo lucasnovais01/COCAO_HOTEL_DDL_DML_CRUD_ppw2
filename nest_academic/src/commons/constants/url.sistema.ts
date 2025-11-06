@@ -68,15 +68,15 @@ function gerarRotasSistema(entity: string) {
 // Preciso ajeitar a ordem
 
 export const ROTA = {
-  HOSPEDE:          gerarRotasSistema(HOSPEDE),
-  FUNCAO:           gerarRotasSistema(FUNCAO),
-  FUNCIONARIO:      gerarRotasSistema(FUNCIONARIO),
-  TIPO_QUARTO:      gerarRotasSistema(TIPO_QUARTO),
-  QUARTO:           gerarRotasSistema(QUARTO),
-  STATUS_RESERVA:   gerarRotasSistema(STATUS_RESERVA),
-  RESERVA:          gerarRotasSistema(RESERVA),
-  SERVICO:          gerarRotasSistema(SERVICO),
-  HOSPEDE_SERVICO:  gerarRotasSistema(HOSPEDE_SERVICO),
+  HOSPEDE: gerarRotasSistema(HOSPEDE),
+  FUNCAO: gerarRotasSistema(FUNCAO),
+  FUNCIONARIO: gerarRotasSistema(FUNCIONARIO),
+  TIPO_QUARTO: gerarRotasSistema(TIPO_QUARTO),
+  QUARTO: gerarRotasSistema(QUARTO),
+  STATUS_RESERVA: gerarRotasSistema(STATUS_RESERVA),
+  RESERVA: gerarRotasSistema(RESERVA),
+  SERVICO: gerarRotasSistema(SERVICO),
+  HOSPEDE_SERVICO: gerarRotasSistema(HOSPEDE_SERVICO),
 };
 
 // Rotas de autenticação (separadas para evitar conflito). Observação: Futuro AuthModule

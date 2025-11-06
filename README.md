@@ -88,6 +88,9 @@ npm install class-validator
 # 11. Adiciona funcionalidade de transformação de objetos e DTOs
 npm install class-transformer
 
+##
+npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm oracledb @types/oracledb @nestjs/config joi @types/joi class-validator class-transformer
+
 
 
 # PRO REACT

@@ -27,7 +27,8 @@ export class HospedeControllerRemove {
     await this.hospedeServiceRemove.remove(id);
     // 204: não retornar corpo
 
-    const rawPath = (req as any).path ?? (req as any).url ?? (req as any).originalUrl;
+    const rawPath =
+      (req as any).path ?? (req as any).url ?? (req as any).originalUrl;
     const path: string | null = typeof rawPath === 'string' ? rawPath : null;
 
     return MensagemSistema.showMensagem(
@@ -46,10 +47,10 @@ export class HospedeControllerRemove {
  * ==============================================================
  * EXPLICAÇÃO DIDÁTICA: hospede.controller.remove.ts
  * ==============================================================
- * 
+
  * O que é?
  *   - Controller específico para a operação de REMOVE (DELETE por ID) no módulo Hospede.
- * 
+
  * Como funciona?
  *   1. @Controller define a base da rota (ex.: /rest/sistema/v1/hospede).
  *   2. @Delete adiciona o endpoint /excluir/:id, com HTTP 204 (No Content).
@@ -57,16 +58,16 @@ export class HospedeControllerRemove {
  *   4. Método remove recebe @Param('id') (validado como número via ParseIntPipe) e @Req() (para path).
  *   5. Chama service.remove para deletar por ID.
  *   6. Retorna resposta vazia via MensagemSistema (status 204, mensagem, null para dados).
- * 
+
  * Por quê separado?
  *   - Organização: Cada operação em arquivo próprio para clareza.
  *   - Facilita manutenção, testes e escalabilidade.
- * 
+
  * Dicas:
  *   - 204 No Content: Padrão para deletes sem retorno de corpo.
  *   - ParseIntPipe garante :id numérico; lança erro se inválido.
  *   - Erros (ex.: não encontrado) são lançados no service e capturados pelo filter global.
  *   - Integra com ROTA para URLs padronizadas.
- * 
+ *
  * ==============================================================
  */

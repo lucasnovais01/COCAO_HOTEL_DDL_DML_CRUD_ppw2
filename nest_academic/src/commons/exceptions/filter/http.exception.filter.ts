@@ -25,22 +25,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message,
       null,
       req.path,
-      erro
+      erro,
     );
   }
 }
 /**
  * HTTP EXCEPTION FILTER - Sistema COCAO
- * 
  * Captura TODOS os HttpException da aplicação
  * Padroniza respostas de erro em JSON:
  *   { status, message, path, erro }
- * 
+ *
  * Registrado globalmente em main.ts:
  *   app.useGlobalFilters(new HttpExceptionFilter());
- * 
+ *
  * Usa: sendHttpResponse() → função comum de formatação
- * 
+ *
  * NUNCA use: throw new Error()
  * SEMPRE use: throw new BadRequestException('mensagem')
  */

@@ -19,7 +19,7 @@ async function bootstrap() {
   // ERRADO: O código original não estava configurando o prefixo global da API, o que causava o erro 404.
   // O NestJS não sabia como mapear corretamente as rotas sem esse prefixo global.
   //
-  // CORRIGIDO: Adicionamos a configuração `app.setGlobalPrefix('rest/sistema/v1')` 
+  // CORRIGIDO: Adicionamos a configuração `app.setGlobalPrefix('rest/sistema/v1')`
   // para que todas as rotas da API sejam prefixadas corretamente.
   app.setGlobalPrefix('rest/sistema/v1'); // Configura o prefixo global para todas as rotas (ex.: /rest/sistema/v1/hospede)
 
@@ -42,7 +42,7 @@ void bootstrap();
  *   2. Registra o filtro global de erros (HttpExceptionFilter)
  *   3. Libera CORS para o React (localhost:3000)
  *   4. Inicia o servidor na porta 8000
- * 
+ 
  * Importante:
  *   - CORS: permite que o frontend acesse a API
  *   - Filtro global: padroniza TODOS os erros

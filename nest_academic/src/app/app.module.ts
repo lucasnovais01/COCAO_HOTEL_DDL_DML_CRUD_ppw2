@@ -17,13 +17,20 @@ import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.modu
 */
 
 // Configuração do Oracle Client
-const oracledb = require('oracledb');
-
+import oracledb from 'oracledb';
 
 oracledb.initOracleClient({
   libDir: 'D:/.Lucas Novais/oracle/client',
 });
 
+/*
+// Configuração do Oracle Client COMO ESTAVA
+const oracledb = require('oracledb');
+
+oracledb.initOracleClient({
+  libDir: 'D:/.Lucas Novais/oracle/client',
+});
+*/
 
 // Em casa:
 /*
@@ -32,9 +39,7 @@ oracledb.initOracleClient({
 });
 */
 
-
 // IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
-
 
 @Module({
   imports: [
@@ -46,19 +51,18 @@ oracledb.initOracleClient({
         DATABASE_HOST: Joi.string().required(),
         DATABASE_PORT: Joi.number().required(),
         DATABASE_USERNAME: Joi.string().required(),
-        DATABASE_NAME: Joi.string().required(), // No Oracle, isso será o 'sid'
+        DATABASE_NAME: Joi.string().required(), //No Oracle, isso será o 'sid'
         DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_AUTOLOADENTITIES: Joi.boolean().default(true),
-        DATABASE_SYNCHRONIZE: Joi.boolean().default(false), // 'false' é crucial em produção
+        DATABASE_SYNCHRONIZE: Joi.boolean().default(false), //'false' é crucial em produção
         DATABASE_LOGGING: Joi.boolean().default(true),
-
         DATABASE_ROW_NUMBER: Joi.boolean().default(true),
       }),
     }),
     // 2. TypeOrmModule: Configura a conexão com o banco de dados
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],      // Depende do ConfigModule
-      inject: [ConfigService],      // Injeta o ConfigService para ler o .env
+      imports: [ConfigModule], // Depende do ConfigModule
+      inject: [ConfigService], // Injeta o ConfigService para ler o .env
       // 'useFactory' constrói a configuração da conexão
       useFactory: (configService: ConfigService) => ({
         type: 'oracle',
@@ -69,7 +73,7 @@ oracledb.initOracleClient({
 
         password: configService.get('DATABASE_PASSWORD'),
         autoLoadEntities: configService.get('DATABASE_AUTOLOADENTITIES'), // Carrega entidades automaticamente
-        synchronize: configService.get('DATABASE_SYNCHRONIZE'),           // Se 'true', atualiza o schema (não use em produção)
+        synchronize: configService.get('DATABASE_SYNCHRONIZE'), // Se 'true', atualiza o schema (não use em produção)
         logging: ['query', 'error'], // Níveis de log
         // entities: [Hospede], // Desnecessário se 'autoLoadEntities' for true
       }),
@@ -87,7 +91,6 @@ oracledb.initOracleClient({
     ServicoModule,
     HospedeServicoModule,
     */
-
   ],
 
   // IMPORTANTE: OS DADOS ACIMA, são secretos
