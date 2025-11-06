@@ -8,10 +8,14 @@
 // 5. Importa constantes de rotas (`ROTA`) para padronizar URLs de navegação no sistema.
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+
+// import axios from "axios"; // não está mais usando axios diretamente, está usando o api.ts - 06-11-2025
 import type { ReactNode } from "react";
+
 import { useNavigate, NavLink } from "react-router-dom";
 import { ROTA } from "../services/router/url";
+
+import { http } from "../services/axios/config.axios";
 
 // ============================================================
 // Parte 2 - Configuração Inicial de Mock e Estrutura de Dados
@@ -22,6 +26,10 @@ import { ROTA } from "../services/router/url";
 // 4. Inclui comentários internos com exemplos desativados para expansão futura.
 // 5. Serve como base para testes locais e demonstração da UI sem dependência de servidor.
 
+
+// só descomentar para usar o mock
+
+/*
 const mockApi: { [key: string]: any[] } = {
   usuarios: [
     { ID_USUARIO: 1, 
@@ -44,6 +52,8 @@ const mockApi: { [key: string]: any[] } = {
       TIPO: 0, 
       ATIVO: true },
   ],
+
+
 
   funcoes: [
     { CODIGO_FUNCAO: 1, 
@@ -94,6 +104,11 @@ const mockApi: { [key: string]: any[] } = {
       QUANTIDADE: 2 },
   ],
 };
+*/
+
+
+
+
 
 // ============================================================
 // Parte 3 - Definição das Abas da Interface
@@ -134,10 +149,15 @@ export default function DevTools() {
   const navigate = useNavigate();
 
   // Se colocar false, ativa chamadas reais ao backend, e se colocar true, usa dados mock em memória
-  const USE_MOCK = false;
+/*
+  const USE_MOCK = true;
 
   // apiData contém dados mock (padrão) ou dados remotos carregados do backend
   const [apiData, setApiData] = useState<{ [key: string]: any[] }>(mockApi);
+*/
+
+  // apiData contém dados remotos carregados do backend
+  const [apiData, setApiData] = useState<{ [key: string]: any[] }>({});
 
 // ============================================================
 // Parte 5 - Lógica de Preparação e Filtragem de Dados
@@ -232,7 +252,12 @@ export default function DevTools() {
 // 4. Desembrulha envelope de resposta padrão do backend (`res.data.dados`) com fallback seguro.
 // 5. Trata erros com toast e console, mantendo a UI estável mesmo com falhas de rede.
 
-  // Quando NÃO usar mock, buscar os dados da aba atual no backend
+  // Buscar os dados da aba atual no backend
+  useEffect(() => {
+
+
+    /*
+      // Quando NÃO usar mock, buscar os dados da aba atual no backend
   useEffect(() => {
     if (USE_MOCK) return;
 
@@ -253,9 +278,22 @@ export default function DevTools() {
       servicos: '/rest/sistema/v1/servico/listar',
       'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
     };
+    */
+    const backendMap: { [key: string]: string | string[] } = {
+      usuarios: ['/hospede', '/funcionario'],
+      hospedes: '/hospede',
+      funcionarios: '/funcionario',
+      funcoes: '/funcao',
+      'tipos-quarto': '/tipo-quarto',
+      quartos: '/quarto',
+      'status-reserva': '/status-reserva',
+      reservas: '/reserva',
+      servicos: '/servico',
+      'hospede-servico': '/hospede-servico',
+    };
 
     const fetchData = async () => {
-    try {
+      try {
         const mapping = backendMap[activeTab];
 
         if (!mapping) {
@@ -263,13 +301,12 @@ export default function DevTools() {
           return;
         }
 
-  // suportar endpoint único ou múltiplos (ex.: 'usuarios' que junta 2 endpoints)
-  const endpoints = Array.isArray(mapping) ? mapping : [mapping];
-  const results: any[] = [];
+        // suportar endpoint único ou múltiplos (ex.: 'usuarios' que junta 2 endpoints)
+        const endpoints = Array.isArray(mapping) ? mapping : [mapping];
+        const results: any[] = [];
 
         for (const ep of endpoints) {
-          const fullUrl = `${BACKEND_BASE}${ep}`;
-          const res = await axios.get(fullUrl);
+          const res = await http.get(ep);
           // O backend normalmente devolve um envelope (ex.: { sucesso: true, dados: [...] })
           // portanto tentamos desembrulhar `res.data.dados` quando presente.
           const payload = res?.data?.dados ?? res?.data ?? [];
@@ -305,7 +342,7 @@ export default function DevTools() {
 
   const handleCreate = () => showToast("Funcionalidade de criação em desenvolvimento", "success");
 
-  // como tava antes:
+  // como tava antes (eu gostava):
   // const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
   const handleEdit = (id: number) => {
     try {

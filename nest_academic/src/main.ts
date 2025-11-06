@@ -21,13 +21,56 @@ async function bootstrap() {
   // Configuração de filtros globais
   app.useGlobalFilters(new HttpExceptionFilter());
   
-  // Habilitar CORS para permitir que o frontend (React) se conecte
-  app.enableCors({
+  // =============================================================================
+  // HISTÓRICO DE ALTERAÇÕES CORS - 06/11/2025
+  // =============================================================================
+  // MUDANÇA: Adição da porta 5173 do Vite nas origens permitidas
+  // MOTIVO: Frontend está rodando com Vite na porta 5173 ao invés de 3000
+  // CONTEXTO: ERR_NETWORK ocorrendo devido a bloqueio de CORS
+  // =============================================================================
 
-    origin: ['http://localhost:3000', 'http://localhost:8000'], // endereço do react
+  // Configuração ANTIGA (comentada para referência)
+  /*
+  app.enableCors({
+    origin: ['http://localhost:3000', 'http://localhost:8000'], // [REMOVIDO] Não incluía porta do Vite
     methods: 'GET, POST, PUT, DELETE',
     allowedHeaders: 'Content-Type, Accept',
     credentials: false,
+  });
+  */
+
+  // NOVA Configuração 2.0 (com correções de CORS)
+  app.enableCors({
+    // Origens permitidas (development)
+    origin: [
+      'http://localhost:3000',   // React padrão
+      'http://localhost:5173',   // Vite dev server
+      'http://127.0.0.1:5173',  // Vite alternativo
+    ],
+
+    // Métodos permitidos
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    
+    // Headers permitidos na requisição
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'X-Requested-With',
+      'Origin'
+    ],
+
+    // Headers expostos para o cliente
+    exposedHeaders: ['Content-Length', 'Content-Type'],
+    
+    // Desativado credentials pois não estamos usando cookies/auth ainda
+    credentials: false,
+    
+    // Cache da resposta preflight por 1 hora
+    maxAge: 3600,
+    
+    // Permitir qualquer header na resposta
+    preflightContinue: false
   });
 /*
   // Como eu consegui achar o que causava erro 404:
