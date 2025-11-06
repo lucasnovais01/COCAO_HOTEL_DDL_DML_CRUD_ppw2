@@ -14,12 +14,17 @@ import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import type { Request } from 'express';
 
-@Controller(ROTA.HOSPEDE.BASE)
+@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
 export class HospedeControllerRemove {
   constructor(private readonly hospedeServiceRemove: HospedeServiceRemove) {}
+
   // Retornar 204 é o mais apropriado para delete sem corpo
   @HttpCode(HttpStatus.NO_CONTENT) //O correto é o NO_CONTENT, foi trocado (HttpStatus.OK)
-  @Delete(ROTA.HOSPEDE.DELETE)
+
+  // Histórico: @Delete(ROTA.HOSPEDE.DELETE) foi comentado porque quando
+  // BY_ID incluía a rota completa causava duplicação com o @Controller base.
+  // Agora temos ENDPOINTS no ROTA, então usamos:
+  @Delete(ROTA.HOSPEDE.ENDPOINTS.DELETE)  // 'excluir/:id'
   async remove(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,

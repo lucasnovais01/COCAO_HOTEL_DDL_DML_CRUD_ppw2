@@ -6,12 +6,14 @@ import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import { Result } from 'src/commons/mensagem/mensagem';
 import type { Request } from 'express';
 
-@Controller(ROTA.HOSPEDE.BASE)
+@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
 export class HospedeControllerFindAll {
   constructor(private readonly hospedeServiceFindAll: HospedeServiceFindAll) {}
 
   @HttpCode(HttpStatus.OK) // 200
-  @Get(ROTA.HOSPEDE.LIST)
+  // Usa o endpoint definido em ROTA.HOSPEDE.ENDPOINTS para manter clareza
+  // Histórico: antes usávamos .split('/').pop() para extrair 'listar'
+  @Get(ROTA.HOSPEDE.ENDPOINTS.LIST)
   async findAll(@Req() res: Request): Promise<Result<HospedeResponse[]>> {
     const response = await this.hospedeServiceFindAll.findAll();
 

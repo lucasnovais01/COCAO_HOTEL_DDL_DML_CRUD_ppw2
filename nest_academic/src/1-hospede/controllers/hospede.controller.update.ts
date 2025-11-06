@@ -16,12 +16,16 @@ import { Result } from 'src/commons/mensagem/mensagem';
 import { HospedeResponse } from '../dto/response/hospede.response';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 
-@Controller(ROTA.HOSPEDE.BASE)
+@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
 export class HospedeControllerUpdate {
   constructor(private readonly hospedeServiceUpdate: HospedeServiceUpdate) {}
 
   @HttpCode(HttpStatus.OK)
-  @Put(ROTA.HOSPEDE.UPDATE) // o método PUT envia o objeto a ser persistido, a ser modificado
+  // Histórico: havia uma tentativa de usar a rota completa diretamente:
+  // @Put(ROTA.HOSPEDE.UPDATE) // isso pode duplicar a base se a rota já contém o base
+  // Solução atual: usar o endpoint definido em ROTA.HOSPEDE.ENDPOINTS
+  @Put(ROTA.HOSPEDE.ENDPOINTS.UPDATE)  // 'alterar/:id'
+  
   async update(
     @Req() res: Request,
     @Param('id', ParseIntPipe) id: number,

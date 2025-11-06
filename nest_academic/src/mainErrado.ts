@@ -9,16 +9,22 @@ async function bootstrap() {
 
   app.enableCors({
     // libera o cors
-
     origin: ['http://localhost:3000', 'http://localhost:8000'], // endereço do react
     methods: 'GET, POST, PUT, DELETE',
     allowedheaders: 'Content-Type, Accept',
     credentials: false,
   });
 
+
+
+
+
+
+
+
+  
   await app.listen(process.env.PORT ?? 8000); // Default to port 8000, pq no react é 3000
 }
-
 void bootstrap();
 
 // http://localhost:8000/rest/sistema/cidade/criar

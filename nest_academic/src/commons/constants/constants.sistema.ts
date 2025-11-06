@@ -2,9 +2,8 @@
  * Tutorial, o que é este arquivo?
 
  * Este arquivo define constantes que representam os nomes das entidades do sistema COCAO - Hotel Management.
-
  * Define os nomes das entidades usadas nas rotas, serviços e módulos
- * 
+
  * IMPORTANTE: Tem que usar esses nomes em toda a aplicação para consistência
  */
 export const HOSPEDE = 'hospede';

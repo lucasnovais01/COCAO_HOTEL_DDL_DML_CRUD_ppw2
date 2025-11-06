@@ -15,16 +15,37 @@ import { ReservaModule } from 'src/7-reserva/reserva.module';
 import { ServicoModule } from 'src/8-servico/servico.module';
 import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.module';
 */
+// =========================================================================
+// IMPORTAÇÕES DO ORACLE CLIENT
+// =========================================================================
 
-// Configuração do Oracle Client
+// ERRADO (por quê?):
+// const oracledb = require('oracledb');  
+// - Usa require() que é CommonJS, mas estamos usando ES Modules (import/export)
+// - TypeScript não consegue inferir os tipos corretamente com require()
+
+// ERRADO TAMBÉM (por quê?):
+// import oracledb from 'oracledb';
+// - Essa sintaxe espera que oracledb tenha um export default, mas não tem
+
+// CERTO (por quê?):
+import * as oracledb from 'oracledb';
+// - Importa todos os exports do módulo oracledb como um namespace
+// - TypeScript consegue inferir os tipos corretamente
+// - Compatível com ES Modules
+
+// HISTÓRICO DE TENTATIVAS (mantido para aprendizado):
+/*
+// Primeira tentativa (incorreta - usando import default):
 import oracledb from 'oracledb';
 
 oracledb.initOracleClient({
   libDir: 'D:/.Lucas Novais/oracle/client',
 });
+*/
 
 /*
-// Configuração do Oracle Client COMO ESTAVA
+// Segunda tentativa (incorreta - usando require):
 const oracledb = require('oracledb');
 
 oracledb.initOracleClient({
@@ -32,12 +53,11 @@ oracledb.initOracleClient({
 });
 */
 
-// Em casa:
-/*
+// Configuração atual (em casa):
+
 oracledb.initOracleClient({
   libDir: 'C:\\Oracle client\\instantclient_23_9', 
 });
-*/
 
 // IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 

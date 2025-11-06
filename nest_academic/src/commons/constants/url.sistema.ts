@@ -32,9 +32,10 @@ const ROTA_AUTH = `rest/auth/${API_VERSION}`;
 
 const LIST = 'listar';
 const CREATE = 'criar';
-const BY_ID = 'buscar';
-const UPDATE = 'alterar';
-const DELETE = 'excluir';
+const BY_ID = 'buscar/:id';
+const UPDATE = 'alterar/:id';
+const DELETE = 'excluir/:id';
+
 
 // Gera rotas completas para uma entidade. Exemplo: /rest/sistema/v1/hospede/listar
 // Retorna um objeto com todas as rotas para a entidade fornecida
@@ -51,21 +52,74 @@ const DELETE = 'excluir';
 //   DELETE: '/rest/sistema/v1/hospede/excluir/:id',
 // }
 
+/**
+ * Gera as rotas para uma entidade do sistema.
+ * 
+ * IMPORTANTE SOBRE A BARRA INICIAL '/':
+ * ----------------------------------
+ * 1. Mantemos a barra inicial aqui para:
+ *    - Manter o padrão do professor
+ *    - Facilitar a visualização da rota completa
+ *    - Manter consistência com a documentação
+ * 
+ * 2. No controller, removemos a barra usando .substring(1)
+ *    Exemplo:
+ *    - Aqui: "/rest/sistema/v1/hospede"
+ *    - No controller: "rest/sistema/v1/hospede"
+ * 
+ * 3. Esta abordagem permite:
+ *    - Manter o padrão de rotas consistente
+ *    - Adaptar para o NestJS sem mudar a estrutura
+ *    - Facilitar debug e logs
+ */
+
+// Não está servindo pra mais nada, a functio abaixo, foi substituída por ENDPOINTS
+  // Helper function to get only the endpoint part of a route (after the base)
+/*
+function getEndpoint(fullPath: string, base: string): string {
+  return fullPath.replace(base + '/', '');
+}
+*/
+
 function gerarRotasSistema(entity: string) {
   const base = `/${ROTA_SISTEMA}/${entity}`;
-  return {
+  const routes = {
     BASE: base,
     LIST: `${base}/${LIST}`,
     CREATE: `${base}/${CREATE}`,
-    BY_ID: `${base}/${BY_ID}/:id`,
-    UPDATE: `${base}/${UPDATE}/:id`,
-    DELETE: `${base}/${DELETE}/:id`,
+    BY_ID: `${base}/${BY_ID}`,
+    UPDATE: `${base}/${UPDATE}`,
+    DELETE: `${base}/${DELETE}`,
+  };
+  
+  // Adiciona uma estrutura ENDPOINTS que contém apenas o sufixo da rota
+  // (sem a base). Isso facilita o uso em decorators do NestJS
+  // sem causar duplicação quando o @Controller já fornece a base.
+  const endpoints = {
+    LIST: LIST,           // 'listar'
+    CREATE: CREATE,       // 'criar'
+    BY_ID: BY_ID,         // 'buscar/:id'
+    UPDATE: UPDATE,       // 'alterar/:id'
+    DELETE: DELETE,       // 'excluir/:id'
+  };
+
+  return {
+    ...routes,
+    /*
+    como tava antes, mas agora está usando a const endpoints
+
+    getListEndpoint: () => getEndpoint(routes.LIST, base),
+    getCreateEndpoint: () => getEndpoint(routes.CREATE, base),
+    getByIdEndpoint: () => getEndpoint(routes.BY_ID, base),
+    getUpdateEndpoint: () => getEndpoint(routes.UPDATE, base),
+    getDeleteEndpoint: () => getEndpoint(routes.DELETE, base),
+    */
+
+    ENDPOINTS: endpoints,
   };
 }
 
 // Rotas do sistema (entidades)
-
-// Preciso ajeitar a ordem
 
 export const ROTA = {
   HOSPEDE: gerarRotasSistema(HOSPEDE),

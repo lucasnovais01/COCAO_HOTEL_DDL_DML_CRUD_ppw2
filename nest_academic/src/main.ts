@@ -2,31 +2,43 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { HttpExceptionFilter } from './commons/exceptions/filter/http.exception.filter';
 
+// Foi colocado o ValidationPipe global aqui, pq o POSTMAN tava dando erro 404,
+// pq o DTO não tava sendo validado corretamente,
+
+// !!! medida de desespero !!!
+import { ValidationPipe } from '@nestjs/common';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  
+  // Configuração do ValidationPipe global
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+  }));
+  
   // Configuração de filtros globais
+  // para tratamento de exceções
   app.useGlobalFilters(new HttpExceptionFilter());
-
+  
   // Habilitar CORS para permitir que o frontend (React) se conecte
   app.enableCors({
+
     origin: ['http://localhost:3000', 'http://localhost:8000'], // endereço do react
     methods: 'GET, POST, PUT, DELETE',
     allowedHeaders: 'Content-Type, Accept',
     credentials: false,
   });
-
-  // ERRADO: O código original não estava configurando o prefixo global da API, o que causava o erro 404.
-  // O NestJS não sabia como mapear corretamente as rotas sem esse prefixo global.
-  //
-  // CORRIGIDO: Adicionamos a configuração `app.setGlobalPrefix('rest/sistema/v1')`
-  // para que todas as rotas da API sejam prefixadas corretamente.
-  app.setGlobalPrefix('rest/sistema/v1'); // Configura o prefixo global para todas as rotas (ex.: /rest/sistema/v1/hospede)
-
+/*
+  // Como eu consegui achar o que causava erro 404:
+  // Log para debug: mostrar que o servidor está iniciando
+  console.log('\nINICIANDO SERVIDOR:');
+  console.log('URL Base:', 'http://localhost:' + (process.env.PORT ?? 8000));
+*/
   // Inicia o servidor na porta 8000
   await app.listen(process.env.PORT ?? 8000);
 }
-
 void bootstrap();
 
 /*
@@ -47,7 +59,78 @@ void bootstrap();
  *   - CORS: permite que o frontend acesse a API
  *   - Filtro global: padroniza TODOS os erros
  *   - Porta: 8000 (React usa 3000)
- *   - **Novo**: Prefixo global adicionado para rotas da API, agora `/rest/sistema/v1/`
+ *
+ * NOTA SOBRE PREFIXO GLOBAL (ATUALIZAÇÃO - 06/11/2025):
+ * --------------------------------------------------
+ * - Comentário original que dizia "**Novo**: Prefixo global adicionado"
+ *   foi removido/invalido porque a chamada a `app.setGlobalPrefix(...)`
+ *   foi usada apenas durante a depuração e em seguida removida do código.
+ * - Motivo: manter um prefixo global em `main.ts` enquanto as rotas já
+ *   incluem a base (`/rest/sistema/v1/...`) na constante `ROTA` causaria
+ *   duplicação de caminhos (ex.: "/rest/sistema/v1/rest/sistema/v1/...").
+ * - Decisão tomada: retirar a chamada a `setGlobalPrefix` e usar as
+ *   rotas geradas por `src/commons/constants/url.sistema.ts`. O comentário
+ *   original foi mantido como histórico (comentário removido/invalidado).
+ * - Observação: se preferir usar um prefixo global no futuro, remova
+ *   a parte base das constantes `ROTA` ou ajuste as constantes de endpoint
+ *   para evitar duplicações.
  * 
- * ============================================================== 
+ * ==============================================================
+ */
+
+/*
+ * ==============================================================
+ * TUTORIAL: ValidationPipe
+ * ==============================================================
+ * 
+ * O QUE É:
+ * --------
+ * O ValidationPipe é um recurso do NestJS que automaticamente valida
+ * os dados recebidos nas requisições com base nas decorações
+ * definidas nos DTOs (Data Transfer Objects).
+ * 
+ * CONFIGURAÇÃO USADA:
+ * -----------------
+ * app.useGlobalPipes(new ValidationPipe({
+ *   transform: true,           // Converte tipos automaticamente (string -> number, etc)
+ *   whitelist: true,          // Remove propriedades não decoradas no DTO
+ *   forbidNonWhitelisted: true // Rejeita requisições com props extras
+ * }));
+ * 
+ * COMO FUNCIONA:
+ * -------------
+ * 1. Quando uma requisição chega (ex: POST /hospede/criar):
+ *    - O ValidationPipe pega o body da requisição
+ *    - Compara com as decorações no DTO (HospedeRequest)
+ *    - Exemplo: @IsEmail(), @IsNotEmpty(), etc.
+ * 
+ * 2. Se encontrar violações:
+ *    - Retorna erro 400 (Bad Request)
+ *    - Lista todas as validações que falharam
+ * 
+ * 3. Se tudo ok:
+ *    - Converte os dados para os tipos corretos
+ *    - Passa para o controller processar
+ * 
+ * EXEMPLO PRÁTICO:
+ * --------------
+ * No HospedeRequest:
+ * @IsEmail()
+ * email?: string;
+ * 
+ * Se enviar email inválido:
+ * {
+ *   "statusCode": 400,
+ *   "message": ["email must be a valid email"],
+ *   "error": "Bad Request"
+ * }
+ * 
+ * VANTAGENS:
+ * ---------
+ * 1. Validação automática e consistente
+ * 2. Reduz código boilerplate nos controllers
+ * 3. Melhor experiência para o cliente da API
+ * 4. Tipo-segurança com TypeScript
+ * 
+ * ==============================================================
  */
