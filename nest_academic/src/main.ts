@@ -39,7 +39,47 @@ async function bootstrap() {
   });
   */
 
+// TERCEIRA TENTATIVA (react não está funcioando)
+
+app.enableCors({
+  // Origens permitidas (development)
+  origin: [
+    'http://localhost:5173',    // Vite dev server
+    'http://127.0.0.1:5173',   // Vite alternativo
+    'http://localhost:3000'     // React padrão
+  ],
+  // Métodos permitidos
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  
+  // Headers permitidos na requisição
+  allowedHeaders: [
+    'Content-Type',
+    'Accept',
+    'Authorization',
+    'Origin'
+  ],
+  
+  // Headers expostos para o cliente
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  
+  // Desativado credentials pois não estamos usando cookies/auth ainda
+  credentials: false,
+  
+  // Cache da resposta preflight por 1 hora
+  maxAge: 3600
+});
+
+
+
+/*
+O erro 404 é diferente do erro CORS anterior, o que indica que agora estamos realmente chegando ao servidor, 
+mas a rota não está sendo encontrada.
+
+
+
+
   // NOVA Configuração 2.0 (com correções de CORS)
+
   app.enableCors({
     // Origens permitidas (development)
     origin: [
@@ -72,6 +112,11 @@ async function bootstrap() {
     // Permitir qualquer header na resposta
     preflightContinue: false
   });
+
+*/
+
+
+
 /*
   // Como eu consegui achar o que causava erro 404:
   // Log para debug: mostrar que o servidor está iniciando

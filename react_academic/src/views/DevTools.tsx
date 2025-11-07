@@ -279,6 +279,10 @@ export default function DevTools() {
       'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
     };
     */
+
+    // segunda tentativa, estava assim antes:
+
+    /*
     const backendMap: { [key: string]: string | string[] } = {
       usuarios: ['/hospede', '/funcionario'],
       hospedes: '/hospede',
@@ -291,6 +295,26 @@ export default function DevTools() {
       servicos: '/servico',
       'hospede-servico': '/hospede-servico',
     };
+    */
+
+    // Terceira tentativa, agora com o caminho completo após o host:
+
+    const backendMap: { [key: string]: string | string[] } = {
+      usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
+      hospedes: '/rest/sistema/v1/hospede/listar',
+      funcionarios: '/rest/sistema/v1/funcionario/listar',
+      funcoes: '/rest/sistema/v1/funcao/listar',
+      'tipos-quarto': '/rest/sistema/v1/tipo-quarto/listar',
+      quartos: '/rest/sistema/v1/quarto/listar',
+      'status-reserva': '/rest/sistema/v1/status-reserva/listar',
+      reservas: '/rest/sistema/v1/reserva/listar',
+      servicos: '/rest/sistema/v1/servico/listar',
+      'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
+    };
+
+    
+
+
 
     const fetchData = async () => {
       try {
