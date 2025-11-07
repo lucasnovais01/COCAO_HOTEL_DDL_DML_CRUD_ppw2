@@ -1,3 +1,9 @@
+// O arquivo api.ts não está servindo pra mais nada, mas antes ele centralizava
+
+// a configuração do Axios para evitar duplicação de código em vários arquivos.
+// Mantive o arquivo com uma configuração básica atualizada para referência futura,
+// caso seja necessário reativar o uso do Axios centralizado na aplicação React.
+
 // =============================================================================
 // HISTÓRICO DE ALTERAÇÕES - 06/11/2025
 // =============================================================================

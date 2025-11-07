@@ -5,8 +5,9 @@ import Joi from 'joi';
 // Importa os 9 módulos da aplicação:
 import { HospedeModule } from 'src/1-hospede/hospede.module';
 
-/*
 import { FuncaoModule } from 'src/2-funcao/funcao.module';
+
+/*
 import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
 import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module';
 import { QuartoModule } from 'src/5-quarto/quarto.module';
@@ -100,9 +101,9 @@ oracledb.initOracleClient({
     }),
     // 3. Módulo da Aplicação // Importa os módulos
     HospedeModule,
+    FuncaoModule,
 
     /*
-    FuncaoModule,
     FuncionarioModule,
     TipoQuartoModule,
     QuartoModule,
