@@ -6,9 +6,9 @@ import Joi from 'joi';
 import { HospedeModule } from 'src/1-hospede/hospede.module';
 
 import { FuncaoModule } from 'src/2-funcao/funcao.module';
+import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
 
 /*
-import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
 import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module';
 import { QuartoModule } from 'src/5-quarto/quarto.module';
 import { StatusReservaModule } from 'src/6-status-reserva/status-reserva.module';
@@ -30,7 +30,9 @@ import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.modu
 // - Essa sintaxe espera que oracledb tenha um export default, mas não tem
 
 // CERTO (por quê?):
+
 import * as oracledb from 'oracledb';
+
 // - Importa todos os exports do módulo oracledb como um namespace
 // - TypeScript consegue inferir os tipos corretamente
 // - Compatível com ES Modules
@@ -102,9 +104,8 @@ oracledb.initOracleClient({
     // 3. Módulo da Aplicação // Importa os módulos
     HospedeModule,
     FuncaoModule,
-
-    /*
     FuncionarioModule,
+    /*
     TipoQuartoModule,
     QuartoModule,
     StatusReservaModule,
