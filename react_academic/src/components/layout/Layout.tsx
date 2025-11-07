@@ -16,6 +16,16 @@ export default function Layout() {
             <span>Hotel Cocao</span>
           </NavLink>
 
+          {/* Link para Listar.view */}
+          <NavLink
+            to="/sistema/hospede/listar"
+            className="nav-btn"
+          >
+            <i className="fas fa-search"></i>
+            <span>Listar</span>
+          </NavLink>
+
+
           {/* Link para DevTools */}
           <NavLink
             to="/sistema/devtools"
@@ -24,6 +34,8 @@ export default function Layout() {
             <i className="fas fa-tools"></i>
             <span>DevTools</span>
           </NavLink>
+
+
 
           <button className="login-btn">
             <i className="fas fa-sign-in-alt"></i> <span>Login</span>

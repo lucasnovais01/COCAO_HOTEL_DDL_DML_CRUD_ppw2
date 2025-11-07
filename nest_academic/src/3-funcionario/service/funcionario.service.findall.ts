@@ -14,6 +14,11 @@ export class FuncionarioServiceFindAll {
 
 	async findAll(): Promise<FuncionarioResponse[]> {
 		const funcionarios = await this.funcionarioRepository.createQueryBuilder('funcionario').getMany();
+
+		// Debug: log what TypeORM returned so we can see this in the server console
+		console.log('[FuncionarioServiceFindAll] registros encontrados:', funcionarios?.length ?? 0);
+		console.log('[FuncionarioServiceFindAll] amostra:', funcionarios?.slice(0, 5));
+        
 		return FuncionarioConverter.toListFuncionarioResponse(funcionarios);
 	}
 }

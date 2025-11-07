@@ -16,6 +16,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { ROTA } from "../services/router/url";
 
 import { http } from "../services/axios/config.axios";
+import { REST_CONFIG } from "../services/constants/sistema.constant";
 
 // ============================================================
 // Parte 2 - Configuração Inicial de Mock e Estrutura de Dados
@@ -120,10 +121,11 @@ const mockApi: { [key: string]: any[] } = {
 // 5. Usado tanto com mock quanto com dados reais do backend.
 
 const tabs = [
-  { key: "usuarios", label: "Usuários (Todos)", columns: ["ID_USUARIO", "NOME_HOSPEDE", "CPF", "RG", "SEXO", "DATA_NASCIMENTO", "EMAIL", "TELEFONE", "TIPO", "ATIVO"] },
-  { key: "hospedes", label: "Hóspedes", columns: ["ID_USUARIO", "NOME_HOSPEDE", "CPF", "RG", "SEXO", "DATA_NASCIMENTO", "EMAIL", "TELEFONE", "ATIVO"] },
-  { key: "funcionarios", label: "Funcionários", columns: ["ID_USUARIO", "NOME_LOGIN", "CODIGO_FUNCAO", "DATA_CONTRATACAO", "ATIVO"] },
-  { key: "funcoes", label: "Funções", columns: ["CODIGO_FUNCAO", "NOME_FUNCAO", "DESCRICAO", "NIVEL_ACESSO"] },
+  { key: "usuarios", label: "Usuários (Todos)", columns: ["idUsuario", "nomeHospede", "cpf", "rg", "sexo", "dataNascimento", "email", "telefone", "tipo", "ativo"] },
+  { key: "hospedes", label: "Hóspedes", columns: ["idUsuario", "nomeHospede", "cpf", "rg", "sexo", "dataNascimento", "email", "telefone", "ativo"] },
+  { key: "funcionarios", label: "Funcionários", columns: ["idUsuario", "nomeLogin", "codigoFuncao", "dataContratacao", "ativo"] },
+  { key: "funcoes", label: "Funções", columns: ["codigoFuncao", "nomeFuncao", "descricao", "nivelAcesso"] },
+
   { key: "tipos-quarto", label: "Tipos de Quarto", columns: ["CODIGO_TIPO_QUARTO", "NOME_TIPO", "CAPACIDADE_MAXIMA", "VALOR_DIARIA"] },
   { key: "quartos", label: "Quartos", columns: ["ID_QUARTO", "NUMERO", "CODIGO_TIPO_QUARTO", "STATUS_QUARTO", "ANDAR"] },
   { key: "status-reserva", label: "Status Reserva", columns: ["CODIGO_STATUS", "DESCRICAO"] },
@@ -176,7 +178,7 @@ export default function DevTools() {
     const map = new Map<number | string, any>();
 
     const pushIfNew = (item: any) => {
-      const id = item?.ID_USUARIO;
+      const id = item?.idUsuario;
       if (id == null) return;
       if (!map.has(id)) map.set(id, item);
       else {
@@ -191,16 +193,16 @@ export default function DevTools() {
   // mapear funcionários para formato similar a usuário antes de inserir
     (apiData.funcionarios || []).forEach((f: any) => {
       const item = {
-        ID_USUARIO: f.ID_USUARIO,
-        NOME_HOSPEDE: f.NOME_LOGIN || f.NOME_HOSPEDE || "N/A",
-        CPF: f.CPF ?? undefined,
-        RG: f.RG ?? undefined,
-        SEXO: f.SEXO ?? undefined,
-        DATA_NASCIMENTO: f.DATA_NASCIMENTO ?? undefined,
-        EMAIL: f.EMAIL ?? undefined,
-        TELEFONE: f.TELEFONE ?? undefined,
-        TIPO: 1,
-        ATIVO: f.ATIVO ?? true,
+        idUsuario: f.idUsuario,
+        nomeHospede: f.nomeLogin || f.nomeHospede || "N/A",
+        cpf: f.cpf ?? undefined,
+        rg: f.rg ?? undefined,
+        sexo: f.sexo ?? undefined,
+        dataNascimento: f.dataNascimento ?? undefined,
+        email: f.email ?? undefined,
+        telefone: f.telefone ?? undefined,
+        tipo: 1,
+        ativo: f.ativo ?? true,
       };
       pushIfNew(item);
     });
@@ -211,14 +213,14 @@ export default function DevTools() {
 
     // Filtro para hóspedes
     if (activeTab === "hospedes") {
-      data = data.filter((d: any) => d.TIPO === 0);
+      data = data.filter((d: any) => d.tipo === 0);
     }
 
     // Filtro para funcionários (join com hospedes)
     if (activeTab === "funcionarios") {
       data = data.map((f: any) => {
-        const h = apiData.usuarios.find((u: any) => u.ID_USUARIO === f.ID_USUARIO);
-        return { ...f, NOME_HOSPEDE: h?.NOME_HOSPEDE || "N/A" };
+        const h = (apiData.usuarios || []).find((u: any) => u.idUsuario === f.idUsuario);
+        return { ...f, nomeHospede: h?.nomeHospede || "N/A" };
       });
     }
   }
@@ -297,28 +299,32 @@ export default function DevTools() {
     };
     */
 
-    // Terceira tentativa, agora com o caminho completo após o host:
+    // Endpoints simplificados, já que o baseURL inclui /rest/sistema/v1
 
     const backendMap: { [key: string]: string | string[] } = {
-      usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
-      hospedes: '/rest/sistema/v1/hospede/listar',
-      funcionarios: '/rest/sistema/v1/funcionario/listar',
-      funcoes: '/rest/sistema/v1/funcao/listar',
-      'tipos-quarto': '/rest/sistema/v1/tipo-quarto/listar',
-      quartos: '/rest/sistema/v1/quarto/listar',
-      'status-reserva': '/rest/sistema/v1/status-reserva/listar',
-      reservas: '/rest/sistema/v1/reserva/listar',
-      servicos: '/rest/sistema/v1/servico/listar',
-      'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
+      usuarios: ['/hospede/listar', '/funcionario/listar'],
+      hospedes: '/hospede/listar',
+      funcionarios: '/funcionario/listar',
+      funcoes: '/funcao/listar',
+      'tipos-quarto': '/tipo-quarto/listar',
+      quartos: '/quarto/listar',
+      'status-reserva': '/status-reserva/listar',
+      reservas: '/reserva/listar',
+      servicos: '/servico/listar',
+      'hospede-servico': '/hospede-servico/listar',
     };
 
     
 
-
+/* ADICIONA console.log pra se identificamos o erro: pq não aparece registro nas tabelas */
 
     const fetchData = async () => {
       try {
         const mapping = backendMap[activeTab];
+
+        // estes console log foram adicionados pra ver se eu identifico o erro
+        console.log('Fetching data for tab:', activeTab);
+        console.log('Using endpoint mapping:', mapping);
 
         if (!mapping) {
           showToast('Endpoint backend não mapeado para esta aba', 'error');
@@ -330,18 +336,53 @@ export default function DevTools() {
         const results: any[] = [];
 
         for (const ep of endpoints) {
+
+          // estes console log foram adicionados pra ver se eu identifico o erro
+          console.log('Fetching endpoint:', ep);
+          console.log('Full URL:', `${REST_CONFIG.BASE_URL}${ep}`);
+          
           const res = await http.get(ep);
+
+          // este console log foi adicionado pra ver se a eu identifico o erro
+          console.log('Raw response:', res);
+          
           // O backend normalmente devolve um envelope (ex.: { sucesso: true, dados: [...] })
           // portanto tentamos desembrulhar `res.data.dados` quando presente.
           const payload = res?.data?.dados ?? res?.data ?? [];
+
+          // este console log foi adicionado pra ver se a eu identifico o erro
+          console.log('Processed payload:', payload);
+          
+
           // Se o payload não for array, colocamos no array para manter a uniformidade
-          results.push(Array.isArray(payload) ? payload : [payload]);
+
+          // antes estava assim:
+          // results.push(Array.isArray(payload) ? payload : [payload]);
+
+          // agora ficou assim pra facilitar debug:
+
+          const processedPayload = Array.isArray(payload) ? payload : [payload];
+          console.log('Final processed payload:', processedPayload);
+          results.push(processedPayload);
         }
 
         // mesclar resultados (flatten) quando a aba consultou múltiplos endpoints
         const merged = ([] as any[]).concat(...results);
+        
+        // Antes estava assim:
+        // setApiData(prev => ({ ...prev, [activeTab]: merged }));
 
-        setApiData(prev => ({ ...prev, [activeTab]: merged }));
+        // agora com console log pra debug:
+
+        console.log('Final merged data:', merged);
+
+
+
+        setApiData(prev => {
+          const newData = { ...prev, [activeTab]: merged };
+          console.log('New API data state:', newData);
+          return newData;
+        });
       } catch (err) {
         console.error(err);
         showToast('Erro ao carregar dados do servidor', 'error');
@@ -370,6 +411,7 @@ export default function DevTools() {
   // const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
   const handleEdit = (id: number) => {
     try {
+
       // Navega para a rota de atualização de hóspede (adaptação direta)
       navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
     } catch (err) {
@@ -397,9 +439,13 @@ export default function DevTools() {
   const formatValue = (key: string, value: any): string | ReactNode => {
     if (value === true) return "Sim";
     if (value === false) return "Não";
-    if (key.includes("DATA")) return new Date(value).toLocaleDateString("pt-BR");
-    if (key.includes("VALOR") || key === "PRECO") return `R$ ${parseFloat(value).toFixed(2)}`;
-    if (key === "STATUS_QUARTO") {
+    const k = key.toString().toLowerCase();
+    if (k.includes("data")) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? "Invalid Date" : d.toLocaleDateString("pt-BR");
+    }
+    if (k.includes("valor") || k === "preco") return `R$ ${parseFloat(value).toFixed(2)}`;
+    if (k === "status_quarto" || k === "statusquarto") {
       const status = value === "LIVRE" ? "status-livre" : value === "OCUPADO" ? "status-ocupado" : "status-manutencao";
       return <span className={`status-badge ${status}`}>{value}</span>;
     }
@@ -514,7 +560,7 @@ export default function DevTools() {
                   </tr>
                 ) : (
                   filteredData.map((item: any) => {
-                    const id = item.ID_USUARIO || item.ID_QUARTO || item.ID_RESERVA || item.CODIGO_FUNCAO || item.CODIGO_TIPO_QUARTO || item.CODIGO_STATUS || item.CODIGO_SERVICO || item.ID_SOLICITACAO;
+                    const id = item.idUsuario || item.idQuarto || item.idReserva || item.codigoFuncao || item.codigoTipoQuarto || item.codigoStatus || item.codigoServico || item.idSolicitacao;
                     return (
                       <tr key={id}>
                         {currentTab.columns.map(col => (
@@ -544,3 +590,99 @@ export default function DevTools() {
     </div>
   );
 }
+
+/* DOCUMENTAÇÃO, COMO RESOLVERMOS O PROBLEMA, LOGO ABAIXO: */
+/*
+  DOCUMENTAÇÃO DETALHADA — passos executados para corrigir o problema
+
+  Resumo do problema observado:
+  - A aba "Funcionários" fazia a requisição corretamente (200 OK) mas a tabela
+    do React mostrava células vazias ("-") e datas como "Invalid Date".
+  - A aba "Usuários (Todos)" deveria juntar Hóspedes + Funcionários, mas os
+    funcionários não eram incluídos porque o front esperava chaves em UPPERCASE
+    (ex.: ID_USUARIO) enquanto o backend devolvia objetos em camelCase
+    (ex.: idUsuario, dataContratacao).
+
+  Alterações realizadas (arquivo → resumo das mudanças):
+
+  1) Ativação do módulo Funcionario no NestJS
+     - Arquivo: nest_academic/src/app/app.module.ts
+     - Ação: descomentei/importei `FuncionarioModule` e o adicionei ao array
+       `imports` do AppModule (isso expôs as rotas /rest/sistema/v1/funcionario/*).
+
+  2) Debug no backend para confirmar que o banco retornava linhas
+     - Arquivo: nest_academic/src/3-funcionario/service/funcionario.service.findall.ts
+     - Ação: adicionei logs (console.log) imediatamente após o fetch:
+         console.log('[FuncionarioServiceFindAll] registros encontrados:', funcionarios?.length ?? 0);
+         console.log('[FuncionarioServiceFindAll] amostra:', funcionarios?.slice(0, 5));
+     - Objetivo: verificar no console do servidor se TypeORM realmente retornava registros.
+     - Resultado observado (exemplo do console):
+         query: SELECT "funcionario"... FROM "COCAO_FUNCIONARIO" "funcionario"
+         [FuncionarioServiceFindAll] registros encontrados: 2
+         [FuncionarioServiceFindAll] amostra: [ Funcionario { idUsuario: 44, ... }, Funcionario { idUsuario: 45, ... } ]
+
+  3) Corrigir duplicação/contradição de URL entre baseURL e endpoints
+     - Arquivo: react_academic/src/services/constants/sistema.constant.ts
+     - Ação: Ajustei `REST_CONFIG.BASE_URL` para conter o prefixo correto
+       ("http://localhost:8000/rest/sistema/v1"). Antes havia discrepância que
+       gerava chamadas como: http://localhost:8000/rest/sistema/v1/rest/sistema/v1/...
+     - Arquivo: react_academic/src/views/DevTools.tsx
+       - Atualizei `backendMap` para usar caminhos relativos após o baseURL,
+         por exemplo '/funcionario/listar' (o baseURL já inclui /rest/sistema/v1).
+
+  4) Debug e normalização no frontend (`DevTools.tsx`)
+     - Importei `REST_CONFIG` para facilitar logs de URL completa.
+     - Adicionei logs detalhados no `fetchData` para cada etapa da requisição:
+         console.log('Fetching data for tab:', activeTab);
+         console.log('Using endpoint mapping:', mapping);
+         console.log('Fetching endpoint:', ep);
+         console.log('Full URL:', `${REST_CONFIG.BASE_URL}${ep}`);
+         console.log('Raw response:', res);
+         console.log('Processed payload:', payload);
+         console.log('Final processed payload:', processedPayload);
+         console.log('Final merged data:', merged);
+     - Objetivo: ver exatamente o que chega do servidor e como é processado.
+
+  5) Normalizar nomes das colunas e do processamento para camelCase
+     - Arquivo: react_academic/src/views/DevTools.tsx
+     - Problema: backend retorna DTOs em camelCase (ex.: idUsuario, nomeLogin,
+       dataContratacao). O frontend usava nomes em UPPER_SNAKE (ex.: ID_USUARIO),
+       então as células ficavam vazias porque item['ID_USUARIO'] === undefined.
+     - Ações implementadas:
+       * Atualizei `tabs` para usar chaves camelCase (ex.: 'idUsuario',
+         'nomeLogin', 'codigoFuncao', 'dataContratacao').
+       * Ajustei a função que monta a lista "usuarios" (`pushIfNew`) para ler
+         `item.idUsuario` em vez de `item.ID_USUARIO`.
+       * Ao mesclar `funcionarios` dentro de `usuarios`, normalizei os campos
+         (ex.: idUsuario, nomeHospede, cpf, dataNascimento, tipo, ativo).
+       * Atualizei os filtros/joins para procurar `tipo` e `idUsuario` em
+         camelCase (ex.: `d.tipo === 0`, `u.idUsuario === f.idUsuario`).
+       * Ajustei a extração do id de cada linha da tabela para checar propriedades
+         camelCase (ex.: `item.idUsuario || item.codigoFuncao || ...`).
+
+  6) Melhorias na formatação de valores (datas, booleanos)
+     - Arquivo: react_academic/src/views/DevTools.tsx
+     - Ação: Atualizei `formatValue` para ser case-insensitive e reconhecer
+       chaves camelCase que contenham "data" (ex.: dataContratacao,
+       dataNascimento). Agora converte corretamente para pt-BR e mostra
+       "Invalid Date" de forma explícita quando o valor não é uma data válida.
+
+  7) Ajuste no envelope de resposta e flattening
+     - O frontend já estava tratando `res.data.dados` quando presente. Mantive
+       esse comportamento e o normalizei (transformar payload não-array em array
+       para garantir uniformidade). Depois faço o flatten com concat(...results).
+
+  8) Resultado e verificação
+     - Depois das mudanças, o console do frontend mostrou payloads válidos e o
+       estado `apiData` passou a conter os arrays esperados (ex.: `funcoes: Array(6)`,
+       `funcionarios: Array(2)`). A tabela passou a renderizar valores corretos
+       — incluindo `dataContratacao` formatada.
+
+
+  O que eu preciso fazer:
+
+  - remover os console.log de debug (frontend e backend).
+  - adaptar a UI para mostrar rótulos legíveis (mapeando chaves → labels).
+  - Próximo passo: implementar criar/editar/excluir no frontend usando os
+    DTOs camelCase e escrever testes rápidos (Postman) para os endpoints.
+*/

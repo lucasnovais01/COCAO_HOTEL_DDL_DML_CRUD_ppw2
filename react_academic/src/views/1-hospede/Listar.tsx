@@ -8,8 +8,6 @@ import { apiGetHospedes } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import { ROTA } from "../../services/router/url";
 
-// Lista de hóspedes - modelo baseado em src/views/cidade/Listar.tsx
-// Comentários e estrutura mantidos para didática do professor (adaptação para Hóspede)
 export default function ListarHospede() {
   const [models, setModels] = useState<Hospede[] | null>(null);
 
