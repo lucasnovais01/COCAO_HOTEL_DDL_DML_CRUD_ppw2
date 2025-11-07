@@ -155,11 +155,110 @@
  */
 
 // =============================================================================
-// CONCLUSÃO
+// 6. COMMONS E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
+
 /**
- * CONCLUSÃO: POR QUE NOSSO CÓDIGO É DIFERENTE?
+ * POR QUE NOSSO COMMONS E MAIN.TS SÃO DIFERENTES?
  * 
+ * 1. Commons - Diferenças e Razões
+ *    
+ *    Modelo do Professor:
+ *    /commons_modelo/
+ *      |- exceptions/
+ *      |- mensagem/
+ *      |- result.ts
+ * 
+ *    Nossa Implementação:
+ *    /commons/
+ *      |- constants/        // Novo: Constantes globais
+ *      |- entity/          // Novo: Entidades base
+ *      |- exceptions/       // Expandido
+ *      |- mensagem/        // Mantido
+ * 
+ *    RAZÕES TÉCNICAS DAS MUDANÇAS:
+ * 
+ *    a) Adição de /constants:
+ *       - Centraliza URLs do sistema
+ *       - Evita strings mágicas no código
+ *       - Facilita mudanças de rotas
+ * 
+ *    b) Adição de /entity:
+ *       - Base para todas entidades
+ *       - Compartilha campos comuns (created_at, updated_at)
+ *       - Reduz duplicação de código
+ * 
+ *    c) Expansão de /exceptions:
+ *       - Tratamento específico para erros Oracle
+ *       - Mensagens de erro em português
+ *       - Log detalhado para debug
+ * 
+ * 2. Main.ts - Diferenças e Razões
+ * 
+ *    Modelo do Professor:
+ *    ```typescript
+ *    app.enableCors({
+ *      origin: ['http://localhost:3000'],
+ *      methods: 'GET,POST,PUT,DELETE',
+ *      allowedHeaders: 'Content-Type,Accept'
+ *    });
+ *    ```
+ * 
+ *    Nossa Implementação:
+ *    ```typescript
+ *    app.useGlobalPipes(new ValidationPipe({
+ *      transform: true,
+ *      whitelist: true,
+ *      forbidNonWhitelisted: true
+ *    }));
+ * 
+ *    app.enableCors({
+ *      origin: [
+ *        'http://localhost:3000',   // React padrão
+ *        'http://localhost:5173',   // Vite
+ *        'http://127.0.0.1:5173'   // Vite alternativo
+ *      ],
+ *      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+ *      allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+ *      exposedHeaders: ['Content-Length', 'Content-Type'],
+ *      maxAge: 3600
+ *    });
+ *    ```
+ * 
+ *    RAZÕES TÉCNICAS DAS MUDANÇAS:
+ * 
+ *    a) ValidationPipe Global:
+ *       - Validação consistente em toda API
+ *       - Previne dados inválidos no banco
+ *       - Mensagens de erro padronizadas
+ * 
+ *    b) CORS Expandido:
+ *       - Suporte ao Vite (porta 5173)
+ *       - Mais métodos HTTP (OPTIONS, HEAD)
+ *       - Headers para autenticação futura
+ * 
+ *    c) Segurança Adicional:
+ *       - Cache de preflight (maxAge)
+ *       - Controle de headers expostos
+ *       - Preparação para autenticação
+ * 
+ * 3. Outras Pastas Não Citadas
+ * 
+ *    a) /app:
+ *       - Mesma estrutura do professor
+ *       - Apenas importações diferentes devido aos novos módulos
+ * 
+ *    b) /config (não presente no modelo):
+ *       - Adicionada para configurações do TypeORM
+ *       - Separa configs por ambiente (dev/prod)
+ *       - Facilita deploy em diferentes ambientes
+ */
+
+// =============================================================================
+// CONCLUSÃO - POR QUE NOSSO CÓDIGO É DIFERENTE?
+// =============================================================================
+
+/**
  * Nossa implementação difere do modelo do professor por três razões principais:
  * 
  * 1. REQUISITOS ESPECÍFICOS
