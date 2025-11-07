@@ -15,56 +15,6 @@
 // =============================================================================
 
 /**
- * 1.1 ORGANIZAÇÃO DE IMPORTAÇÕES
- * 
- * Modelo do Professor (cidade.module.ts):
- */
-
-import { Module } from '@nestjs/common';
-import { CidadeControllerFindAll } from './controllers/cidade.controller.findall';
-// ... outras importações sem agrupamento ...
-
-/**
- * Nossa Implementação (hospede.module.ts):
- */
-
-import { Module } from '@nestjs/common';
-// Importação dos Controllers: (comentário de agrupamento)
-import { HospedeControllerFindAll } from './controllers/hospede.controller.findall';
-// Importação dos Services: (comentário de agrupamento)
-import { HospedeServiceCreate } from './service/hospede.service.create';
-
-/**
- * DIFERENÇA: Adicionamos comentários de agrupamento para melhor organização e
- * legibilidade do código. Isso facilita a manutenção e entendimento das importações,
- * especialmente importante devido à complexidade do módulo de hóspedes que tem
- * mais campos e regras de negócio que o módulo cidade.
- */
-
-// 1.2 DOCUMENTAÇÃO DO MÓDULO
-/**
- * Modelo do Professor (cidade.module.ts):
- * - Comentário simples sobre o spread operator
- */
-
-@Module({
-  controllers: [
-    ...cidadeControllers, //Este é um floreio pra deixar o código mais bonito, pega o array acima
-  ],
-})
-
-/**
- * Nossa Implementação (hospede.module.ts):
- * - Documentação completa em formato tutorial
- */
-
-@Module({
-  imports: [
-    // 1. Registra a entidade Hospede no TypeORM
-    TypeOrmModule.forFeature([Hospede]),
-  ],
-  // ... resto do código com comentários numerados ...
-})
 
 /*
  * TUTORIAL: hospede.module.ts
@@ -91,38 +41,6 @@ import { HospedeServiceCreate } from './service/hospede.service.create';
 // =============================================================================
 // 2. DIFERENÇAS NOS CONTROLLERS (exemplo: create)
 // =============================================================================
-
-/**
- * 2.1 ROTEAMENTO E TRATAMENTO DE PATHS
- * 
- * Modelo do Professor (cidade.controller.create.ts):
- */
-
-@Controller(ROTA.CIDADE.BASE)
-export class CidadeControllerCreate {
-  @Post(ROTA.CIDADE.CREATE)
-  async create(
-    @Req() res: Request,
-    @Body() cidadeRequest: CidadeRequest,
-  ): Promise<Result<CidadeResponse>> {
-    // ... implementação simples ...
-  }
-}
-
-/**
- * Nossa Implementação (hospede.controller.create.ts):
- */
-
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial '/'
-export class HospedeControllerCreate {
-  @Post(ROTA.HOSPEDE.ENDPOINTS.CREATE)
-  async create(
-    @Req() req: Request,
-    @Body() hospedeRequest: HospedeRequest,
-  ): Promise<Result<HospedeResponse>> {
-    // ... implementação com histórico e documentação ...
-  }
-}
 
 /**
  * DIFERENÇAS:
@@ -167,7 +85,7 @@ export class HospedeControllerCreate {
  * 3.1 VALIDAÇÕES E CONSTRAINTS
  * 
  * Modelo do Professor (cidade.request.ts):
- */
+ 
 
 export class CidadeRequest {
   @Type(() => Number)
@@ -182,9 +100,11 @@ export class CidadeRequest {
   // ... implementação simples com apenas 2 campos ...
 }
 
+*/
+
 /**
  * Nossa Implementação (hospede.request.ts):
- */
+ 
 
 export class HospedeRequest {
   @IsNotEmpty({ message: 'Nome do hóspede deve ser informado' })
@@ -198,6 +118,7 @@ export class HospedeRequest {
 
   // ... implementação complexa com múltiplos campos e validações ...
 }
+*/
 
 /**
  * DIFERENÇAS:
@@ -254,7 +175,7 @@ export class HospedeRequest {
  * 4.1 ESTRUTURA E VALIDAÇÕES
  * 
  * Modelo do Professor (cidade.service.create.ts):
- */
+
 
 @Injectable()
 export class CidadeServiceCreate {
@@ -282,9 +203,11 @@ export class CidadeServiceCreate {
   }
 }
 
+*/
+
 /**
  * Nossa Implementação (hospede.service.create.ts):
- */
+ 
 
 @Injectable()
 export class HospedeServiceCreate {
@@ -304,6 +227,8 @@ export class HospedeServiceCreate {
     // ... resto da implementação com documentação detalhada ...
   }
 }
+
+*/
 
 /**
  * DIFERENÇAS:
@@ -354,7 +279,7 @@ export class HospedeServiceCreate {
  * 5.1 ESTRUTURA E IMPLEMENTAÇÃO
  * 
  * Modelo do Professor (cidade.converter.ts):
- */
+ 
 
 export class ConverterCidade {
   static toCidade(cidadeRequest: CidadeRequest) {
@@ -376,9 +301,11 @@ export class ConverterCidade {
   }
 }
 
+*/
+
 /**
  * Nossa Implementação (hospede.converter.ts):
- */
+ 
 
 export class ConverterHospede {
   static toHospede(hospedeRequest: HospedeRequest): Hospede {
@@ -409,6 +336,8 @@ export class ConverterHospede {
     return instanceToPlain(inst) as unknown as HospedeResponse;
   }
 }
+
+*/
 
 /**
  * DIFERENÇAS:
@@ -465,7 +394,7 @@ export class ConverterHospede {
  * 6.1 ESTRUTURA E MAPEAMENTO
  * 
  * Modelo do Professor (cidade.entity.ts):
- */
+ 
 
 @Entity('CIDADE')
 export class Cidade extends BaseEntity {
@@ -485,9 +414,11 @@ export class Cidade extends BaseEntity {
   // ... implementação com 2-3 campos ...
 }
 
+*/
+
 /**
  * Nossa Implementação (hospede.entity.ts):
- */
+ 
 
 @Entity('COCAO_HOSPEDE')
 export class Hospede extends BaseEntity {
@@ -507,6 +438,8 @@ export class Hospede extends BaseEntity {
 
   // ... implementação com múltiplos campos ...
 }
+
+*/
 
 /**
  * DIFERENÇAS:
