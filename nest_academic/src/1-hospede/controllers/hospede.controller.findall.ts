@@ -27,6 +27,16 @@ export class HospedeControllerFindAll {
   }
 }
 
+/*
+Problemas que eu estou tendo na linha 17:
+    async findAll(@Req() res: Request): Promise<Result<HospedeResponse[]>> {
+
+O nome do erro é:
+  'res' is declared but its value is never read.ts(6133)
+*/
+
+//
+
 // http://localhost:8000/rest/sistema/v1/hospede/listar
 
 /*
