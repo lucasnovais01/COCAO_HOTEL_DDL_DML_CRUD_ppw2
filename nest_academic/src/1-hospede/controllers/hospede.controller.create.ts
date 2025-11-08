@@ -27,7 +27,7 @@ import { Result } from 'src/commons/mensagem/mensagem';
 
 // TENTATIVA 2 (FUNCIONOU!):
 // Solução: Remover a barra inicial da rota base e usar apenas o sufixo no @Post
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial '/' da rota
+@Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial '/' da rota
 export class HospedeControllerCreate {
   constructor(private readonly hospedeServiceCreate: HospedeServiceCreate) {
     /*
@@ -48,7 +48,6 @@ export class HospedeControllerCreate {
   // ROTA.HOSPEDE.CREATE = "/rest/sistema/v1/hospede/criar"
   // .split('/') = [ "", "rest", "sistema", "v1", "hospede", "criar" ]
   // .pop() = "criar"
-
   @Post(ROTA.HOSPEDE.ENDPOINTS.CREATE)
   async create(
     @Req() req: Request,
@@ -100,20 +99,20 @@ export class HospedeControllerCreate {
  * ==============================================================
  * TUTORIAL: Métodos String em JavaScript/TypeScript
  * ==============================================================
- * 
+
  * 1. substring(1):
  * ---------------
  * - O que faz: Remove a primeira letra (ou caractere) de uma string
  * - Por que usar: Remove a barra inicial '/' das rotas
  * - Exemplo:
  *   "/rest/sistema/v1/hospede" -> "rest/sistema/v1/hospede"
- * 
+
  * 2. split('/'):
  * -------------
  * - O que faz: Divide uma string em array usando '/' como separador
  * - Exemplo:
  *   "/rest/sistema/v1/hospede/criar" -> ["", "rest", "sistema", "v1", "hospede", "criar"]
- * 
+
  * 3. pop():
  * --------
  * - O que faz: Remove e retorna o último elemento de um array
@@ -131,17 +130,17 @@ export class HospedeControllerCreate {
  * ==============================================================
  */
 
-/* 
+/*
  * ==============================================================
  * SOLUÇÃO DO PROBLEMA DE ROTAS 404
  * ==============================================================
- * 
+
  * O PROBLEMA:
  * ----------
  * 1. As rotas não estavam funcionando (erro 404) porque havia uma
  *    incompatibilidade na forma como o NestJS trata as barras iniciais
  *    nas rotas.
- * 
+
  * 2. No arquivo url.sistema.ts, as rotas são geradas com barra inicial:
  *    ROTA.HOSPEDE.BASE = "/rest/sistema/v1/hospede"
  *    ROTA.HOSPEDE.CREATE = "/rest/sistema/v1/hospede/criar"
@@ -149,7 +148,7 @@ export class HospedeControllerCreate {
  * 3. O NestJS espera:
  *    - @Controller: rota base SEM barra inicial
  *    - @Post: apenas o sufixo da rota
- * 
+
  * A SOLUÇÃO:
  * ---------
  * 1. No @Controller:

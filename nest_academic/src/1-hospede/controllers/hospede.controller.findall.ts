@@ -6,7 +6,7 @@ import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import { Result } from 'src/commons/mensagem/mensagem';
 import type { Request } from 'express';
 
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
+@Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerFindAll {
   constructor(private readonly hospedeServiceFindAll: HospedeServiceFindAll) {}
 
