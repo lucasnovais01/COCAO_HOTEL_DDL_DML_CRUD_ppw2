@@ -13,7 +13,9 @@ export class HospedeServiceCreate {
     private hospedeRepository: Repository<Hospede>,
   ) {}
 
-  async create(hospedeRequest: HospedeRequest): Promise<HospedeResponse | null> {
+  async create(
+    hospedeRequest: HospedeRequest,
+  ): Promise<HospedeResponse | null> {
     let hospede = ConverterHospede.toHospede(hospedeRequest);
 
     const hospedeCadastrado = await this.hospedeRepository

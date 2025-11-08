@@ -19,14 +19,12 @@ export class HospedeServiceUpdate {
     idUsuario: number,
     hospedeRequest: HospedeRequest,
   ): Promise<HospedeResponse | null> {
-    
+    //
     /* ANTIGO, o novo 1. está entre o 3. e o 4. - POSTMAN Update não está funcionando (tentava INSERT ao invés de UPDATE)
 
-    // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
-    let hospede = ConverterHospede.toHospede(hospedeRequest);
-    */
-
-
+  // 1. Converte o DTO de Request (hospedeRequest) para a Entidade (hospede)
+  let hospede = ConverterHospede.toHospede(hospedeRequest);
+  */
 
     // 2. Busca o cadastro existente usando o service FindOne.
     const hospedeCadastrado =
@@ -41,7 +39,7 @@ export class HospedeServiceUpdate {
     // Garantindo que o ID seja mantido durante o update
     let hospede = ConverterHospede.toHospede({
       ...hospedeRequest,
-      idUsuario: hospedeCadastrado.idUsuario,  // Mantém o ID original
+      idUsuario: hospedeCadastrado.idUsuario, // Mantém o ID original
     });
 
     // 4. Mescla os novos dados (Entidade 'hospede') sobre o cadastro encontrado (Response 'hospedeCadastrado')
@@ -82,13 +80,13 @@ export class HospedeServiceUpdate {
  * ==============================================================
  * NOTA SOBRE UPDATE E TYPEORM: Preservando IDs
  * ==============================================================
- * 
+
  * Problema encontrado:
  * - Ao tentar fazer update, o TypeORM tentava executar um INSERT,
  *   resultando em ORA-00001 (unique constraint violation).
  * - A ordem das operações (converter DTO → buscar → mesclar) fazia o
  *   ID se perder durante as transformações.
- * 
+
  * Como funciona a solução:
  * 1. Primeiro busca o registro existente (para ter certeza que existe
  *    e para ter uma entidade com ID válido).
@@ -99,7 +97,7 @@ export class HospedeServiceUpdate {
  * - UPDATE funciona corretamente.
  * - Mantém consistência do banco (sem duplicar CPFs).
  * - Mantém o padrão do professor (findById → assign → save).
- * 
+
  * Dica importante:
  * - Sempre preserve o ID ao fazer updates com TypeORM.
  * - Object.assign deve ter como primeiro parâmetro um objeto que já

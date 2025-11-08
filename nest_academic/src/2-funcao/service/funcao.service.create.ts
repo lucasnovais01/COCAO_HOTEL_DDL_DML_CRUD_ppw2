@@ -8,28 +8,28 @@ import { FuncaoResponse } from '../dto/response/funcao.response';
 
 @Injectable()
 export class FuncaoServiceCreate {
-	constructor(
-		@InjectRepository(Funcao)
-		private funcaoRepository: Repository<Funcao>,
-	) {}
+  constructor(
+    @InjectRepository(Funcao)
+    private funcaoRepository: Repository<Funcao>,
+  ) {}
 
-	async create(funcaoRequest: FuncaoRequest): Promise<FuncaoResponse | null> {
-		let funcao = FuncaoConverter.toFuncao(funcaoRequest);
+  async create(funcaoRequest: FuncaoRequest): Promise<FuncaoResponse | null> {
+    let funcao = FuncaoConverter.toFuncao(funcaoRequest);
 
-		const funcaoCadastrada = await this.funcaoRepository
-			.createQueryBuilder('funcao')
-			.where('funcao.nomeFuncao = :nome', { nome: funcao.nomeFuncao })
-			.getOne();
+    const funcaoCadastrada = await this.funcaoRepository
+      .createQueryBuilder('funcao')
+      .where('funcao.nomeFuncao = :nome', { nome: funcao.nomeFuncao })
+      .getOne();
 
-		if (funcaoCadastrada) {
-			throw new HttpException(
-				'A função com o nome informado já está cadastrada',
-				HttpStatus.BAD_REQUEST,
-			);
-		}
+    if (funcaoCadastrada) {
+      throw new HttpException(
+        'A função com o nome informado já está cadastrada',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-		funcao = await this.funcaoRepository.save(funcao);
+    funcao = await this.funcaoRepository.save(funcao);
 
-		return FuncaoConverter.toFuncaoResponse(funcao);
-	}
+    return FuncaoConverter.toFuncaoResponse(funcao);
+  }
 }

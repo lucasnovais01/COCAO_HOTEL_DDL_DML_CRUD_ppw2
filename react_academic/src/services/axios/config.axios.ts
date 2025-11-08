@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"; // erro que está dando no pc da escola: Cannot find module 'axios' or its corresponding type declarations.
 import { REST_CONFIG } from "../constants/sistema.constant";
 
 /*
@@ -26,18 +26,18 @@ export const http = axios.create({
 });
 
 // Interceptor para log de requisições (debug)
-http.interceptors.request.use(request => {
+http.interceptors.request.use((request: any) => {
   console.log('Request:', request);
   return request;
 });
 
 // Interceptor para log de respostas e erros (debug)
 http.interceptors.response.use(
-  response => {
+  (  response: any) => {
     console.log('Response:', response);
     return response;
   },
-  error => {
+  (  error: { message: any; config: any; response: any; }) => {
     console.error('Erro na requisição:', {
       message: error.message,
       config: error.config,
@@ -48,18 +48,18 @@ http.interceptors.response.use(
 );
 
 // Interceptor para log de requisições (debug)
-http.interceptors.request.use(request => {
+http.interceptors.request.use((request: any) => {
   console.log('Request:', request);
   return request;
 });
 
 // Interceptor para log de respostas e erros (debug)
 http.interceptors.response.use(
-  response => {
+  (  response: any) => {
     console.log('Response:', response);
     return response;
   },
-  error => {
+  (  error: { message: any; config: any; response: any; }) => {
     console.error('Erro na requisição:', {
       message: error.message,
       config: error.config,
@@ -70,17 +70,17 @@ http.interceptors.response.use(
 );
 
 // Adicionar interceptors para debug
-http.interceptors.request.use(request => {
+http.interceptors.request.use((request: any) => {
   console.log('Request:', request);
   return request;
 });
 
 http.interceptors.response.use(
-  response => {
+  (  response: any) => {
     console.log('Response:', response);
     return response;
   },
-  error => {
+  (  error: any) => {
     console.error('Error:', error);
     return Promise.reject(error);
   }

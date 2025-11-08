@@ -21,18 +21,23 @@ import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.modu
 // =========================================================================
 
 // ERRADO (por quê?):
-// const oracledb = require('oracledb');  
+// const oracledb = require('oracledb');
 // - Usa require() que é CommonJS, mas estamos usando ES Modules (import/export)
 // - TypeScript não consegue inferir os tipos corretamente com require()
 
 // ERRADO TAMBÉM (por quê?):
+
 // import oracledb from 'oracledb';
-// - Essa sintaxe espera que oracledb tenha um export default, mas não tem
+
+// Porque esta sintaxe espera que oracledb tenha um export default, mas não tem
 
 // CERTO (por quê?):
 
 import * as oracledb from 'oracledb';
 
+//
+//
+//
 // - Importa todos os exports do módulo oracledb como um namespace
 // - TypeScript consegue inferir os tipos corretamente
 // - Compatível com ES Modules
@@ -41,11 +46,11 @@ import * as oracledb from 'oracledb';
 /*
 // Primeira tentativa (incorreta - usando import default):
 import oracledb from 'oracledb';
+*/
 
 oracledb.initOracleClient({
   libDir: 'D:/.Lucas Novais/oracle/client',
 });
-*/
 
 /*
 // Segunda tentativa (incorreta - usando require):
@@ -57,11 +62,11 @@ oracledb.initOracleClient({
 */
 
 // Configuração atual (em casa):
-
+/*
 oracledb.initOracleClient({
-  libDir: 'C:\\Oracle client\\instantclient_23_9', 
+  libDir: 'C:\\Oracle client\\instantclient_23_9',
 });
-
+*/
 // IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 
 @Module({
@@ -92,7 +97,7 @@ oracledb.initOracleClient({
         host: configService.get('DATABASE_HOST'),
         port: configService.get('DATABASE_PORT'),
         username: configService.get('DATABASE_USERNAME'),
-        sid: configService.get('DATABASE_DATABASE'), // 'sid' é o padrão para Oracle. // Deveria eu trocar por 'DATABASE_NAME' ?  
+        sid: configService.get('DATABASE_DATABASE'), // 'sid' é o padrão para Oracle. // Deveria eu trocar por 'DATABASE_NAME' ?
 
         password: configService.get('DATABASE_PASSWORD'),
         autoLoadEntities: configService.get('DATABASE_AUTOLOADENTITIES'), // Carrega entidades automaticamente

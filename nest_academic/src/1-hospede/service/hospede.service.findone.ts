@@ -2,8 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Hospede } from '../entity/hospede.entity';
-import { HospedeResponse } from '../dto/response/hospede.response';
-import { ConverterHospede } from '../dto/converter/hospede.converter';
+
+// Não
+// import { HospedeResponse } from '../dto/response/hospede.response';
+// import { ConverterHospede } from '../dto/converter/hospede.converter';
 
 @Injectable()
 export class HospedeServiceFindOne {

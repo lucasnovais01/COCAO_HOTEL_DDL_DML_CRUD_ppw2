@@ -26,3 +26,42 @@
   },
   "include": ["src"]
 }
+
+/** Erros que estou tendo na escola
+
+[{
+	"resource": "/d:/.Lucas Novais/COCAO_HOTEL_DDL_DML_CRUD_ppw2/react_academic/tsconfig.app.json",
+	"owner": "typescript",
+	"severity": 8,
+	"message": "Cannot find type definition file for 'react'.\n  The file is in the program because:\n    Entry point of type library 'react' specified in compilerOptions",
+	"source": "ts",
+	"startLineNumber": 1,
+	"startColumn": 1,
+	"endLineNumber": 1,
+	"endColumn": 2,
+	"origin": "extHost1"
+},{
+	"resource": "/d:/.Lucas Novais/COCAO_HOTEL_DDL_DML_CRUD_ppw2/react_academic/tsconfig.app.json",
+	"owner": "typescript",
+	"severity": 8,
+	"message": "Cannot find type definition file for 'react-dom'.\n  The file is in the program because:\n    Entry point of type library 'react-dom' specified in compilerOptions",
+	"source": "ts",
+	"startLineNumber": 1,
+	"startColumn": 1,
+	"endLineNumber": 1,
+	"endColumn": 2,
+	"origin": "extHost1"
+},{
+	"resource": "/d:/.Lucas Novais/COCAO_HOTEL_DDL_DML_CRUD_ppw2/react_academic/tsconfig.app.json",
+	"owner": "typescript",
+	"severity": 8,
+	"message": "Cannot find type definition file for 'vite/client'.\n  The file is in the program because:\n    Entry point of type library 'vite/client' specified in compilerOptions",
+	"source": "ts",
+	"startLineNumber": 1,
+	"startColumn": 1,
+	"endLineNumber": 1,
+	"endColumn": 2,
+	"origin": "extHost1"
+}]
+
+*/

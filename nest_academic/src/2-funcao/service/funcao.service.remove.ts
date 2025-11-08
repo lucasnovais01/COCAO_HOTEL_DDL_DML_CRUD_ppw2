@@ -5,26 +5,26 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class FuncaoServiceRemove {
-	constructor(
-		@InjectRepository(Funcao)
-		private funcaoRepository: Repository<Funcao>,
-	) {}
+  constructor(
+    @InjectRepository(Funcao)
+    private funcaoRepository: Repository<Funcao>,
+  ) {}
 
-	async remove(codigoFuncao: number): Promise<void> {
-		const funcaoCadastrada = await this.funcaoRepository.findOne({
-			where: { codigoFuncao },
-		});
+  async remove(codigoFuncao: number): Promise<void> {
+    const funcaoCadastrada = await this.funcaoRepository.findOne({
+      where: { codigoFuncao },
+    });
 
-		if (!funcaoCadastrada) {
-			throw new NotFoundException('Função não localizada');
-		}
+    if (!funcaoCadastrada) {
+      throw new NotFoundException('Função não localizada');
+    }
 
-		const result = await this.funcaoRepository.delete({ codigoFuncao });
+    const result = await this.funcaoRepository.delete({ codigoFuncao });
 
-		if (result.affected === 0) {
-			throw new NotFoundException('Função não localizada');
-		}
+    if (result.affected === 0) {
+      throw new NotFoundException('Função não localizada');
+    }
 
-		return;
-	}
+    return;
+  }
 }

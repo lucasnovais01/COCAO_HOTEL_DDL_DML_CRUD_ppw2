@@ -17,7 +17,7 @@ import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import type { Request } from 'express';
 
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
+@Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerFindOne {
   constructor(private readonly hospedeServiceFindOne: HospedeServiceFindOne) {}
 
@@ -30,7 +30,6 @@ export class HospedeControllerFindOne {
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Result<HospedeResponse | null>> {
-
     // trocado (antes era):
     // const response = await this.hospedeServiceFindOne.findById(+id);
 
@@ -78,7 +77,6 @@ export class HospedeControllerFindOne {
  * 
  * ==============================================================
  */
-
 
 /* 
   * ==============================================================

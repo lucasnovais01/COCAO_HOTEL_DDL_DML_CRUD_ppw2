@@ -56,7 +56,9 @@ export class HospedeRequest {
   @IsOptional()
   @IsString({ message: 'RG deve conter texto válido' })
   @MaxLength(20, { message: 'RG deve ter no máximo 20 caracteres' })
-  @Matches(/^[0-9A-Za-z\-]{7,9}$/, { message: 'RG inválido: 7-9 chars alfanuméricos com -' })
+  @Matches(/^[0-9A-Za-z\\-]{7,9}$/, {
+    message: 'RG inválido: 7-9 chars alfanuméricos com -',
+  })
   // RG opcional.
   rg?: string;
 
@@ -81,7 +83,9 @@ export class HospedeRequest {
   @IsOptional()
   @IsString({ message: 'Telefone deve conter texto válido' })
   @MaxLength(20, { message: 'Telefone deve ter no máximo 20 caracteres' })
-  @Matches(/^[0-9\s\-\(\)]+$/, { message: 'Telefone inválido: apenas dígitos, espaços, - ou ()' })
+  @Matches(/^[0-9\s\-\\(\\)]+$/, {
+    message: 'Telefone inválido: apenas dígitos, espaços, - ou ()',
+  })
   // Telefone opcional.
   telefone?: string;
 
@@ -110,16 +114,16 @@ export class HospedeRequest {
  * ==============================================================
  * TUTORIAL RÁPIDO: hospede.request.ts
  * ==============================================================
- * 
+ 
  * O que é?
  *   - DTO para requisições de entrada (create/update).
  *   - Valida dados do body via class-validator.
- * 
+
  * Para que serve?
  *   - Garante dados válidos antes de chegar ao service/banco.
  *   - Integra com NestJS: Use em controllers (@Body() dto: HospedeRequest).
  *   - Alinha validações ao DDL (lengths, regex, required).
- * 
+
  * Dicas:
  *   - Erros automáticos: Nest lança ValidationPipe exceptions.
  *   - Expanda com mais rules se precisar (ex.: custom validators).

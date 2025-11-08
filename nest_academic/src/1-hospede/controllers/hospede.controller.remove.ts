@@ -14,7 +14,7 @@ import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import type { Request } from 'express';
 
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
+@Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerRemove {
   constructor(private readonly hospedeServiceRemove: HospedeServiceRemove) {}
 
@@ -24,7 +24,7 @@ export class HospedeControllerRemove {
   // Histórico: @Delete(ROTA.HOSPEDE.DELETE) foi comentado porque quando
   // BY_ID incluía a rota completa causava duplicação com o @Controller base.
   // Agora temos ENDPOINTS no ROTA, então usamos:
-  @Delete(ROTA.HOSPEDE.ENDPOINTS.DELETE)  // 'excluir/:id'
+  @Delete(ROTA.HOSPEDE.ENDPOINTS.DELETE) // 'excluir/:id'
   async remove(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
@@ -32,7 +32,9 @@ export class HospedeControllerRemove {
     await this.hospedeServiceRemove.remove(id);
     // 204: não retornar corpo
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const rawPath =
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       (req as any).path ?? (req as any).url ?? (req as any).originalUrl;
     const path: string | null = typeof rawPath === 'string' ? rawPath : null;
 

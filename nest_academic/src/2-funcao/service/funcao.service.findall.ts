@@ -7,16 +7,16 @@ import { FuncaoConverter } from '../dto/converter/funcao.converter';
 
 @Injectable()
 export class FuncaoServiceFindAll {
-	constructor(
-		@InjectRepository(Funcao)
-		private funcaoRepository: Repository<Funcao>,
-	) {}
+  constructor(
+    @InjectRepository(Funcao)
+    private funcaoRepository: Repository<Funcao>,
+  ) {}
 
-	async findAll(): Promise<FuncaoResponse[]> {
-		const funcoes = await this.funcaoRepository
-			.createQueryBuilder('funcao')
-			.getMany();
+  async findAll(): Promise<FuncaoResponse[]> {
+    const funcoes = await this.funcaoRepository
+      .createQueryBuilder('funcao')
+      .getMany();
 
-		return FuncaoConverter.toListFuncaoResponse(funcoes);
-	}
+    return FuncaoConverter.toListFuncaoResponse(funcoes);
+  }
 }
