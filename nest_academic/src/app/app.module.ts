@@ -4,71 +4,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import Joi from 'joi';
 // Importa os 9 módulos da aplicação:
 import { HospedeModule } from 'src/1-hospede/hospede.module';
-
 import { FuncaoModule } from 'src/2-funcao/funcao.module';
 import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
 
-/*
-import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module';
-import { QuartoModule } from 'src/5-quarto/quarto.module';
-import { StatusReservaModule } from 'src/6-status-reserva/status-reserva.module';
-import { ReservaModule } from 'src/7-reserva/reserva.module';
-import { ServicoModule } from 'src/8-servico/servico.module';
-import { HospedeServicoModule } from 'src/9-hospede-servico/hospede-servico.module';
-*/
-// =========================================================================
-// IMPORTAÇÕES DO ORACLE CLIENT
-// =========================================================================
+// Importa e executa a configuração do Oracle Client
+//import './oracle-client.config';
 
-// ERRADO (por quê?):
-// const oracledb = require('oracledb');
-// - Usa require() que é CommonJS, mas estamos usando ES Modules (import/export)
-// - TypeScript não consegue inferir os tipos corretamente com require()
 
-// ERRADO TAMBÉM (por quê?):
-
-// import oracledb from 'oracledb';
-
-// Porque esta sintaxe espera que oracledb tenha um export default, mas não tem
-
-// CERTO (por quê?):
-
+// Foi criado o arquivo oracle-client.config.ts para isolar esta configuração específica do OracleDB:
 import * as oracledb from 'oracledb';
 
-//
-//
-//
-// - Importa todos os exports do módulo oracledb como um namespace
-// - TypeScript consegue inferir os tipos corretamente
-// - Compatível com ES Modules
-
-// HISTÓRICO DE TENTATIVAS (mantido para aprendizado):
-/*
-// Primeira tentativa (incorreta - usando import default):
-import oracledb from 'oracledb';
-*/
-
-oracledb.initOracleClient({
-  libDir: 'D:/.Lucas Novais/oracle/client',
-});
-
-/*
-// Segunda tentativa (incorreta - usando require):
-const oracledb = require('oracledb');
-
-oracledb.initOracleClient({
-  libDir: 'D:/.Lucas Novais/oracle/client',
-});
-*/
-
-// Configuração atual (em casa):
-/*
 oracledb.initOracleClient({
   libDir: 'C:\\Oracle client\\instantclient_23_9',
 });
-*/
-// IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 
+
+// IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 @Module({
   imports: [
     // 1. ConfigModule: Gerencia variáveis de ambiente (do .env)
@@ -119,11 +70,6 @@ oracledb.initOracleClient({
     HospedeServicoModule,
     */
   ],
-
-  // IMPORTANTE: OS DADOS ACIMA, são secretos
-
-  // controllers: [], // O AppModule não tem controllers próprios
-  // providers: [],   // O AppModule não tem services próprios
 })
 export class AppModule {}
 

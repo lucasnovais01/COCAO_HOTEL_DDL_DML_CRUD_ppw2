@@ -22,9 +22,6 @@ O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passa
 # Devo trocar o CDN do Font Awesome por uma dependência local (npm install @fortawesome/fontawesome-free) para evitar depender do CDN?
 
 
-Abrir o terminal (cmd) por exemplo aqui:
-C:\Users\Lucas\Downloads\COCAO_HOTEL_DDL_DML_CRUD_ppw2\nest_academic e rodar:
- 
 Lista de instaladores (ordem correta):
 
 # 1. Base do NestJS, pacotes principais do NestJS e as ferramentas de reflexão
@@ -59,7 +56,6 @@ npm install joi
 
 # 9. Instala as definições de tipo do TypeScript para o Joi
 npm install --save-dev @types/joi
-
 # Explicando, O @nestjs/config carrega o .env. O joi valida as variáveis de ambiente no app.module.ts. O @types/joi garante que o TypeScript entenda o joi.
 
 
@@ -109,6 +105,16 @@ npm install react-hook-form zod @hookform/resolvers
 
 # 9.
 npm install react-icons
+
+#
+npm install react-router-dom axios date-fns react-hook-form zod @hookform/resolvers react-icons @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons @fortawesome/react-fontawesome && npm install -D tailwindcss postcss autoprefixer
+
+
+
+
+
+
+
 
 ## RESUMO DA ADAPTAÇÃO DO REACT
 

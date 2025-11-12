@@ -7,6 +7,7 @@ export default function Layout() {
       {/* HEADER FIXO */}
       <header className="header">
         <div className="container">
+          
           {/* Link para Dashboard (Home) */}
           <NavLink
             to="/sistema/dashboard"
@@ -48,6 +49,9 @@ export default function Layout() {
       <div className="page-content">
         <Outlet />
       </div>
+
+
+
 
       {/* FOOTER, simples */}
       <footer className="footer">
