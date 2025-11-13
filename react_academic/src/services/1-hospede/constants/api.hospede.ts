@@ -21,8 +21,8 @@
 
 export const API_HOSPEDE = {
   LISTAR: '/hospede/listar',
-  POR_ID: '/hospede',
-  CRIAR: '/hospede',
-  ATUALIZAR: '/hospede',
-  EXCLUIR: '/hospede',
+  POR_ID: '/hospede/buscar',
+  CRIAR: '/hospede/criar',
+  ATUALIZAR: '/hospede/alterar',
+  EXCLUIR: '/hospede/excluir',
 };

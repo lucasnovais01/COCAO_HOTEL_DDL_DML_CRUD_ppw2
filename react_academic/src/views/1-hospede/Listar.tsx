@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import type { Hospede } from "../../type/1-hospede";
 
@@ -17,6 +17,7 @@ export default function ListarHospede() {
   const [searchTerm, setSearchTerm] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // --- Colunas (para facilitar manutenção e leitura) ------------------
   const columns = [
@@ -52,6 +53,19 @@ export default function ListarHospede() {
     load();
   }, []);
 
+  // Se a rota foi chamada com state.toast (por exemplo, vindo de Criar.tsx),
+  // exibimos o toast recebido e limpamos o state para não repetir a mensagem.
+  useEffect(() => {
+    const anyState: any = location.state;
+    if (anyState && anyState.toast) {
+      const t = anyState.toast as { message: string; type: "success" | "error" };
+      showToast(t.message, t.type);
+      // Limpa o state da rota para evitar reexibir ao recarregar
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
+
   // ============================================================
   // 3 - Filtragem / busca simples
   //    - Busca global em todas as propriedades do objeto
@@ -84,10 +98,17 @@ export default function ListarHospede() {
   };
 
   const handleDelete = (id?: number) => {
-    if (id == null) return showToast("ID inválido", "error");
+    if (id == null) return showToast("ID inválido", "error");    // Em vez de deletar diretamente aqui, abrimos a página de confirmação
+
+/*
     if (confirm(`Tem certeza que deseja excluir o hóspede ID: ${id}?`)) {
       showToast(`Hóspede ID ${id} excluído com sucesso!`, "success");
     }
+*/
+
+    // `Excluir.tsx` que já implementa a chamada ao backend e o fluxo.
+    // Isso evita duplicar lógica e mantém a confirmação/erro centralizados.
+    navigate(`${ROTA.HOSPEDE.EXCLUIR}/${id}`);
   };
 
   const handleConsult = (id?: number) => {

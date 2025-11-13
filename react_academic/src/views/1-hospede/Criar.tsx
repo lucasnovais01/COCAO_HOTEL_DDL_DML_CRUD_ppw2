@@ -8,11 +8,12 @@ import { apiPostHospede } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import { ROTA } from "../../services/router/url";
 
-// Criar Hóspede - formulário básico seguindo o modelo do professor (cidade)
+// Criar Hóspede - formulário básico com validações simples
 export default function CriarHospede() {
   const navigate = useNavigate();
   const [model, setModel] = useState<Hospede>(HOSPEDE.DADOS_INICIAIS as unknown as Hospede);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   // Atualiza um campo do formulário
   const handleChange = (name: keyof Hospede, value: any) => {
@@ -25,15 +26,65 @@ export default function CriarHospede() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Mensagens de ajuda por campo
+  const getHelpMessage = (fieldName: string): string | null => {
+    if (focusedField !== fieldName) return null;
+    const messages: { [key: string]: string } = {
+      [String(HOSPEDE.FIELDS.NOME)]: HOSPEDE.INPUT_ERROR.NOME.MIN_LEN,
+      [String(HOSPEDE.FIELDS.CPF)]: HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN,
+      [String(HOSPEDE.FIELDS.RG)]: HOSPEDE.INPUT_ERROR.RG.BLANK,
+      [String(HOSPEDE.FIELDS.SEXO)]: HOSPEDE.INPUT_ERROR.SEXO.BLANK,
+      [String(HOSPEDE.FIELDS.DATA_NASCIMENTO)]: HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK,
+      [String(HOSPEDE.FIELDS.EMAIL)]: HOSPEDE.INPUT_ERROR.EMAIL.VALID,
+      [String(HOSPEDE.FIELDS.TELEFONE)]: HOSPEDE.INPUT_ERROR.TELEFONE.BLANK,
+      [String(HOSPEDE.FIELDS.TIPO)]: HOSPEDE.INPUT_ERROR.TIPO.BLANK,
+    };
+    return messages[fieldName] || null;
+  };
+
   // Envia a criação para a API
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiPostHospede(model as Hospede);
+      /*
+        PROBLEMA: O backend retornava 400 Bad Request mesmo com URL correta.
+        
+        CAUSA: 
+        1. Enviávamos idUsuario: 0 (não deve ser enviado em CREATE, é auto-gerado)
+        2. Campos opcionais vazios eram enviados como "" (backend esperava null/undefined)
+        
+        SOLUÇÃO:
+        - Remover idUsuario do payload (não incluir na requisição)
+        - Converter campos vazios de strings para null (rg, email, telefone)
+        - Garantir tipo e ativo como números, não strings
+      */
+      const hospedeToSend = {
+        nomeHospede: model.nomeHospede,
+        cpf: model.cpf,
+        rg: model.rg || null,
+        sexo: model.sexo,
+        dataNascimento: model.dataNascimento ? String(model.dataNascimento) : "",
+        email: model.email || null,
+        telefone: model.telefone || null,
+        tipo: Number(model.tipo),
+        ativo: Number(model.ativo),
+      };
+      
+      console.log('[onSubmit] Dados a enviar (sem idUsuario, opcionais como null):', JSON.stringify(hospedeToSend, null, 2));
+      
+      await apiPostHospede(hospedeToSend as unknown as Hospede);
       showToast(HOSPEDE.OPERACAO.CRIAR.SUCESSO, "success");
-      setTimeout(() => navigate(ROTA.HOSPEDE.LISTAR), 1500);
+
+      // Mantemos o usuário na página de criação para que o toast permaneça visível.
+      // Se quisermos redirecionar automaticamente para a lista e exibir o
+      // toast lá, podemos navegar passando o toast via state. Exemplo (comentado):
+
+      setTimeout(() => navigate(ROTA.HOSPEDE.LISTAR, {
+        state: { toast: { message: HOSPEDE.OPERACAO.CRIAR.SUCESSO, type: 'success' } }
+      }), 1500);
+      
     } catch (error: any) {
-      console.error(error);
+      console.error('[onSubmit] Erro:', error);
       showToast(HOSPEDE.OPERACAO.CRIAR.ERRO, "error");
     }
   };
@@ -93,9 +144,14 @@ export default function CriarHospede() {
             <input
               value={model.nomeHospede}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.NOME as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.NOME))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
               required
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.NOME)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.NOME))}</p>
+            )}
           </div>
 
           {/* Campo: CPF */}
@@ -104,10 +160,15 @@ export default function CriarHospede() {
             <input
               value={model.cpf}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.CPF as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.CPF))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
               maxLength={11}
               required
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.CPF)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.CPF))}</p>
+            )}
           </div>
 
           {/* Campo: RG */}
@@ -116,8 +177,13 @@ export default function CriarHospede() {
             <input
               value={model.rg}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.RG as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.RG))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.RG)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.RG))}</p>
+            )}
           </div>
 
           {/* Campo: Sexo */}
@@ -126,12 +192,17 @@ export default function CriarHospede() {
             <select
               value={model.sexo}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.SEXO as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.SEXO))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             >
               <option value="">Selecione...</option>
               <option value="M">Masculino</option>
               <option value="F">Feminino</option>
             </select>
+            {getHelpMessage(String(HOSPEDE.FIELDS.SEXO)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.SEXO))}</p>
+            )}
           </div>
 
           {/* Campo: Data de Nascimento */}
@@ -145,8 +216,13 @@ export default function CriarHospede() {
                   : model.dataNascimento || ""
               }
               onChange={(e) => handleChange(HOSPEDE.FIELDS.DATA_NASCIMENTO as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.DATA_NASCIMENTO))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.DATA_NASCIMENTO)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.DATA_NASCIMENTO))}</p>
+            )}
           </div>
 
           {/* Campo: E-mail */}
@@ -156,8 +232,13 @@ export default function CriarHospede() {
               type="email"
               value={model.email}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.EMAIL as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.EMAIL))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.EMAIL)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.EMAIL))}</p>
+            )}
           </div>
 
           {/* Campo: Telefone */}
@@ -166,8 +247,13 @@ export default function CriarHospede() {
             <input
               value={model.telefone}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.TELEFONE as keyof Hospede, e.target.value)}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.TELEFONE))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             />
+            {getHelpMessage(String(HOSPEDE.FIELDS.TELEFONE)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.TELEFONE))}</p>
+            )}
           </div>
 
           {/* Campo: Tipo */}
@@ -176,11 +262,16 @@ export default function CriarHospede() {
             <select
               value={model.tipo}
               onChange={(e) => handleChange(HOSPEDE.FIELDS.TIPO as keyof Hospede, parseInt(e.target.value))}
+              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.TIPO))}
+              onBlur={() => setFocusedField(null)}
               className="form-control"
             >
               <option value={0}>Hóspede</option>
               <option value={1}>Funcionário</option>
             </select>
+            {getHelpMessage(String(HOSPEDE.FIELDS.TIPO)) && (
+              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.TIPO))}</p>
+            )}
           </div>
 
           {/* Campo: Ativo */}

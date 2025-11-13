@@ -43,7 +43,7 @@ export default function ConsultarHospede() {
             <p><strong>{HOSPEDE.LABEL.TELEFONE}:</strong> {model.telefone}</p>
           </div>
         ) : (
-          <div>Carregando...</div>
+          <div>Utilize o Consultar pelo Listar</div>
         )}
 
         <div className="btn-content mt-4">

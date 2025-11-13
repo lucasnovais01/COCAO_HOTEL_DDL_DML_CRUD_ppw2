@@ -52,23 +52,44 @@ export const apiGetHospede = async (idUsuario: number): Promise<any> => {
 // Cria um novo hóspede
 export const apiPostHospede = async (hospede: Hospede): Promise<any> => {
   console.log('[apiPostHospede] Criando hóspede:', hospede);
-  // const response = await http.post(ROTA.HOSPEDE.CRIAR, hospede);
-  const response = await http.post(API_HOSPEDE.CRIAR, hospede);
-  return response;
+  console.log('[apiPostHospede] Endpoint:', API_HOSPEDE.CRIAR);
+  console.log('[apiPostHospede] URL completa:', `http://localhost:8000/rest/sistema/v1${API_HOSPEDE.CRIAR}`);
+  console.log('[apiPostHospede] Payload enviado:', JSON.stringify(hospede, null, 2));
+  
+  try {
+    // const response = await http.post(ROTA.HOSPEDE.CRIAR, hospede);
+    const response = await http.post(API_HOSPEDE.CRIAR, hospede);
+    console.log('[apiPostHospede] Resposta:', response);
+    return response;
+  } catch (error: any) {
+    console.error('[apiPostHospede] Erro detalhado:', {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      headers: error.response?.headers,
+      config: error.config
+    });
+    throw error;
+  }
 };
 
 // Atualiza um hóspede existente
 export const apiPutHospede = async (idUsuario: number, hospede: Hospede): Promise<any> => {
   console.log('[apiPutHospede] Atualizando hóspede ID:', idUsuario);
+  console.log('[apiPutHospede] URL:', `${API_HOSPEDE.ATUALIZAR}/${idUsuario}`);
 //  const response = await http.put(`${ROTA.HOSPEDE.ATUALIZAR}/${idUsuario}`, hospede);
   const response = await http.put(`${API_HOSPEDE.ATUALIZAR}/${idUsuario}`, hospede);
+  console.log('[apiPutHospede] Resposta:', response);
   return response;
 };
 
 // Exclui um hóspede
 export const apiDeleteHospede = async (idUsuario: number): Promise<any> => {
   console.log('[apiDeleteHospede] Excluindo hóspede ID:', idUsuario);
+  console.log('[apiDeleteHospede] URL:', `${API_HOSPEDE.EXCLUIR}/${idUsuario}`);
   // const response = await http.delete(`${ROTA.HOSPEDE.EXCLUIR}/${idUsuario}`);
   const response = await http.delete(`${API_HOSPEDE.EXCLUIR}/${idUsuario}`);
+  console.log('[apiDeleteHospede] Resposta:', response);
   return response;
 };
