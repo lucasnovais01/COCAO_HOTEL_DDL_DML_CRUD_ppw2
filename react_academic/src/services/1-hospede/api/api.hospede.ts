@@ -1,5 +1,7 @@
 import { http } from "../../axios/config.axios";
-import { ROTA } from "../../router/url";
+import { API_HOSPEDE } from "../constants/api.hospede"; // Importa as rotas corretas da API
+                                                        // em vez de usar ROTA que tem /sistema
+                                                        // era isto que causava o problema 404
 import type { Hospede } from "../type/hospede";
 
 /*
@@ -30,38 +32,43 @@ import type { Hospede } from "../type/hospede";
  * ============================================================
  */
 
-// ✅ Lista todos os hóspedes (sem filtro de tipo)
+// Lista todos os hóspedes (sem filtro de tipo)
 export const apiGetHospedes = async (): Promise<any> => {
-  console.log('[apiGetHospedes] Chamando endpoint:', ROTA.HOSPEDE.LISTAR);
-  const response = await http.get(ROTA.HOSPEDE.LISTAR);
+  console.log('[apiGetHospedes] Chamando endpoint:', API_HOSPEDE.LISTAR);
+  // const response = await http.get(ROTA.HOSPEDE.LISTAR);
+  const response = await http.get(API_HOSPEDE.LISTAR);
   console.log('[apiGetHospedes] Resposta recebida:', response);
   return response;
 };
 
-// ✅ Busca um hóspede por ID
+// Busca um hóspede por ID
 export const apiGetHospede = async (idUsuario: number): Promise<any> => {
   console.log('[apiGetHospede] Buscando hóspede ID:', idUsuario);
-  const response = await http.get(`${ROTA.HOSPEDE.POR_ID}/${idUsuario}`);
+  // const response = await http.get(`${ROTA.HOSPEDE.POR_ID}/${idUsuario}`);
+  const response = await http.get(`${API_HOSPEDE.POR_ID}/${idUsuario}`);
   return response;
 };
 
-// ✅ Cria um novo hóspede
+// Cria um novo hóspede
 export const apiPostHospede = async (hospede: Hospede): Promise<any> => {
   console.log('[apiPostHospede] Criando hóspede:', hospede);
-  const response = await http.post(ROTA.HOSPEDE.CRIAR, hospede);
+  // const response = await http.post(ROTA.HOSPEDE.CRIAR, hospede);
+  const response = await http.post(API_HOSPEDE.CRIAR, hospede);
   return response;
 };
 
-// ✅ Atualiza um hóspede existente
+// Atualiza um hóspede existente
 export const apiPutHospede = async (idUsuario: number, hospede: Hospede): Promise<any> => {
   console.log('[apiPutHospede] Atualizando hóspede ID:', idUsuario);
-  const response = await http.put(`${ROTA.HOSPEDE.ATUALIZAR}/${idUsuario}`, hospede);
+//  const response = await http.put(`${ROTA.HOSPEDE.ATUALIZAR}/${idUsuario}`, hospede);
+  const response = await http.put(`${API_HOSPEDE.ATUALIZAR}/${idUsuario}`, hospede);
   return response;
 };
 
-// ✅ Exclui um hóspede
+// Exclui um hóspede
 export const apiDeleteHospede = async (idUsuario: number): Promise<any> => {
   console.log('[apiDeleteHospede] Excluindo hóspede ID:', idUsuario);
-  const response = await http.delete(`${ROTA.HOSPEDE.EXCLUIR}/${idUsuario}`);
+  // const response = await http.delete(`${ROTA.HOSPEDE.EXCLUIR}/${idUsuario}`);
+  const response = await http.delete(`${API_HOSPEDE.EXCLUIR}/${idUsuario}`);
   return response;
 };
