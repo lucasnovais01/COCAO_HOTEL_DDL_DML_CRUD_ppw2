@@ -24,16 +24,18 @@ export const apiPostFuncao = async (funcao: Funcao): Promise<any> => {
 	try {
 		const response = await http.post(API_FUNCAO.CRIAR, funcao);
 		console.log('[apiPostFuncao] Resposta:', response);
+		console.log('[apiPostFuncao] Status:', response?.status);
+		console.log('[apiPostFuncao] Data:', response?.data);
 		return response;
 	} catch (error: any) {
-		console.error('[apiPostFuncao] Erro detalhado:', {
+		console.error('[apiPostFuncao] ERRO - Detalhes completos:', {
 			message: error.message,
 			status: error.response?.status,
 			statusText: error.response?.statusText,
 			data: error.response?.data,
 			headers: error.response?.headers,
-			config: error.config
 		});
+		console.error('[apiPostFuncao] Full error object:', error);
 		throw error;
 	}
 };

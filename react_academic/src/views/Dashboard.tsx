@@ -48,7 +48,7 @@ export default function Dashboard() {
         
         {/* Grid com opções CRUD para FUNCAO */}
         <div className="crud-container">
-          <h2>Funções dos funcionários</h2>
+          <h2>Função</h2>
           
           <div className="crud-grid">
             {/* Botão Listar */}

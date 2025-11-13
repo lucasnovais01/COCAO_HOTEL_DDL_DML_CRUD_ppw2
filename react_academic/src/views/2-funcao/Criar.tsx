@@ -25,7 +25,11 @@ export default function CriarFuncao() {
       const payload: any = { ...model };
       payload.nivelAcesso = Number(payload.nivelAcesso) || 0;
 
+      console.log('[Criar.onSubmit] Payload:', JSON.stringify(payload, null, 2));
       const res = await apiPostFuncao(payload);
+      console.log('[Criar.onSubmit] Resposta sucesso:', res);
+      console.log('[Criar.onSubmit] Status:', res?.status);
+      console.log('[Criar.onSubmit] Data:', res?.data);
       const mensagem = res?.data?.mensagem ?? "Função criada com sucesso";
       showToast(mensagem, "success");
       // Para manter o usuário na página de criação (toast visível), não navegamos automaticamente.
@@ -33,6 +37,9 @@ export default function CriarFuncao() {
       // navigate(ROTA.FUNCAO.LISTAR, { state: { toast: { message: mensagem, type: 'success' } } });
     } catch (err: any) {
       console.error("Erro ao criar função:", err);
+      console.error('[Criar.onSubmit] Erro.response:', err?.response);
+      console.error('[Criar.onSubmit] Erro.response.status:', err?.response?.status);
+      console.error('[Criar.onSubmit] Erro.response.data:', err?.response?.data);
       const msg = err?.response?.data?.mensagem ?? "Erro ao criar função";
       showToast(msg, "error");
     }
@@ -52,6 +59,18 @@ export default function CriarFuncao() {
       <div className="devtools-card max-w-2xl mx-auto">
         <h2 className="text-2xl font-semibold mb-4">{FUNCAO.TITULO.CRIAR}</h2>
         <form onSubmit={onSubmit}>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Código da Função</label>
+            <input
+              type="number"
+              value={model.codigoFuncao ?? ""}
+              onChange={(e) => handleChange("codigoFuncao", Number(e.target.value) || undefined)}
+              className="w-full px-3 py-2 border rounded"
+              required
+              placeholder="Ex: 1001"
+            />
+          </div>
+
           <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Nome da Função</label>
             <input
