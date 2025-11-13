@@ -1,3 +1,6 @@
+
+// Este é o antigo LISTAR, usado como modelo
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
