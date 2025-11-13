@@ -1,104 +1,221 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
-import { BsPencilSquare, BsFillTrash3Fill, BsEye } from "react-icons/bs";
+import { NavLink, useNavigate } from "react-router-dom";
+import type { ReactNode } from "react";
 import type { Hospede } from "../../type/1-hospede";
 
 import { apiGetHospedes } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import { ROTA } from "../../services/router/url";
 
-export default function ListarHospede() {
-  const [models, setModels] = useState<Hospede[] | null>(null);
+// ============================================================
+// 1 - Estrutura
+// ============================================================
 
-  // Busca todas as entradas do backend quando o componente monta
+export default function ListarHospede() {
+  // --- Estado local ---------------------------------------------------
+  const [hospedes, setHospedes] = useState<Hospede[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const navigate = useNavigate();
+
+  // --- Colunas (para facilitar manutenção e leitura) ------------------
+  const columns = [
+    "idUsuario",
+    "nomeHospede",
+    "cpf",
+    "rg",
+    "sexo",
+    "dataNascimento",
+    "email",
+    "telefone",
+    "tipo",
+    "ativo",
+  ];
+
+  // ============================================================
+  // 2 - Carregamento de dados (API)
+  //    - Usamos o helper `apiGetHospedes` (padrão do modelo)
+  //    - Desembrulhamos `res.data.dados` como no backend do curso
+  // ============================================================
   useEffect(() => {
-    async function getAll() {
+    async function load() {
       try {
-        const response = await apiGetHospedes();
-        const dados = response?.data?.dados ?? null;
-        if (dados) setModels(dados);
-      } catch (error: any) {
-        console.error("Erro ao buscar hóspedes:", error);
+        const res = await apiGetHospedes();
+        const dados = res?.data?.dados ?? [];
+        if (Array.isArray(dados)) setHospedes(dados);
+      } catch (err) {
+        console.error("Erro ao buscar hóspedes:", err);
+        showToast("Erro ao carregar hóspedes", "error");
       }
     }
 
-    getAll();
+    load();
   }, []);
 
+  // ============================================================
+  // 3 - Filtragem / busca simples
+  //    - Busca global em todas as propriedades do objeto
+  // ============================================================
+  const filteredData = hospedes.filter((h) =>
+    Object.values(h).some((v) => v?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  // ============================================================
+  // 4 - Toast / feedback
+  // ============================================================
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // ============================================================
+  // 5 - Ações (navegação e placeholders para criar/editar/excluir)
+  //    - Mantemos a navegação via `ROTA` como no modelo
+  // ============================================================
+  const handleCreate = () => {
+    navigate(ROTA.HOSPEDE.CRIAR);
+    showToast("Redirecionando para criação...", "success");
+  };
+
+  const handleEdit = (id?: number) => {
+    if (id == null) return showToast("ID inválido", "error");
+    navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
+    showToast(`Editar hóspede ID: ${id}`, "success");
+  };
+
+  const handleDelete = (id?: number) => {
+    if (id == null) return showToast("ID inválido", "error");
+    if (confirm(`Tem certeza que deseja excluir o hóspede ID: ${id}?`)) {
+      showToast(`Hóspede ID ${id} excluído com sucesso!`, "success");
+    }
+  };
+
+  const handleConsult = (id?: number) => {
+    if (id == null) return showToast("ID inválido", "error");
+    navigate(`${ROTA.HOSPEDE.POR_ID}/${id}`);
+    showToast(`Consultando hóspede ID: ${id}`, "success");
+  };
+
+  // ============================================================
+  // 6 - Helpers de formatação (datas, booleanos, enums)
+  // ============================================================
+  const formatValue = (key: string, value: any): string | ReactNode => {
+    if (value === true) return "Sim";
+    if (value === false) return "Não";
+    const k = key.toLowerCase();
+    if (k.includes("data")) {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("pt-BR");
+    }
+    if (k === "tipo") return value === 0 ? "Hóspede" : value === 1 ? "Funcionário" : "Outro";
+    return value?.toString() || "-";
+  };
+
+  // ============================================================
+  // 7 - Render
+  // ============================================================
   return (
-    <div className="display">
-      <div className="card animated fadeInDown">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2>{HOSPEDE.TITULO.LISTA}</h2>
-
-          {/* Link para criar novo hóspede (usa as rotas centralizadas em ROTA) */}
-          <Link to={ROTA.HOSPEDE.CRIAR} className="btn btn-add">
-            <span className="btn-icon">
-              <i>
-                <FaPlus />
-              </i>
-            </span>
-            Novo
-          </Link>
+    <div className="hospede-listar-page">
+      {/* Breadcrumb */}
+      <nav className="breadcrumb">
+        <div className="container flex items-center space-x-2 text-sm">
+          <NavLink 
+            to="/sistema/dashboard"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Home
+          </NavLink>
+          <i className="fas fa-chevron-right text-gray-400"></i>
+          <span className="text-gray-600">Listar Hóspedes</span>
         </div>
+      </nav>
 
-        <br />
+      {/* Banner */}
+      <section className="hospede-banner">
+        <div className="container text-center">
+          <i className="fas fa-users text-6xl mb-4"></i>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Gerenciamento de Hóspedes</h1>
+          <p className="text-xl">Lista completa de todos os hóspedes cadastrados</p>
+        </div>
+      </section>
 
-        <table>
-          <thead>
-            <tr>
-              <th>{HOSPEDE.LABEL.NOME}</th>
-              <th>{HOSPEDE.LABEL.CPF}</th>
-              <th>{HOSPEDE.LABEL.TELEFONE}</th>
-              <th className="center actions" colSpan={3}>Ação</th>
-            </tr>
-          </thead>
+      {/* Content */}
+      <main className="container py-8">
+        {/* Toast */}
+        {toast && (
+          <div className="fixed top-20 right-4 z-50">
+            <div className={`toast ${toast.type === "error" ? "error" : ""}`}>
+              <div className="flex items-center">
+                <i className={`fas ${toast.type === "success" ? "fa-check" : "fa-exclamation-triangle"} mr-2`}></i>
+                <span>{toast.message}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
-          <tbody>
-            {models?.map((m) => (
-              <tr key={m.idUsuario}>
-                <td>{m.nomeHospede}</td>
-                <td>{m.cpf}</td>
-                <td>{m.telefone}</td>
-                <td className="center actions">
+        {/* Tabela */}
+        <div className="devtools-card">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-medium text-gray-900">{HOSPEDE.TITULO.LISTA}</h3>
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                placeholder="Buscar..."
+                className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <button
+                onClick={handleCreate}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+              >
+                <i className="fas fa-plus mr-1"></i>Novo
+              </button>
+            </div>
+          </div>
 
-                  {/* Link para página de atualização (Alterar) */}
-                  <Link to={`${ROTA.HOSPEDE.ATUALIZAR}/${m.idUsuario}`} className="btn btn-edit">
-                    <span className="btn-icon">
-                      <i>
-                        <BsPencilSquare />
-                      </i>
-                    </span>
-                    Atualizar
-                  </Link>
-
-                  {/* Link para página de exclusão */}
-                  <Link to={`${ROTA.HOSPEDE.EXCLUIR}/${m.idUsuario}`} className="btn btn-delete">
-                    <span className="btn-icon">
-                      <i>
-                        <BsFillTrash3Fill />
-                      </i>
-                    </span>
-                    Excluir
-                  </Link>
-
-                  {/* Link para página de consulta (visualizar) */}
-                  <Link to={`${ROTA.HOSPEDE.POR_ID}/${m.idUsuario}`} className="btn btn-show">
-                    <span className="btn-icon">
-                      <i>
-                        <BsEye />
-                      </i>
-                    </span>
-                    Consulta
-                  </Link>
-
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          <div className="table-container">
+            <table className="dev-table">
+              <thead>
+                <tr>
+                  {columns.map((col) => (
+                    <th key={col}>{col}</th>
+                  ))}
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={columns.length + 1} className="text-center py-4 text-gray-500">
+                      Nenhum hóspede encontrado.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((h) => (
+                    <tr key={h.idUsuario ?? Math.random()}>
+                      {columns.map((col) => (
+                        <td key={col}>{formatValue(col, (h as any)[col])}</td>
+                      ))}
+                      <td className="actions">
+                        <button onClick={() => handleConsult(h.idUsuario)} className="btn-show" title="Consultar">
+                          <i className="fas fa-eye"></i>
+                        </button>
+                        <button onClick={() => handleEdit(h.idUsuario)} className="btn-edit" title="Editar">
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button onClick={() => handleDelete(h.idUsuario)} className="btn-delete" title="Excluir">
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

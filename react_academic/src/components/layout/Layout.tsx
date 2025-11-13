@@ -17,17 +17,6 @@ export default function Layout() {
             <span>Hotel Cocao</span>
           </NavLink>
 
-
-          {/* Link para Listar.view no menu de navegação
-          <NavLink
-            to="/sistema/hospede/listar"
-            className="nav-btn"
-          >
-            <i className="fas fa-search"></i>
-            <span>Listar</span>
-          </NavLink>
-          */}
-
           {/* Link para DevTools */}
           <NavLink
             to="/sistema/devtools"
@@ -41,6 +30,15 @@ export default function Layout() {
             <i className="fas fa-sign-in-alt"></i> <span>Login</span>
           </button>
         </div>
+
+      {/* Link para hospede/Listar.view no cabeçalho (header), comentado pra referência e aprendizado
+        to="/sistema/hospede/listar"
+        className="nav-btn"
+      >
+        <i className="fas fa-search"></i>
+        <span>Listar</span>
+      </NavLink>
+      */}
 
       </header>
 

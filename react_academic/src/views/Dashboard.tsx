@@ -1,20 +1,97 @@
+import { Link } from "react-router-dom";
+import { ROTA } from "../services/router/url";
+
 export default function Dashboard() {
   return (
     <div className="display">
       <div className="card animated fadeInDown">
         <h1>Dashboard</h1>
         <p>Bem-vindo ao sistema de hotel</p>
+        
+        {/* Grid com opções CRUD para Hóspede */}
+        <div className="crud-container">
+          <h2>Gerenciamento de Hóspedes</h2>
+          
+          <div className="crud-grid">
+            {/* Botão Listar */}
+            <Link to={ROTA.HOSPEDE.LISTAR} className="crud-btn crud-listar">
+              <i className="fas fa-list"></i>
+              <span>Listar</span>
+            </Link>
+            
+            {/* Botão Buscar (Consultar) */}
+            <Link to={ROTA.HOSPEDE.POR_ID + "/1"} className="crud-btn crud-buscar">
+              <i className="fas fa-search"></i>
+              <span>Buscar</span>
+            </Link>
+            
+            {/* Botão Criar */}
+            <Link to={ROTA.HOSPEDE.CRIAR} className="crud-btn crud-criar">
+              <i className="fas fa-plus"></i>
+              <span>Criar</span>
+            </Link>
+            
+            {/* Botão Alterar */}
+            <Link to={ROTA.HOSPEDE.ATUALIZAR + "/1"} className="crud-btn crud-atualizar">
+              <i className="fas fa-edit"></i>
+              <span>Alterar</span>
+            </Link>
+            
+            {/* Botão Excluir */}
+            <Link to={ROTA.HOSPEDE.EXCLUIR + "/1"} className="crud-btn crud-excluir">
+              <i className="fas fa-trash"></i>
+              <span>Excluir</span>
+            </Link>
+          </div>
+        </div>
+
+        
+        {/* Grid com opções CRUD para Hóspede */}
+        <div className="crud-container">
+          <h2>Gerenciamento de Hóspedes</h2>
+          
+          <div className="crud-grid">
+            {/* Botão Listar */}
+            <Link to={ROTA.HOSPEDE.LISTAR} className="crud-btn crud-listar">
+              <i className="fas fa-list"></i>
+              <span>Listar</span>
+            </Link>
+            
+            {/* Botão Buscar (Consultar) */}
+            <Link to={ROTA.HOSPEDE.POR_ID + "/1"} className="crud-btn crud-buscar">
+              <i className="fas fa-search"></i>
+              <span>Buscar</span>
+            </Link>
+            
+            {/* Botão Criar */}
+            <Link to={ROTA.HOSPEDE.CRIAR} className="crud-btn crud-criar">
+              <i className="fas fa-plus"></i>
+              <span>Criar</span>
+            </Link>
+            
+            {/* Botão Alterar */}
+            <Link to={ROTA.HOSPEDE.ATUALIZAR + "/1"} className="crud-btn crud-atualizar">
+              <i className="fas fa-edit"></i>
+              <span>Alterar</span>
+            </Link>
+            
+            {/* Botão Excluir */}
+            <Link to={ROTA.HOSPEDE.EXCLUIR + "/1"} className="crud-btn crud-excluir">
+              <i className="fas fa-trash"></i>
+              <span>Excluir</span>
+            </Link>
+          </div>
+        </div>
+
+
+
       </div>
-
-
-
-
     </div>
   );
 }
 
 /*
-Agora vou explicar com poucas palavras:
+TUTORIAL: Como o DASHBOARD está funcionando
 
 Dashboard no meio da tela:
 O card fica centralizado porque:

@@ -1,7 +1,7 @@
 import * as oracledb from 'oracledb';
 
 oracledb.initOracleClient({
-  libDir: 'D:/.Lucas Novais/oracle/client',
+  libDir: 'C:\\Oracle client\\instantclient_23_9',
 });
 
 /*
