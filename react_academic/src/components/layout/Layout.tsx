@@ -18,7 +18,7 @@ export default function Layout() {
           </NavLink>
 
 
-          {/* Link para Listar.view */}
+          {/* Link para Listar.view no menu de navegação
           <NavLink
             to="/sistema/hospede/listar"
             className="nav-btn"
@@ -26,7 +26,7 @@ export default function Layout() {
             <i className="fas fa-search"></i>
             <span>Listar</span>
           </NavLink>
-
+          */}
 
           {/* Link para DevTools */}
           <NavLink
@@ -59,9 +59,11 @@ export default function Layout() {
       {/* FOOTER, simples */}
       <footer className="footer">
         <div className="container">
+
           <NavLink to="/sistema/dashboard" className="footer-logo">
             <i className="fas fa-hotel"></i> <span>Hotel Cocao</span>
           </NavLink>
+
           <p className="footer-description">Conforto e elegância para sua estadia perfeita.</p>
 
           <div className="footer-section">
