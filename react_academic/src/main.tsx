@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+
 // OBS: o App agora já cria o Router (createBrowserRouter + RouterProvider).
 // Antes o projeto envolvia o App com <BrowserRouter> aqui. Isso gerou
 // um erro em tempo de execução: "You cannot render a <Router> inside another <Router>".
@@ -14,7 +15,6 @@ import axios from 'axios'
 axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '';
 
 // CSS
-
 // import './assets/css/index.css' - modularizado
 import './assets/css/0-style.css'
 

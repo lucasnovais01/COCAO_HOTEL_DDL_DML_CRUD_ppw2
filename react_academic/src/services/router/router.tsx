@@ -22,7 +22,7 @@ import { ROTA } from "./url";
 // ============================================================
 export const routes: RouteObject[] = [
   // Redirecionamento da raiz '/' para o Dashboard
-  // Motivo (pt-BR): abrir http://localhost:5173/ (ou :5174) deve levar ao
+  // Motivo: abrir http://localhost:5173/ (ou :5174) deve levar ao
   // Dashboard do sistema; sem esse redirect a aplicação retorna "No route matches URL '/'".
   {
     path: '/',
