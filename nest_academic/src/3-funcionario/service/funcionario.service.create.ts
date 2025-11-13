@@ -8,26 +8,30 @@ import { FuncionarioResponse } from '../dto/response/funcionario.response';
 
 @Injectable()
 export class FuncionarioServiceCreate {
-	constructor(
-		@InjectRepository(Funcionario)
-		private funcionarioRepository: Repository<Funcionario>,
-	) {}
+  constructor(
+    @InjectRepository(Funcionario)
+    private funcionarioRepository: Repository<Funcionario>,
+  ) {}
 
-	async create(funcionarioRequest: FuncionarioRequest): Promise<FuncionarioResponse | null> {
-		let funcionario = FuncionarioConverter.toFuncionario(funcionarioRequest);
+  async create(
+    funcionarioRequest: FuncionarioRequest,
+  ): Promise<FuncionarioResponse | null> {
+    let funcionario = FuncionarioConverter.toFuncionario(funcionarioRequest);
 
-		const funcionarioExistente = await this.funcionarioRepository
-			.createQueryBuilder('f')
-			.where('f.nomeLogin = :login', { login: funcionario.nomeLogin })
-			.getOne();
+    const funcionarioExistente = await this.funcionarioRepository
+      .createQueryBuilder('f')
+      .where('f.nomeLogin = :login', { login: funcionario.nomeLogin })
+      .getOne();
 
-		if (funcionarioExistente) {
-			throw new HttpException('Nome de login já cadastrado', HttpStatus.BAD_REQUEST);
-		}
+    if (funcionarioExistente) {
+      throw new HttpException(
+        'Nome de login já cadastrado',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-		funcionario = await this.funcionarioRepository.save(funcionario);
+    funcionario = await this.funcionarioRepository.save(funcionario);
 
-		return FuncionarioConverter.toFuncionarioResponse(funcionario);
-	}
+    return FuncionarioConverter.toFuncionarioResponse(funcionario);
+  }
 }
-

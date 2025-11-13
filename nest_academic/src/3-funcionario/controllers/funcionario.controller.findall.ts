@@ -8,20 +8,23 @@ import type { Request } from 'express';
 
 @Controller(ROTA.FUNCIONARIO.BASE.substring(1))
 export class FuncionarioControllerFindAll {
-	constructor(private readonly funcionarioServiceFindAll: FuncionarioServiceFindAll) {}
+  constructor(
+    private readonly funcionarioServiceFindAll: FuncionarioServiceFindAll,
+  ) {}
 
-	@HttpCode(HttpStatus.OK)
-	@Get(ROTA.FUNCIONARIO.ENDPOINTS.LIST)
-	async findAll(@Req() req: Request): Promise<Result<FuncionarioResponse[]>> {
-		const response = await this.funcionarioServiceFindAll.findAll();
+  @HttpCode(HttpStatus.OK)
+  @Get(ROTA.FUNCIONARIO.ENDPOINTS.LIST)
+  async findAll(@Req() req: Request): Promise<Result<FuncionarioResponse[]>> {
+    const response = await this.funcionarioServiceFindAll.findAll();
 
-		return MensagemSistema.showMensagem(
-			HttpStatus.OK,
-			'Lista de funcionários gerada com sucesso!',
-			response,
-			ROTA.FUNCIONARIO.LIST,
-			null,
-		);
-	}
+    return MensagemSistema.showMensagem(
+      HttpStatus.OK,
+      'Lista de funcionários gerada com sucesso!',
+      response,
+      ROTA.FUNCIONARIO.LIST,
+      null,
+    );
+  }
 }
 
+// Na linha 17, o erro que está dando é 'req' is declared but its value is never read.ts(6133)

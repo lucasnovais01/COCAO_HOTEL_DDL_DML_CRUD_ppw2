@@ -8,19 +8,19 @@ import type { Request } from 'express';
 
 @Controller(ROTA.FUNCAO.BASE.substring(1))
 export class FuncaoControllerFindAll {
-	constructor(private readonly funcaoServiceFindAll: FuncaoServiceFindAll) {}
+  constructor(private readonly funcaoServiceFindAll: FuncaoServiceFindAll) {}
 
-	@HttpCode(HttpStatus.OK)
-	@Get(ROTA.FUNCAO.ENDPOINTS.LIST)
-	async findAll(@Req() req: Request): Promise<Result<FuncaoResponse[]>> {
-		const response = await this.funcaoServiceFindAll.findAll();
+  @HttpCode(HttpStatus.OK)
+  @Get(ROTA.FUNCAO.ENDPOINTS.LIST)
+  async findAll(@Req() req: Request): Promise<Result<FuncaoResponse[]>> {
+    const response = await this.funcaoServiceFindAll.findAll();
 
-		return MensagemSistema.showMensagem(
-			HttpStatus.OK,
-			'Lista de funções gerada com sucesso!',
-			response,
-			ROTA.FUNCAO.LIST,
-			null,
-		);
-	}
+    return MensagemSistema.showMensagem(
+      HttpStatus.OK,
+      'Lista de funções gerada com sucesso!',
+      response,
+      ROTA.FUNCAO.LIST,
+      null,
+    );
+  }
 }

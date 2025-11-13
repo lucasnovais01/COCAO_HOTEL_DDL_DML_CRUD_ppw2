@@ -7,7 +7,12 @@ git config --global user.email "novais.oliveira@aluno.ifsp.edu.br"
 git config --global user.name "lucasnovais01"
 
 
-Como rodar o servidor/sistema, no CMD/terminal, exemplo:
+# /** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
+O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
+
+# Se colocar ```ts, em arquivo .md, o texto muda também.
+
+Como rodar o servidor/sistema, no CMD/terminal, mas precisa dos INSTALADORES, exemplo:
 
 PARA O NEST É
     npm run start:dev
@@ -15,14 +20,9 @@ PARA O NEST É
 PARA O REACTJS
     npm run dev
 
-# /** Comentário do JSDoc (JavaScript Documentation) // tem que colocar dois asteriscos no começo
-O VS Code lê JSDoc e transforma em dicas inteligentes (IntelliSense), só passar o mouse sobre o método.
 
+# Lista de instaladores (ordem correta, no final tem uma linha com todos de uma vez):
 
-# Devo trocar o CDN do Font Awesome por uma dependência local (npm install @fortawesome/fontawesome-free) para evitar depender do CDN?
-
-
-Lista de instaladores (ordem correta):
 
 # 1. Base do NestJS, pacotes principais do NestJS e as ferramentas de reflexão
 npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs
@@ -30,9 +30,7 @@ npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadat
 # 2. Tipos de desenvolvimento para o ambiente Node/Express (necessário para o TypeScript)
 npm install --save-dev @types/node @types/express
 
-
 # ORM e Conexão com o Banco de Dados Oracle:
-
 # 3. Instala o módulo do TypeORM para NestJS
 npm install @nestjs/typeorm
 
@@ -67,7 +65,7 @@ npm install class-validator
 # 11. Adiciona funcionalidade de transformação de objetos e DTOs
 npm install class-transformer
 
-##
+## TODOS DE UMA VEZ (NEST)
 npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm oracledb @types/oracledb @nestjs/config joi @types/joi class-validator class-transformer
 
 
@@ -106,7 +104,7 @@ npm install react-hook-form zod @hookform/resolvers
 # 9.
 npm install react-icons
 
-#
+##### TODOS DE UMA VEZ (REACT)
 npm install react-router-dom axios date-fns react-hook-form zod @hookform/resolvers react-icons @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons @fortawesome/free-brands-svg-icons @fortawesome/react-fontawesome && npm install -D tailwindcss postcss autoprefixer
 
 
@@ -129,3 +127,7 @@ Convertemos tudo para React + TypeScript + Vite + Tailwind
 
 Substituído o JS puro por React (useState, useEffect, etc.)
 Removido CDN → instalamos Tailwind e Font Awesome localmente
+
+
+
+# Devo trocar o CDN do Font Awesome por uma dependência local (npm install @fortawesome/fontawesome-free) para evitar depender do CDN?

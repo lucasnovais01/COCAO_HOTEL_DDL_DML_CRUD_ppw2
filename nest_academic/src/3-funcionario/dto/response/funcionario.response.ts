@@ -1,25 +1,24 @@
 import { Expose } from 'class-transformer';
 
 export class FuncionarioResponse {
-	@Expose()
-	idUsuario?: number;
+  @Expose()
+  idUsuario?: number;
 
-	@Expose()
-	codigoFuncao?: number;
+  @Expose()
+  codigoFuncao?: number;
 
-	@Expose()
-	nomeLogin: string = '';
+  @Expose()
+  nomeLogin: string = '';
 
-	@Expose()
-	dataContratacao: Date = new Date();
+  @Expose()
+  dataContratacao: Date = new Date();
 
-	@Expose()
-	ativo: number = 1;
+  @Expose()
+  ativo: number = 1;
 
-	@Expose()
-	createdAt?: Date;
+  @Expose()
+  createdAt?: Date;
 
-	@Expose()
-	updatedAt?: Date;
+  @Expose()
+  updatedAt?: Date;
 }
-

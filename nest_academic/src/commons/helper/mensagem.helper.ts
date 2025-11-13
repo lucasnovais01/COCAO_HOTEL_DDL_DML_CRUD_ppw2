@@ -26,7 +26,8 @@ export class MensagemHelper {
     HttpStatus.BAD_REQUEST,
   );
 
-  static readonly SUCESSO_REGISTRO_CADASTRADO = 'Registro cadastrado com sucesso';
+  static readonly SUCESSO_REGISTRO_CADASTRADO =
+    'Registro cadastrado com sucesso';
   static readonly SUCESSO_REGISTRO_ALTERADO = 'Registro alterado com sucesso';
   static readonly SUCESSO_REGISTRO_EXCLUIDO = 'Registro excluído com sucesso';
 }

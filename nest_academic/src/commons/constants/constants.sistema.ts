@@ -17,7 +17,3 @@ export const SERVICO = 'servico';
 export const HOSPEDE_SERVICO = 'hospede-servico';
 
 export const AUTH = 'auth';
-
-// Futuros módulos
-// @Module({ imports: [HospedeModule] }) -> src/hospede/hospede.module.ts
-// @Module({ imports: [ReservaModule] }) -> src/reserva/reserva.module.ts

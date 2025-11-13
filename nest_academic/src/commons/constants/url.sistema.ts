@@ -36,7 +36,6 @@ const BY_ID = 'buscar/:id';
 const UPDATE = 'alterar/:id';
 const DELETE = 'excluir/:id';
 
-
 // Gera rotas completas para uma entidade. Exemplo: /rest/sistema/v1/hospede/listar
 // Retorna um objeto com todas as rotas para a entidade fornecida
 // o base serve como base para as outras rotas
@@ -54,7 +53,7 @@ const DELETE = 'excluir/:id';
 
 /**
  * Gera as rotas para uma entidade do sistema.
- * 
+
  * IMPORTANTE SOBRE A BARRA INICIAL '/':
  * ----------------------------------
  * 1. Mantemos a barra inicial aqui para:
@@ -74,7 +73,7 @@ const DELETE = 'excluir/:id';
  */
 
 // Não está servindo pra mais nada, a functio abaixo, foi substituída por ENDPOINTS
-  // Helper function to get only the endpoint part of a route (after the base)
+// Helper function to get only the endpoint part of a route (after the base)
 /*
 function getEndpoint(fullPath: string, base: string): string {
   return fullPath.replace(base + '/', '');
@@ -91,16 +90,16 @@ function gerarRotasSistema(entity: string) {
     UPDATE: `${base}/${UPDATE}`,
     DELETE: `${base}/${DELETE}`,
   };
-  
+
   // Adiciona uma estrutura ENDPOINTS que contém apenas o sufixo da rota
   // (sem a base). Isso facilita o uso em decorators do NestJS
   // sem causar duplicação quando o @Controller já fornece a base.
   const endpoints = {
-    LIST: LIST,           // 'listar'
-    CREATE: CREATE,       // 'criar'
-    BY_ID: BY_ID,         // 'buscar/:id'
-    UPDATE: UPDATE,       // 'alterar/:id'
-    DELETE: DELETE,       // 'excluir/:id'
+    LIST: LIST, // 'listar'
+    CREATE: CREATE, // 'criar'
+    BY_ID: BY_ID, // 'buscar/:id'
+    UPDATE: UPDATE, // 'alterar/:id'
+    DELETE: DELETE, // 'excluir/:id'
   };
 
   return {

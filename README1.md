@@ -1,9 +1,28 @@
 
 # POSTMAN #
+ 
+http://localhost:8000
+
+http://localhost:8000/rest/
+#
+
+http://localhost:8000/rest/sistema/
+##
+
+http://localhost:8000/rest/sistema/v1/
+### Versão do sistema
+
+http://localhost:8000/rest/sistema/v1/hospede/
+#### Aqui acima, já é onde diferencia os módulos
+
+
+# URL:
 
 URL: http://localhost:8000/rest/sistema/v1/hospede/criar
 
-Method: POST
+# MÉTODOS (METHOD) NO POSTMAN:
+
+# POST
 
 Headers:
 Content-Type: application/json

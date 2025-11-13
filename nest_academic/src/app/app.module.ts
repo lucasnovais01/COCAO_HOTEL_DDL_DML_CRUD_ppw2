@@ -8,16 +8,16 @@ import { FuncaoModule } from 'src/2-funcao/funcao.module';
 import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
 
 // Importa e executa a configuração do Oracle Client
-//import './oracle-client.config';
+import './oracle-client.config';
 
-
+/*
 // Foi criado o arquivo oracle-client.config.ts para isolar esta configuração específica do OracleDB:
 import * as oracledb from 'oracledb';
 
 oracledb.initOracleClient({
   libDir: 'C:\\Oracle client\\instantclient_23_9',
 });
-
+*/
 
 // IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 @Module({

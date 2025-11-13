@@ -15,6 +15,7 @@ export interface Result<T> {
 export class Mensagem<T> {
   status: number = 0;
   mensagem: string | null = null;
+
   erro: string | unknown | null = null;
   dados: T | null = null;
   path: string | null = null;

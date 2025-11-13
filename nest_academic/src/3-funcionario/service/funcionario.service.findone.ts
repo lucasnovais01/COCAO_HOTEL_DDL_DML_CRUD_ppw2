@@ -7,20 +7,19 @@ import { FuncionarioConverter } from '../dto/converter/funcionario.converter';
 
 @Injectable()
 export class FuncionarioServiceFindOne {
-	constructor(
-		@InjectRepository(Funcionario)
-		private funcionarioRepository: Repository<Funcionario>,
-	) {}
+  constructor(
+    @InjectRepository(Funcionario)
+    private funcionarioRepository: Repository<Funcionario>,
+  ) {}
 
-	async findOne(id: number): Promise<FuncionarioResponse | null> {
-		const funcionario = await this.funcionarioRepository
-			.createQueryBuilder('funcionario')
-			.where('funcionario.idUsuario = :id', { id })
-			.getOne();
+  async findOne(id: number): Promise<FuncionarioResponse | null> {
+    const funcionario = await this.funcionarioRepository
+      .createQueryBuilder('funcionario')
+      .where('funcionario.idUsuario = :id', { id })
+      .getOne();
 
-		if (!funcionario) return null;
+    if (!funcionario) return null;
 
-		return FuncionarioConverter.toFuncionarioResponse(funcionario);
-	}
+    return FuncionarioConverter.toFuncionarioResponse(funcionario);
+  }
 }
-
