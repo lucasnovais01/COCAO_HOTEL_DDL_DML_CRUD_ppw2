@@ -17,6 +17,7 @@ export default function Layout() {
             <span>Hotel Cocao</span>
           </NavLink>
 
+
           {/* Link para Listar.view */}
           <NavLink
             to="/sistema/hospede/listar"
@@ -36,8 +37,6 @@ export default function Layout() {
             <span>DevTools</span>
           </NavLink>
 
-
-
           <button className="login-btn">
             <i className="fas fa-sign-in-alt"></i> <span>Login</span>
           </button>
@@ -45,9 +44,13 @@ export default function Layout() {
 
       </header>
 
+
+
+
       {/* CONTEÚDO (espaço, abaixo do header) */}
       <div className="page-content">
         <Outlet />
+
       </div>
 
 
