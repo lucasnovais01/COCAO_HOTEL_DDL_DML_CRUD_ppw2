@@ -116,6 +116,7 @@ export default function ListarHospede() {
   // ============================================================
   return (
     <div className="hospede-listar-page">
+
       {/* Breadcrumb */}
       <nav className="breadcrumb">
         <div className="container flex items-center space-x-2 text-sm">
