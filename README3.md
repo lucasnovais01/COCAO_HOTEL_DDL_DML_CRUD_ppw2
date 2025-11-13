@@ -2,7 +2,7 @@ A única solução que aparece pros problemas abaixos é:
 
 Disable @typescript-eslint/no-redundant-type-constituents for this line
 
-
+## NEST
 
 [{
 	"resource": "/d:/.Lucas Novais/COCAO_HOTEL_DDL_DML_CRUD_ppw2/nest_academic/src/1-hospede/controllers/hospede.controller.findall.ts",

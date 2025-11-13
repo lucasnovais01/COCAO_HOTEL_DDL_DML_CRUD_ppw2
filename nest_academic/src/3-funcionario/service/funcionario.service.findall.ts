@@ -17,7 +17,9 @@ export class FuncionarioServiceFindAll {
       .createQueryBuilder('funcionario')
       .getMany();
 
-    // Debug: log what TypeORM returned so we can see this in the server console
+    /*
+    // Este console.log que me ajudou a achar um bug esquisito
+
     console.log(
       '[FuncionarioServiceFindAll] registros encontrados:',
       funcionarios?.length ?? 0,
@@ -26,7 +28,7 @@ export class FuncionarioServiceFindAll {
       '[FuncionarioServiceFindAll] amostra:',
       funcionarios?.slice(0, 5),
     );
-
+*/
     return FuncionarioConverter.toListFuncionarioResponse(funcionarios);
   }
 }
