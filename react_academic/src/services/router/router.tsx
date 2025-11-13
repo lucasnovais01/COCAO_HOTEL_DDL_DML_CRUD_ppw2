@@ -3,7 +3,7 @@ import type { RouteObject } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import Dashboard from "../../views/Dashboard";
 import DevTools from "../../views/DevTools";
-// Observação: vamos usar um redirect da raiz para o DevTools para que
+// Observação: usar um redirect da raiz para o DevTools para que
 // acessar '/' não gere erro de rota inexistente.
 import { Navigate } from "react-router-dom";
 
@@ -13,6 +13,13 @@ import CriarHospede from "../../views/1-hospede/Criar";
 import AlterarHospede from "../../views/1-hospede/Alterar";
 import ExcluirHospede from "../../views/1-hospede/Excluir";
 import ConsultarHospede from "../../views/1-hospede/Consultar";
+
+// Importação do módulo Função
+import ListarFuncao from "../../views/2-funcao/Listar";
+import CriarFuncao from "../../views/2-funcao/Criar";
+import AlterarFuncao from "../../views/2-funcao/Alterar";
+import ExcluirFuncao from "../../views/2-funcao/Excluir";
+import ConsultarFuncao from "../../views/2-funcao/Consultar";
 
 import { ROTA } from "./url";
 
@@ -60,6 +67,27 @@ export const routes: RouteObject[] = [
       {
         path: `${ROTA.HOSPEDE.POR_ID}/:idUsuario`,
         element: <ConsultarHospede />,
+      },
+      // Rotas do módulo 2-funcao
+      {
+        path: ROTA.FUNCAO.LISTAR,
+        element: <ListarFuncao />,
+      },
+      {
+        path: ROTA.FUNCAO.CRIAR,
+        element: <CriarFuncao />,
+      },
+      {
+        path: `${ROTA.FUNCAO.ATUALIZAR}/:id`,
+        element: <AlterarFuncao />,
+      },
+      {
+        path: `${ROTA.FUNCAO.EXCLUIR}/:id`,
+        element: <ExcluirFuncao />,
+      },
+      {
+        path: `${ROTA.FUNCAO.POR_ID}/:id`,
+        element: <ConsultarFuncao />,
       },
     ],
   },

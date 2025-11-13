@@ -1,5 +1,7 @@
 import { HOSPEDE } from "../1-hospede/constants/hospede.constants";
 
+import { FUNCAO } from "../2-funcao/constants/funcao.constants";
+
 /*
  * ============================================================
  * DOCUMENTAÇÃO: url.ts - Configuração de Rotas do Sistema
@@ -59,4 +61,5 @@ function gerarRotaSistema(entity: string) {
 
 export const ROTA = {
   HOSPEDE: gerarRotaSistema(HOSPEDE.ALIAS),
+  FUNCAO: gerarRotaSistema(FUNCAO.ALIAS),
 };
