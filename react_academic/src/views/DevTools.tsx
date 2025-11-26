@@ -462,7 +462,7 @@ export default function DevTools() {
 // 5. Área principal com busca, botão de criação, tabela responsiva, ações por linha e toast flutuante.
 
   return (
-    <div className="devtools-page">
+    <div className="padraoPagina">
       {/* Breadcrumb */}
       <nav className="breadcrumb">
         <div className="container flex items-center space-x-2 text-sm">

@@ -5,7 +5,12 @@
 @import url("./3-animacoes.css");
 
 @import url("./5-devtools.css");
-@import url("./6-dashboard.css");
+@import url("./6-devtoolsBanner.css");
+
+@import url("./7-form.css");
+
+
+@import url("./10-dashboard.css");
 
 @import url("./breadcrumb.css");
 @import url("./card.css");

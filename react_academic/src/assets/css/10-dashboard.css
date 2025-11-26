@@ -2,8 +2,8 @@
 
 .display {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem 1rem;
 }
 
@@ -27,8 +27,14 @@
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* NOVO CSS ABAIXO */
@@ -153,12 +159,12 @@
   .crud-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .crud-btn {
     padding: 1rem 0.75rem;
     font-size: var(--font-size-xs);
   }
-  
+
   .crud-btn i {
     font-size: var(--font-size-xl);
   }
