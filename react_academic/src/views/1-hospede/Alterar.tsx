@@ -9,7 +9,16 @@ import {
   apiPutHospede,
 } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
-import type { Hospede } from "../../type/1-hospede";
+import type { ErrosHospede, Hospede } from "../../type/1-hospede";
+
+// código estava ficando uma sujeira, então extraí as funções de manipulação de campos
+
+import {
+  createHandleChangeField,
+  createShowMensagem,
+  createValidateField,
+} from "./zCamposAlterar";
+import { ROTA } from "../../services/router/url";
 
 export default function AlterarHospede() {
   // ============================================================
@@ -20,6 +29,12 @@ export default function AlterarHospede() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Hospede | null>(null);
+  const [errors, setErrors] = useState<ErrosHospede>({});
+
+  // Importar funções do módulo de campos
+  const handleChangeField = createHandleChangeField(setModel, setErrors);
+  const validateField = createValidateField(setErrors);
+  const showMensagem = createShowMensagem(errors);
 
   // ============================================================
   // useEffect para buscar os dados do hóspede ao carregar a página
@@ -47,13 +62,6 @@ export default function AlterarHospede() {
   }, [idUsuario]);
 
   // ============================================================
-  // Função para atualizar os campos do formulário
-  // ============================================================
-  const handleChangeField = (name: keyof Hospede, value: string) => {
-    setModel((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // ============================================================
   // Função para enviar o formulário
   // ============================================================
   const onSubmitForm = async (e: React.FormEvent) => {
@@ -68,8 +76,19 @@ export default function AlterarHospede() {
       // ADAPTAÇÃO: Converter string para number
       const id = parseInt(idUsuario, 10);
       await apiPutHospede(id, model);
-      alert(HOSPEDE.OPERACAO.ATUALIZAR.SUCESSO);
-      navigate("/sistema/hospede/listar"); // Redirecionar após sucesso
+      
+      // não estava funcionando com alert
+      // alert(HOSPEDE.OPERACAO.ATUALIZAR.SUCESSO);
+      
+      // Em vez de alert, navegamos com toast via state
+      navigate("/sistema/hospede/listar", {
+        state: {
+          toast: {
+            message: `Hóspede ID ${id} alterado com sucesso!`,
+            type: "success",
+          },
+        },
+      });
     } catch (error: any) {
       console.log(error);
       alert(HOSPEDE.OPERACAO.ATUALIZAR.ERRO);
@@ -106,10 +125,10 @@ export default function AlterarHospede() {
           </NavLink>
           <i className="fas fa-chevron-right text-gray-400"></i>
           <NavLink
-            to="/sistema/devtools"
+            to={ROTA.HOSPEDE.LISTAR}
             className="text-blue-600 hover:text-blue-700"
           >
-            DevTools
+            Hóspedes
           </NavLink>
           <i className="fas fa-chevron-right text-gray-400"></i>
           <span className="text-gray-600">Alterar</span>
@@ -120,8 +139,8 @@ export default function AlterarHospede() {
       <section className="devtools-banner">
         <div className="container text-center">
           <i className="fas fa-tools text-6xl mb-4"></i>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Dev Tools</h1>
-          <p className="text-xl">Painel de Administração - Simulação DDL</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Alterar Usuário</h1>
+          <p className="text-xl">Formulário Edição de Usuário</p>
         </div>
       </section>
 
@@ -149,18 +168,35 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.NOME} className="appLabel">
                   {HOSPEDE.LABEL.NOME}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.NOME}
-                  name={HOSPEDE.FIELDS.NOME}
-                  value={model?.nomeHospede || ""}
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  autoComplete="off"
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.NOME, e.target.value)
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.NOME}
+                    name={HOSPEDE.FIELDS.NOME}
+                    value={model?.nomeHospede || ""}
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.NOME, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.NOME, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.NOME)}
+
+                  {/*
+                    onChange={(e) =>
+                      handleChangeField(CIDADE.FIELDS.CODIGO, e.target.value)
+                    }
+                    onBlur={(e) => validateField(CIDADE.FIELDS.CODIGO, e)}
+                  />
+                  {errors.codCidade && (
+                  <MensagemErro
+                    error={errors.codCidade}
+                    mensagem={errors.codCidadeMensagem}
+                  />
+                  */}
+                </div>
               </div>
 
               {/* Campo: CPF */}
@@ -168,19 +204,23 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.CPF} className="appLabel">
                   {HOSPEDE.LABEL.CPF}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.CPF}
-                  name={HOSPEDE.FIELDS.CPF}
-                  value={model?.cpf || ""}
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  autoComplete="off"
-                  maxLength={11}
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.CPF, e.target.value)
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.CPF}
+                    name={HOSPEDE.FIELDS.CPF}
+                    value={model?.cpf || ""}
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    autoComplete="off"
+                    maxLength={11}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.CPF, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.CPF, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.CPF)}
+                </div>
               </div>
 
               {/* Campo: RG */}
@@ -188,19 +228,23 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.RG} className="appLabel">
                   {HOSPEDE.LABEL.RG}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.RG}
-                  name={HOSPEDE.FIELDS.RG}
-                  value={model?.rg || ""}
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  autoComplete="off"
-                  maxLength={20}
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.RG, e.target.value)
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.RG}
+                    name={HOSPEDE.FIELDS.RG}
+                    value={model?.rg || ""}
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    autoComplete="off"
+                    maxLength={20}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.RG, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.RG, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.RG)}
+                </div>
               </div>
 
               {/* Campo: Sexo */}
@@ -208,20 +252,24 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.SEXO} className="appLabel">
                   {HOSPEDE.LABEL.SEXO}
                 </label>
-                <select
-                  id={HOSPEDE.FIELDS.SEXO}
-                  name={HOSPEDE.FIELDS.SEXO}
-                  value={model?.sexo || ""}
-                  className={getInputClass()}
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.SEXO, e.target.value)
-                  }
-                >
-                  <option value="">Selecione</option>
-                  <option value="M">Masculino</option>
-                  <option value="F">Feminino</option>
-                  <option value="O">Outro</option>
-                </select>
+                <div className="form-field-wrapper">
+                  <select
+                    id={HOSPEDE.FIELDS.SEXO}
+                    name={HOSPEDE.FIELDS.SEXO}
+                    value={model?.sexo || ""}
+                    className={getInputClass()}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.SEXO, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.SEXO, e)}
+                  >
+                    <option value="">Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                  </select>
+                  {showMensagem(HOSPEDE.FIELDS.SEXO)}
+                </div>
               </div>
 
               {/* Campo: Data de Nascimento */}
@@ -232,27 +280,33 @@ export default function AlterarHospede() {
                 >
                   {HOSPEDE.LABEL.DATA_NASCIMENTO}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.DATA_NASCIMENTO}
-                  name={HOSPEDE.FIELDS.DATA_NASCIMENTO}
-                  type="date"
-                  value={
-                    model?.dataNascimento
-                      ? new Date(model.dataNascimento)
-                          .toISOString()
-                          .split("T")[0]
-                      : ""
-                  }
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  onChange={(e) =>
-                    handleChangeField(
-                      HOSPEDE.FIELDS.DATA_NASCIMENTO,
-                      e.target.value
-                    )
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.DATA_NASCIMENTO}
+                    name={HOSPEDE.FIELDS.DATA_NASCIMENTO}
+                    type="date"
+                    value={
+                      model?.dataNascimento
+                        ? new Date(model.dataNascimento)
+                            .toISOString()
+                            .split("T")[0]
+                        : ""
+                    }
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    onChange={(e) =>
+                      handleChangeField(
+                        HOSPEDE.FIELDS.DATA_NASCIMENTO,
+                        e.target.value
+                      )
+                    }
+                    onBlur={(e) =>
+                      validateField(HOSPEDE.FIELDS.DATA_NASCIMENTO, e)
+                    }
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.DATA_NASCIMENTO)}
+                </div>
               </div>
 
               {/* Campo: E-mail */}
@@ -260,19 +314,23 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.EMAIL} className="appLabel">
                   {HOSPEDE.LABEL.EMAIL}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.EMAIL}
-                  name={HOSPEDE.FIELDS.EMAIL}
-                  type="email"
-                  value={model?.email || ""}
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  autoComplete="off"
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.EMAIL, e.target.value)
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.EMAIL}
+                    name={HOSPEDE.FIELDS.EMAIL}
+                    type="email"
+                    value={model?.email || ""}
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.EMAIL, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.EMAIL, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.EMAIL)}
+                </div>
               </div>
 
               {/* Campo: Telefone */}
@@ -280,19 +338,23 @@ export default function AlterarHospede() {
                 <label htmlFor={HOSPEDE.FIELDS.TELEFONE} className="appLabel">
                   {HOSPEDE.LABEL.TELEFONE}
                 </label>
-                <input
-                  id={HOSPEDE.FIELDS.TELEFONE}
-                  name={HOSPEDE.FIELDS.TELEFONE}
-                  type="tel"
-                  value={model?.telefone || ""}
-                  className={getInputClass()}
-                  readOnly={false}
-                  disabled={false}
-                  autoComplete="off"
-                  onChange={(e) =>
-                    handleChangeField(HOSPEDE.FIELDS.TELEFONE, e.target.value)
-                  }
-                />
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.TELEFONE}
+                    name={HOSPEDE.FIELDS.TELEFONE}
+                    type="tel"
+                    value={model?.telefone || ""}
+                    className={getInputClass()}
+                    readOnly={false}
+                    disabled={false}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.TELEFONE, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.TELEFONE, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.TELEFONE)}
+                </div>
               </div>
             </div>
 

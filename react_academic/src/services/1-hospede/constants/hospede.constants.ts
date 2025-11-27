@@ -1,4 +1,5 @@
 import { criarMensagemOperacao } from "../../constants/mensagem.operacao";
+import type { Hospede } from "../type/hospede";
 
 const ENTITY_NAME = "Hóspede";
 
@@ -53,7 +54,13 @@ export const HOSPEDE = {
     CONSULTAR: `Consultar ${ENTITY_NAME}`,
   },
 
+// lista do inputERROR
+
   INPUT_ERROR: {
+    ID: {
+      BLANK: `O ID do ${ENTITY_NAME} deve ser informado`,
+      VALID: `Informe um ID válido para o ${ENTITY_NAME}`,
+    },
     NOME: {
       BLANK: `O nome do ${ENTITY_NAME} deve ser informado`,
       VALID: `Informe um nome válido para o ${ENTITY_NAME}`,
@@ -100,7 +107,45 @@ export const HOSPEDE = {
       BLANK: `O tipo do ${ENTITY_NAME} deve ser selecionado`,
       VALID: `Selecione 0 (Hóspede) ou 1 (Funcionário)`,
     },
+    ATIVO: {
+      BLANK: `O status ativo do ${ENTITY_NAME} deve ser informado`,
+      VALID: `Selecione 0 (Inativo) ou 1 (Ativo)`,
+    },
   },
 
   OPERACAO: criarMensagemOperacao(ENTITY_NAME),
+};
+
+
+// Só os campos que são obrigatórios na listagem
+
+export const fieldsHospede: (keyof Hospede)[] = [
+  HOSPEDE.FIELDS.ID,
+  HOSPEDE.FIELDS.NOME,
+  HOSPEDE.FIELDS.CPF,
+  HOSPEDE.FIELDS.RG,
+  HOSPEDE.FIELDS.SEXO,
+  HOSPEDE.FIELDS.DATA_NASCIMENTO,
+  HOSPEDE.FIELDS.EMAIL,
+  HOSPEDE.FIELDS.TELEFONE,
+  HOSPEDE.FIELDS.TIPO,
+  HOSPEDE.FIELDS.ATIVO,
+];
+
+export const mapaCampoParaMensagem: Record<
+  keyof Hospede,
+  keyof typeof HOSPEDE.INPUT_ERROR
+> = {
+  idUsuario: "ID",
+  nomeHospede: "NOME",
+  cpf: "CPF",
+  rg: "RG",
+  sexo: "SEXO",
+  dataNascimento: "DATA_NASCIMENTO",
+  email: "EMAIL",
+  telefone: "TELEFONE",
+  tipo: "TIPO",
+  ativo: "ATIVO",
+  createdAt: "ID",
+  updatedAt: "ID",
 };

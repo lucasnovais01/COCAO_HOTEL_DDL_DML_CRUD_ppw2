@@ -1,50 +1,47 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import type { Hospede } from "../../type/1-hospede";
+import { NavLink, useNavigate } from "react-router-dom";
 
+import "../../assets/css/7-form.css";
 import { apiPostHospede } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
-import { ROTA } from "../../services/router/url";
+import type { ErrosHospede, Hospede } from "../../type/1-hospede";
 
-// Criar Hóspede - formulário básico com validações simples
+// Código de validação e manipulação de campos extraído para zCamposCriar.tsx
+import { ROTA } from "../../services/router/url";
+import {
+  createHandleChangeField,
+  createShowMensagem,
+  createValidateField,
+} from "./zCamposCriar";
+
 export default function CriarHospede() {
   const navigate = useNavigate();
-  const [model, setModel] = useState<Hospede>(HOSPEDE.DADOS_INICIAIS as unknown as Hospede);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [model, setModel] = useState<Hospede>(
+    HOSPEDE.DADOS_INICIAIS as unknown as Hospede
+  );
+  const [errors, setErrors] = useState<ErrosHospede>({});
+  const [loading, setLoading] = useState(false);
 
-  // Atualiza um campo do formulário
-  const handleChange = (name: keyof Hospede, value: any) => {
-    setModel((prev) => ({ ...prev, [name]: value }));
-  };
+  // Importar funções do módulo de campos
+  const handleChangeField = createHandleChangeField(setModel, setErrors);
+  const validateField = createValidateField(setErrors);
+  const showMensagem = createShowMensagem(errors);
 
-  // Exibe toast de feedback
-  const showToast = (message: string, type: "success" | "error" = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  // Mensagens de ajuda por campo
-  const getHelpMessage = (fieldName: string): string | null => {
-    if (focusedField !== fieldName) return null;
-    const messages: { [key: string]: string } = {
-      [String(HOSPEDE.FIELDS.NOME)]: HOSPEDE.INPUT_ERROR.NOME.MIN_LEN,
-      [String(HOSPEDE.FIELDS.CPF)]: HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN,
-      [String(HOSPEDE.FIELDS.RG)]: HOSPEDE.INPUT_ERROR.RG.BLANK,
-      [String(HOSPEDE.FIELDS.SEXO)]: HOSPEDE.INPUT_ERROR.SEXO.BLANK,
-      [String(HOSPEDE.FIELDS.DATA_NASCIMENTO)]: HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK,
-      [String(HOSPEDE.FIELDS.EMAIL)]: HOSPEDE.INPUT_ERROR.EMAIL.VALID,
-      [String(HOSPEDE.FIELDS.TELEFONE)]: HOSPEDE.INPUT_ERROR.TELEFONE.BLANK,
-      [String(HOSPEDE.FIELDS.TIPO)]: HOSPEDE.INPUT_ERROR.TIPO.BLANK,
-    };
-    return messages[fieldName] || null;
-  };
-
-  // Envia a criação para a API
-  const onSubmit = async (e: React.FormEvent) => {
+  // ============================================================
+  // Função para enviar o formulário (CREATE)
+  // ============================================================
+  const onSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!model) {
+      alert("Dados incompletos para criação");
+      return;
+    }
+
+    setLoading(true);
+
     try {
       /*
         PROBLEMA: O backend retornava 400 Bad Request mesmo com URL correta.
@@ -63,244 +60,359 @@ export default function CriarHospede() {
         cpf: model.cpf,
         rg: model.rg || null,
         sexo: model.sexo,
-        dataNascimento: model.dataNascimento ? String(model.dataNascimento) : "",
+        dataNascimento: model.dataNascimento
+          ? String(model.dataNascimento)
+          : "",
         email: model.email || null,
         telefone: model.telefone || null,
         tipo: Number(model.tipo),
         ativo: Number(model.ativo),
       };
-      
-      console.log('[onSubmit] Dados a enviar (sem idUsuario, opcionais como null):', JSON.stringify(hospedeToSend, null, 2));
-      
+
+      console.log(
+        "[onSubmitForm] Dados a enviar (sem idUsuario, opcionais como null):",
+        JSON.stringify(hospedeToSend, null, 2)
+      );
+
       await apiPostHospede(hospedeToSend as unknown as Hospede);
-      showToast(HOSPEDE.OPERACAO.CRIAR.SUCESSO, "success");
 
-      // Mantemos o usuário na página de criação para que o toast permaneça visível.
-      // Se quisermos redirecionar automaticamente para a lista e exibir o
-      // toast lá, podemos navegar passando o toast via state. Exemplo (comentado):
-
-      setTimeout(() => navigate(ROTA.HOSPEDE.LISTAR, {
-        state: { toast: { message: HOSPEDE.OPERACAO.CRIAR.SUCESSO, type: 'success' } }
-      }), 1500);
-      
+      // Em vez de alert, navegamos com toast via state
+      navigate(ROTA.HOSPEDE.LISTAR, {
+        state: {
+          toast: {
+            message: HOSPEDE.OPERACAO.CRIAR.SUCESSO,
+            type: "success",
+          },
+        },
+      });
     } catch (error: any) {
-      console.error('[onSubmit] Erro:', error);
-      showToast(HOSPEDE.OPERACAO.CRIAR.ERRO, "error");
+      console.error("[onSubmitForm] Erro:", error);
+      alert(HOSPEDE.OPERACAO.CRIAR.ERRO);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // ============================================================
+  // Função para cancelar e voltar para a listagem
+  // ============================================================
+  const onCancel = () => {
+    navigate(ROTA.HOSPEDE.LISTAR);
+  };
+
+  // ============================================================
+  // Classe CSS para os inputs
+  // ============================================================
+  const getInputClass = () => {
+    return "form-control app-label mt-2";
+  };
+
+  // ============================================================
+  // RENDERIZAÇÃO DO FORMULÁRIO
+  // ============================================================
   return (
-    <div className="hospede-criar-page">
-      
-      {/* Breadcrumb */}
+    <div className="padraoPagina">
+      {/* Breadcrumb: Home > Hóspedes > Criar */}
       <nav className="breadcrumb">
         <div className="container flex items-center space-x-2 text-sm">
-          <a href="/sistema/dashboard" className="text-blue-600 hover:text-blue-700">
+          <NavLink
+            to="/sistema/dashboard"
+            className="text-blue-600 hover:text-blue-700"
+          >
             Home
-          </a>
+          </NavLink>
           <i className="fas fa-chevron-right text-gray-400"></i>
-          <a href={ROTA.HOSPEDE.LISTAR} className="text-blue-600 hover:text-blue-700">
+          <NavLink
+            to={ROTA.HOSPEDE.LISTAR}
+            className="text-blue-600 hover:text-blue-700"
+          >
             Hóspedes
-          </a>
+          </NavLink>
           <i className="fas fa-chevron-right text-gray-400"></i>
           <span className="text-gray-600">Novo Hóspede</span>
         </div>
       </nav>
 
-      {/* Banner - deixa COMENTADO para referência
-      <section className="hospede-banner">
+      {/* Banner - Criar novo hóspede */}
+      <section className="devtools-banner">
         <div className="container text-center">
           <i className="fas fa-user-plus text-6xl mb-4"></i>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Novo Hóspede</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {HOSPEDE.TITULO.CRIAR}
+          </h1>
           <p className="text-xl">Adicione um novo hóspede ao sistema</p>
         </div>
       </section>
-        */}
-      {/* Toast */}
-      {toast && (
-        <div className="fixed top-20 right-4 z-50">
-          <div className={`toast ${toast.type === "error" ? "error" : ""}`}>
-            <div className="flex items-center">
-              <i className={`fas ${toast.type === "success" ? "fa-check" : "fa-exclamation-triangle"} mr-2`}></i>
-              <span>{toast.message}</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Content */}
       <main className="container py-8">
-        <div className="flex justify-center">
-          <div className="card animated fadeInDown w-full max-w-2xl">
+        <div
+          className="card animated fadeInDown"
+          style={{ maxWidth: "600px", margin: "0 auto" }}
+        >
+          <form onSubmit={onSubmitForm}>
+            <div className="form-grid">
+              {/* ============================================================
+              Campos do formulário baseados na tabela COCAO_HOSPEDE
+              ============================================================ */}
 
-          
-        <h2>{HOSPEDE.TITULO.CRIAR}</h2>
+              {/* Campo: Nome Completo */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.NOME} className="appLabel">
+                  {HOSPEDE.LABEL.NOME}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.NOME}
+                    name={HOSPEDE.FIELDS.NOME}
+                    type="text"
+                    value={model.nomeHospede || ""}
+                    className={getInputClass()}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.NOME, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.NOME, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.NOME)}
+                </div>
+              </div>
 
-        <form onSubmit={onSubmit}>
-          {/* Campo: Nome */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.NOME} : </label>
-            
-            <input
-              value={model.nomeHospede}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.NOME as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.NOME))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-              required
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.NOME)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.NOME))}</p>
-            )}
-          </div>
+              {/* Campo: CPF */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.CPF} className="appLabel">
+                  {HOSPEDE.LABEL.CPF}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.CPF}
+                    name={HOSPEDE.FIELDS.CPF}
+                    type="text"
+                    value={model.cpf || ""}
+                    className={getInputClass()}
+                    autoComplete="off"
+                    maxLength={11}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.CPF, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.CPF, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.CPF)}
+                </div>
+              </div>
 
-          {/* Campo: CPF */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.CPF}  </label>
-            <input
-              value={model.cpf}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.CPF as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.CPF))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-              maxLength={11}
-              required
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.CPF)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.CPF))}</p>
-            )}
-          </div>
+              {/* Campo: RG */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.RG} className="appLabel">
+                  {HOSPEDE.LABEL.RG}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.RG}
+                    name={HOSPEDE.FIELDS.RG}
+                    type="text"
+                    value={model.rg || ""}
+                    className={getInputClass()}
+                    autoComplete="off"
+                    maxLength={20}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.RG, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.RG, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.RG)}
+                </div>
+              </div>
 
-          {/* Campo: RG */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.RG} </label>
-            <input
-              value={model.rg}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.RG as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.RG))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.RG)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.RG))}</p>
-            )}
-          </div>
+              {/* Campo: Sexo */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.SEXO} className="appLabel">
+                  {HOSPEDE.LABEL.SEXO}
+                </label>
+                <div className="form-field-wrapper">
+                  <select
+                    id={HOSPEDE.FIELDS.SEXO}
+                    name={HOSPEDE.FIELDS.SEXO}
+                    value={model.sexo || ""}
+                    className={getInputClass()}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.SEXO, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.SEXO, e)}
+                  >
+                    <option value="">Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                  </select>
+                  {showMensagem(HOSPEDE.FIELDS.SEXO)}
+                </div>
+              </div>
 
-          {/* Campo: Sexo */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.SEXO}</label>
-            <select
-              value={model.sexo}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.SEXO as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.SEXO))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            >
-              <option value="">Selecione...</option>
-              <option value="M">Masculino</option>
-              <option value="F">Feminino</option>
-            </select>
-            {getHelpMessage(String(HOSPEDE.FIELDS.SEXO)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.SEXO))}</p>
-            )}
-          </div>
+              {/* Campo: Data de Nascimento */}
+              <div className="form-group">
+                <label
+                  htmlFor={HOSPEDE.FIELDS.DATA_NASCIMENTO}
+                  className="appLabel"
+                >
+                  {HOSPEDE.LABEL.DATA_NASCIMENTO}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.DATA_NASCIMENTO}
+                    name={HOSPEDE.FIELDS.DATA_NASCIMENTO}
+                    type="date"
+                    value={
+                      model.dataNascimento
+                        ? new Date(model.dataNascimento)
+                            .toISOString()
+                            .split("T")[0]
+                        : ""
+                    }
+                    className={getInputClass()}
+                    onChange={(e) =>
+                      handleChangeField(
+                        HOSPEDE.FIELDS.DATA_NASCIMENTO,
+                        e.target.value
+                      )
+                    }
+                    onBlur={(e) =>
+                      validateField(HOSPEDE.FIELDS.DATA_NASCIMENTO, e)
+                    }
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.DATA_NASCIMENTO)}
+                </div>
+              </div>
 
-          {/* Campo: Data de Nascimento */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.DATA_NASCIMENTO}</label>
-            <input
-              type="date"
-              value={
-                model.dataNascimento instanceof Date
-                  ? model.dataNascimento.toISOString().split('T')[0]
-                  : model.dataNascimento || ""
-              }
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.DATA_NASCIMENTO as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.DATA_NASCIMENTO))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.DATA_NASCIMENTO)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.DATA_NASCIMENTO))}</p>
-            )}
-          </div>
+              {/* Campo: E-mail */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.EMAIL} className="appLabel">
+                  {HOSPEDE.LABEL.EMAIL}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.EMAIL}
+                    name={HOSPEDE.FIELDS.EMAIL}
+                    type="email"
+                    value={model.email || ""}
+                    className={getInputClass()}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.EMAIL, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.EMAIL, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.EMAIL)}
+                </div>
+              </div>
 
-          {/* Campo: E-mail */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.EMAIL}</label>
-            <input
-              type="email"
-              value={model.email}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.EMAIL as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.EMAIL))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.EMAIL)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.EMAIL))}</p>
-            )}
-          </div>
+              {/* Campo: Telefone */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.TELEFONE} className="appLabel">
+                  {HOSPEDE.LABEL.TELEFONE}
+                </label>
+                <div className="form-field-wrapper">
+                  <input
+                    id={HOSPEDE.FIELDS.TELEFONE}
+                    name={HOSPEDE.FIELDS.TELEFONE}
+                    type="tel"
+                    value={model.telefone || ""}
+                    className={getInputClass()}
+                    autoComplete="off"
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.TELEFONE, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.TELEFONE, e)}
+                  />
+                  {showMensagem(HOSPEDE.FIELDS.TELEFONE)}
+                </div>
+              </div>
 
-          {/* Campo: Telefone */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.TELEFONE}</label>
-            <input
-              value={model.telefone}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.TELEFONE as keyof Hospede, e.target.value)}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.TELEFONE))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            />
-            {getHelpMessage(String(HOSPEDE.FIELDS.TELEFONE)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.TELEFONE))}</p>
-            )}
-          </div>
+              {/* Campo: Tipo */}
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.TIPO} className="appLabel">
+                  {HOSPEDE.LABEL.TIPO}
+                </label>
+                <div className="form-field-wrapper">
+                  <select
+                    id={HOSPEDE.FIELDS.TIPO}
+                    name={HOSPEDE.FIELDS.TIPO}
+                    value={model.tipo || 0}
+                    className={getInputClass()}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.TIPO, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.TIPO, e)}
+                  >
+                    <option value={0}>Hóspede</option>
+                    <option value={1}>Funcionário</option>
+                  </select>
+                  {showMensagem(HOSPEDE.FIELDS.TIPO)}
+                </div>
+              </div>
 
-          {/* Campo: Tipo */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.TIPO}</label>
-            <select
-              value={model.tipo}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.TIPO as keyof Hospede, parseInt(e.target.value))}
-              onFocus={() => setFocusedField(String(HOSPEDE.FIELDS.TIPO))}
-              onBlur={() => setFocusedField(null)}
-              className="form-control"
-            >
-              <option value={0}>Hóspede</option>
-              <option value={1}>Funcionário</option>
-            </select>
-            {getHelpMessage(String(HOSPEDE.FIELDS.TIPO)) && (
-              <p className="text-red-600 text-sm mt-1">{getHelpMessage(String(HOSPEDE.FIELDS.TIPO))}</p>
-            )}
-          </div>
+              {/* Campo: Ativo - Por enquanto desabilitado na criação */}
+              {/*
 
-          {/* Campo: Ativo */}
-          <div className="mb-2">
-            <label className="appLabel">{HOSPEDE.LABEL.ATIVO}</label>
-            <select
-              value={model.ativo}
-              onChange={(e) => handleChange(HOSPEDE.FIELDS.ATIVO as keyof Hospede, parseInt(e.target.value))}
-              className="form-control"
-            >
-              <option value={1}>Sim</option>
-              <option value={0}>Não</option>
-            </select>
-          </div>
 
-          {/* Ações: Salvar / Cancelar */}
-          <div className="btn-content mt-4">
-            <button type="submit" className="btn btn-sucess">
-              <span className="btn-icon"><FaSave /></span>
-              Salvar
-            </button>
+              <div className="form-group">
+                <label htmlFor={HOSPEDE.FIELDS.ATIVO} className="appLabel">
+                  {HOSPEDE.LABEL.ATIVO}
+                </label>
+                <div className="form-field-wrapper">
+                  <select
+                    id={HOSPEDE.FIELDS.ATIVO}
+                    name={HOSPEDE.FIELDS.ATIVO}
+                    value={model.ativo || 1}
+                    className={getInputClass()}
+                    onChange={(e) =>
+                      handleChangeField(HOSPEDE.FIELDS.ATIVO, e.target.value)
+                    }
+                    onBlur={(e) => validateField(HOSPEDE.FIELDS.ATIVO, e)}
+                  >
+                    <option value={1}>Sim</option>
+                    <option value={0}>Não</option>
+                  </select>
+                  {showMensagem(HOSPEDE.FIELDS.ATIVO)}
+                </div>
+              </div>
+              */}
+            </div>
 
-            <button type="button" className="btn btn-cancel" onClick={() => navigate(ROTA.HOSPEDE.LISTAR)}>
-              <span className="btn-icon"><MdCancel /></span>
-              Cancelar
-            </button>
-          </div>
-        </form>
-          </div>
+            {/* Botões de Ação */}
+            <div className="form-actions">
+              <button
+                id="submit"
+                type="submit"
+                className="btn btn-sucess"
+                title={HOSPEDE.OPERACAO.CRIAR.ACAO}
+                disabled={loading}
+              >
+                <span className="btn-icon">
+                  <i>
+                    <FaSave />
+                  </i>
+                </span>
+                Salvar
+              </button>
+
+              <button
+                id="cancel"
+                type="button"
+                className="btn btn-cancel"
+                title="Cancelar criação"
+                onClick={onCancel}
+                disabled={loading}
+              >
+                <span className="btn-icon">
+                  <i>
+                    <MdCancel />
+                  </i>
+                </span>
+                Cancelar
+              </button>
+            </div>
+          </form>
         </div>
       </main>
     </div>
