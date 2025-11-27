@@ -70,7 +70,7 @@ export default function CriarFuncionario() {
         idUsuario: Number(model.idUsuario),
         nomeLogin: model.nomeLogin,
         senha: model.senha,
-        codigoFuncao: Number(model.codigoFuncao),
+        codigoFuncao: model.codigoFuncao,
         dataContratacao: model.dataContratacao,
         ativo: Number(model.ativo),
       };
@@ -237,7 +237,7 @@ export default function CriarFuncionario() {
                   <select
                     id={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
                     name={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
-                    value={model.codigoFuncao || 0}
+                    value={model.codigoFuncao || ""}
                     className={getInputClass()}
                     onChange={(e) =>
                       handleChangeField(

@@ -1376,35 +1376,33 @@ END;
 /
 
 -- ======================================================================
--- T19: COCAO_FUNCIONARIO - Validação de TIPO=1 em COCAO_HOSPEDE
+-- T19: COCAO_FUNCIONARIO - Atualização automática de TIPO=1 em COCAO_HOSPEDE
 -- ======================================================================
 -- Garante que registros em COCAO_FUNCIONARIO tenham TIPO=1 em COCAO_HOSPEDE
--- Novo: Adicionado para corrigir falta de validação de herança.
--- Nota: Não usa COCAO_HOTEL_CONSTANTS, permanece inalterado.
+-- Modificado: Em vez de apenas validar, atualiza automaticamente o TIPO para 1
+-- quando um funcionário é inserido/atualizado, transformando o hóspede em funcionário
 -- ======================================================================
 CREATE OR REPLACE TRIGGER COCAO_HOTEL_19_TRG_FUNCIONARIO_TIPO
 BEFORE INSERT OR UPDATE ON COCAO_FUNCIONARIO
 FOR EACH ROW
-DECLARE
-    v_tipo COCAO_HOSPEDE.TIPO%TYPE;
 BEGIN
-    SELECT TIPO
-    INTO v_tipo
-    FROM COCAO_HOSPEDE
+    -- Atualiza o TIPO do hóspede para 1 (funcionário) automaticamente
+    UPDATE COCAO_HOSPEDE
+    SET TIPO = 1,
+        UPDATED_AT = SYSTIMESTAMP
     WHERE ID_USUARIO = :NEW.ID_USUARIO;
     
-    IF v_tipo != 1 THEN
-        RAISE_APPLICATION_ERROR(-20050,
-            '[-20050] COCAO_FUNCIONARIO/T19: Inconsistência de tipo. ' ||
-            'Hóspede ID ' || :NEW.ID_USUARIO || ' deve ter TIPO=1 em COCAO_HOSPEDE para ser funcionário. ' ||
-            'Atualize o TIPO em COCAO_HOSPEDE antes de inserir/atualizar.');
-    END IF;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
+    IF SQL%ROWCOUNT = 0 THEN
         RAISE_APPLICATION_ERROR(-20051,
             '[-20051] COCAO_FUNCIONARIO/T19: Hóspede não encontrado. ' ||
             'ID_USUARIO ' || :NEW.ID_USUARIO || ' não existe em COCAO_HOSPEDE. ' ||
             'Verifique o ID do hóspede.');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20052,
+            '[-20052] COCAO_FUNCIONARIO/T19: Erro ao atualizar TIPO do hóspede. ' ||
+            'ID_USUARIO ' || :NEW.ID_USUARIO || '. ' || SQLERRM);
 END;
 /
 -- ======================================================================

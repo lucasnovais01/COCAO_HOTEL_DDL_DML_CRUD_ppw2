@@ -26,13 +26,14 @@ export default function AlterarFuncionario() {
   const [model, setModel] = useState<Funcionario | null>(null);
   const [errors, setErrors] = useState<any>({});
   const [funcoes, setFuncoes] = useState<Funcao[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const handleChangeField = createHandleChangeField(setModel, setErrors);
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
 
   useEffect(() => {
-    async function loadData() {
+    const loadData = async () => {
       try {
         if (id) {
           const response = await apiGetFuncionario(Number(id));
@@ -47,8 +48,10 @@ export default function AlterarFuncionario() {
       } catch (error: any) {
         console.log(error);
         alert("Erro ao carregar dados");
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
     loadData();
   }, [id]);
@@ -102,7 +105,7 @@ export default function AlterarFuncionario() {
     return "form-control app-label mt-2";
   };
 
-  if (!model) {
+  if (loading || !model) {
     return (
       <div className="padraoPagina">
         <div className="container py-8 text-center">
