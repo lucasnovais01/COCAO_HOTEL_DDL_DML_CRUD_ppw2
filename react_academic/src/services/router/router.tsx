@@ -21,6 +21,22 @@ import AlterarFuncao from "../../views/2-funcao/Alterar";
 import ExcluirFuncao from "../../views/2-funcao/Excluir";
 import ConsultarFuncao from "../../views/2-funcao/Consultar";
 
+// Importação do módulo Funcionário
+
+
+// Importação do módulo Tipo Quarto
+
+
+// Importação do módulo Quarto
+
+
+
+
+
+
+
+
+//
 import { ROTA } from "./url";
 
 // ============================================================
@@ -89,6 +105,13 @@ export const routes: RouteObject[] = [
         path: `${ROTA.FUNCAO.POR_ID}/:id`,
         element: <ConsultarFuncao />,
       },
+      // Rotas do módulo 3-funcionario
+
+
+      // Rotas do módulo 4-tipo-quarto
+
+
+      // Rotas do módulo 5-quarto
     ],
   },
 ];

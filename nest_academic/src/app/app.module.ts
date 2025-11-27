@@ -6,6 +6,8 @@ import Joi from 'joi';
 import { HospedeModule } from 'src/1-hospede/hospede.module';
 import { FuncaoModule } from 'src/2-funcao/funcao.module';
 import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
+import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module'
+import { QuartoModule } from 'src/5-quarto/quarto.module';
 
 // Importa e executa a configuração do Oracle Client
 import './oracle-client.config';
@@ -61,9 +63,10 @@ oracledb.initOracleClient({
     HospedeModule,
     FuncaoModule,
     FuncionarioModule,
-    /*
+    
     TipoQuartoModule,
     QuartoModule,
+    /*
     StatusReservaModule,
     ReservaModule,
     ServicoModule,

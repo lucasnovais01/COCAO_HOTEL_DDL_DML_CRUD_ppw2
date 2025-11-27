@@ -1,6 +1,9 @@
 import { HOSPEDE } from "../1-hospede/constants/hospede.constants";
-
 import { FUNCAO } from "../2-funcao/constants/funcao.constants";
+
+import { FUNCIONARIO } from "../3-funcionario/constants/funcionario.constants";
+import { TIPOQUARTO } from "../4-tipo-quarto/constants/tipo-quarto.constants";
+import { QUARTO } from "../5-quarto/constants/quarto.constants";
 
 /*
  * ============================================================
