@@ -1,80 +1,222 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import type { Funcao } from "../../type/2-funcao";
-import { apiGetFuncao, apiDeleteFuncao } from "../../services/2-funcao/api/api.funcao";
+import { MdCancel, MdDelete } from "react-icons/md";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+
+import "../../assets/css/7-form.css";
+import {
+  apiDeleteFuncao,
+  apiGetFuncao,
+} from "../../services/2-funcao/api/api.funcao";
+import { FUNCAO } from "../../services/2-funcao/constants/funcao.constants";
 import { ROTA } from "../../services/router/url";
+import type { Funcao } from "../../type/2-funcao";
 
 export default function ExcluirFuncao() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Funcao | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function load() {
+    async function getFunc() {
       try {
-        if (!id) return;
-        const res = await apiGetFuncao(Number(id));
-        setModel(res?.data?.dados ?? null);
-      } catch (err) {
+        setLoading(true);
+        if (id) {
+          const response = await apiGetFuncao(Number(id));
+          if (response.data.dados) {
+            setModel(response.data.dados);
+          }
+        }
+      } catch (err: any) {
         console.error(err);
-        alert("Erro ao carregar função");
-        navigate((ROTA as any).FUNCAO.LISTAR);
+        setError("Função não encontrada");
+      } finally {
+        setLoading(false);
       }
     }
-    load();
-  }, [id, navigate]);
+
+    getFunc();
+  }, [id]);
 
   const onDelete = async () => {
-    if (!id) return alert("ID inválido");
+    if (!id || !confirm("Tem certeza que deseja excluir esta função?")) return;
+
+    setDeleting(true);
     try {
-      setLoading(true);
-      const res = await apiDeleteFuncao(Number(id));
-      if (res && (res.status === 204 || res.status === 200)) {
-        const msg = res?.data?.mensagem ?? "Função excluída";
-        navigate((ROTA as any).FUNCAO.LISTAR, { state: { toast: { message: msg, type: "success" } } });
-      } else {
-        const msg = res?.data?.mensagem ?? "Função excluída";
-        navigate((ROTA as any).FUNCAO.LISTAR, { state: { toast: { message: msg, type: "success" } } });
-      }
+      await apiDeleteFuncao(Number(id));
+
+      navigate(ROTA.FUNCAO.LISTAR, {
+        state: {
+          toast: {
+            message: "Função excluída com sucesso!",
+            type: "success",
+          },
+        },
+      });
     } catch (err: any) {
-      console.error("Erro ao excluir:", err);
-      const msg = err?.response?.data?.mensagem ?? "Erro ao excluir função";
-      alert(msg);
-      navigate((ROTA as any).FUNCAO.LISTAR);
+      console.error(err);
+      alert("Erro ao excluir função");
     } finally {
-      setLoading(false);
+      setDeleting(false);
     }
   };
 
-  if (!model) return <div className="container py-8">Carregando...</div>;
+  const onCancel = () => {
+    navigate(ROTA.FUNCAO.LISTAR);
+  };
 
-  return (
-    <div className="container py-8">
-      <div className="devtools-card max-w-2xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Excluir Função</h2>
-
-        <p className="mb-4">Tem certeza que deseja excluir a função abaixo?</p>
-
-        <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-500">Código</label>
-          <div className="mt-1 text-gray-900">{model.codigoFuncao}</div>
-        </div>
-
-        <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-500">Nome</label>
-          <div className="mt-1 text-gray-900">{model.nomeFuncao}</div>
-        </div>
-
-        <div className="flex space-x-2 mt-4">
-          <button className="btn-danger" onClick={onDelete} disabled={loading}>
-            {loading ? "Excluindo..." : "Confirmar Exclusão"}
-          </button>
-          <button className="btn-secondary" onClick={() => navigate((ROTA as any).FUNCAO.LISTAR)} disabled={loading}>
-            Cancelar
-          </button>
+  if (loading) {
+    return (
+      <div className="padraoPagina">
+        <div className="container py-8 text-center">
+          <i className="fas fa-spinner fa-spin text-4xl"></i>
+          <p className="mt-4">Carregando...</p>
         </div>
       </div>
+    );
+  }
+
+  if (error || !model) {
+    return (
+      <div className="padraoPagina">
+        <div className="container py-8">
+          <div className="card max-w-2xl mx-auto text-center">
+            <i className="fas fa-exclamation-circle text-4xl text-red-600 mb-4"></i>
+            <p className="text-lg text-gray-600 mb-6">
+              {error || "Função não encontrada"}
+            </p>
+            <NavLink
+              to={ROTA.FUNCAO.LISTAR}
+              className="text-blue-600 hover:text-blue-700 underline"
+            >
+              Voltar para a lista
+            </NavLink>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="padraoPagina">
+      <nav className="breadcrumb">
+        <div className="container flex items-center space-x-2 text-sm">
+          <NavLink
+            to="/sistema/dashboard"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Home
+          </NavLink>
+          <i className="fas fa-chevron-right text-gray-400"></i>
+          <NavLink
+            to={ROTA.FUNCAO.LISTAR}
+            className="text-blue-600 hover:text-blue-700"
+          >
+            Funções
+          </NavLink>
+          <i className="fas fa-chevron-right text-gray-400"></i>
+          <span className="text-gray-600">Excluir</span>
+        </div>
+      </nav>
+
+      <section className="devtools-banner">
+        <div className="container text-center">
+          <i className="fas fa-trash-alt text-6xl mb-4 text-red-600"></i>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Excluir Função
+          </h1>
+          <p className="text-xl">⚠️ Esta ação é irreversível</p>
+        </div>
+      </section>
+
+      <main className="container py-8">
+        <div
+          className="card animated fadeInDown"
+          style={{ maxWidth: "600px", margin: "0 auto" }}
+        >
+          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-600 rounded">
+            <p className="text-red-800 text-center font-semibold">
+              Tem certeza que deseja excluir esta função? Esta ação é
+              irreversível.
+            </p>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="appLabel">Código</label>
+              <div className="form-field-wrapper">
+                <input
+                  type="text"
+                  value={model.codigoFuncao || ""}
+                  className="form-control app-label mt-2"
+                  readOnly
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="appLabel">{FUNCAO.LABEL.NOME}</label>
+              <div className="form-field-wrapper">
+                <input
+                  type="text"
+                  value={model.nomeFuncao || ""}
+                  className="form-control app-label mt-2"
+                  readOnly
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="appLabel">{FUNCAO.LABEL.DESCRICAO}</label>
+              <div className="form-field-wrapper">
+                <textarea
+                  value={model.descricao || ""}
+                  className="form-control app-label mt-2"
+                  rows={4}
+                  readOnly
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button
+              type="button"
+              className="btn btn-delete"
+              onClick={onDelete}
+              disabled={deleting}
+              title="Confirmar exclusão"
+            >
+              <span className="btn-icon">
+                <i>
+                  <MdDelete />
+                </i>
+              </span>
+              {deleting ? "Excluindo..." : "Excluir"}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-cancel"
+              onClick={onCancel}
+              disabled={deleting}
+              title="Cancelar exclusão"
+            >
+              <span className="btn-icon">
+                <i>
+                  <MdCancel />
+                </i>
+              </span>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

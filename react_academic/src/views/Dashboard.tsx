@@ -7,84 +7,144 @@ export default function Dashboard() {
       <div className="card animated fadeInDown">
         <h1>Dashboard</h1>
         <p>Bem-vindo ao sistema de hotel</p>
-        
+
         {/* Grid com opções CRUD para Hóspede */}
         <div className="crud-container">
           <h2>Gerenciamento de Hóspedes</h2>
-          
+
           <div className="crud-grid">
             {/* Botão Listar */}
             <Link to={ROTA.HOSPEDE.LISTAR} className="crud-btn crud-listar">
               <i className="fas fa-list"></i>
               <span>Listar</span>
             </Link>
-            
+
             {/* Botão Buscar (Consultar) */}
-            <Link to={ROTA.HOSPEDE.POR_ID + "/1"} className="crud-btn crud-buscar">
+            <Link
+              to={ROTA.HOSPEDE.POR_ID + "/1"}
+              className="crud-btn crud-buscar"
+            >
               <i className="fas fa-search"></i>
               <span>Buscar</span>
             </Link>
-            
+
             {/* Botão Criar */}
             <Link to={ROTA.HOSPEDE.CRIAR} className="crud-btn crud-criar">
               <i className="fas fa-plus"></i>
               <span>Criar</span>
             </Link>
-            
+
             {/* Botão Alterar */}
-            <Link to={ROTA.HOSPEDE.ATUALIZAR + "/1"} className="crud-btn crud-atualizar">
+            <Link
+              to={ROTA.HOSPEDE.ATUALIZAR + "/1"}
+              className="crud-btn crud-atualizar"
+            >
               <i className="fas fa-edit"></i>
               <span>Alterar</span>
             </Link>
-            
+
             {/* Botão Excluir */}
-            <Link to={ROTA.HOSPEDE.EXCLUIR + "/1"} className="crud-btn crud-excluir">
+            <Link
+              to={ROTA.HOSPEDE.EXCLUIR + "/1"}
+              className="crud-btn crud-excluir"
+            >
               <i className="fas fa-trash"></i>
               <span>Excluir</span>
             </Link>
           </div>
         </div>
 
-        
         {/* Grid com opções CRUD para FUNCAO */}
         <div className="crud-container">
           <h2>Função</h2>
-          
+
           <div className="crud-grid">
             {/* Botão Listar */}
             <Link to={ROTA.FUNCAO.LISTAR} className="crud-btn crud-listar">
               <i className="fas fa-list"></i>
               <span>Listar</span>
             </Link>
-            
+
             {/* Botão Buscar (Consultar) */}
-            <Link to={ROTA.FUNCAO.POR_ID + "/1"} className="crud-btn crud-buscar">
+            <Link
+              to={ROTA.FUNCAO.POR_ID + "/1"}
+              className="crud-btn crud-buscar"
+            >
               <i className="fas fa-search"></i>
               <span>Buscar</span>
             </Link>
-            
+
             {/* Botão Criar */}
             <Link to={ROTA.FUNCAO.CRIAR} className="crud-btn crud-criar">
               <i className="fas fa-plus"></i>
               <span>Criar</span>
             </Link>
-            
+
             {/* Botão Alterar */}
-            <Link to={ROTA.FUNCAO.ATUALIZAR + "/1"} className="crud-btn crud-atualizar">
+            <Link
+              to={ROTA.FUNCAO.ATUALIZAR + "/1"}
+              className="crud-btn crud-atualizar"
+            >
               <i className="fas fa-edit"></i>
               <span>Alterar</span>
             </Link>
-            
+
             {/* Botão Excluir */}
-            <Link to={ROTA.FUNCAO.EXCLUIR + "/1"} className="crud-btn crud-excluir">
+            <Link
+              to={ROTA.FUNCAO.EXCLUIR + "/1"}
+              className="crud-btn crud-excluir"
+            >
               <i className="fas fa-trash"></i>
               <span>Excluir</span>
             </Link>
           </div>
         </div>
 
+        {/* Grid com opções CRUD para FUNCIONARIO */}
+        <div className="crud-container">
+          <h2>Funcionário</h2>
 
+          <div className="crud-grid">
+            {/* Botão Listar */}
+            <Link to={ROTA.FUNCIONARIO.LISTAR} className="crud-btn crud-listar">
+              <i className="fas fa-list"></i>
+              <span>Listar</span>
+            </Link>
 
+            {/* Botão Buscar (Consultar) */}
+            <Link
+              to={ROTA.FUNCIONARIO.POR_ID + "/1"}
+              className="crud-btn crud-buscar"
+            >
+              <i className="fas fa-search"></i>
+              <span>Buscar</span>
+            </Link>
+
+            {/* Botão Criar */}
+            <Link to={ROTA.FUNCIONARIO.CRIAR} className="crud-btn crud-criar">
+              <i className="fas fa-plus"></i>
+              <span>Criar</span>
+            </Link>
+
+            {/* Botão Alterar */}
+            <Link
+              to={ROTA.FUNCIONARIO.ATUALIZAR + "/1"}
+              className="crud-btn crud-atualizar"
+            >
+              <i className="fas fa-edit"></i>
+              <span>Alterar</span>
+            </Link>
+
+            {/* Botão Excluir */}
+            <Link
+              to={ROTA.FUNCIONARIO.EXCLUIR + "/1"}
+              className="crud-btn crud-excluir"
+            >
+              <i className="fas fa-trash"></i>
+              <span>Excluir</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

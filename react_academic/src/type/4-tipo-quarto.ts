@@ -6,3 +6,15 @@ export interface TipoQuarto {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface ErrosTipoQuarto {
+  codigoTipoQuarto?: boolean;
+  nomeTipo?: boolean;
+  capacidadeMaxima?: boolean;
+  valorDiaria?: boolean;
+
+  codigoTipoQuartoMensagem?: string[];
+  nomeTipoMensagem?: string[];
+  capacidadeMaximaMensagem?: string[];
+  valorDiariaMensagem?: string[];
+}

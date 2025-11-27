@@ -20,14 +20,14 @@ import CriarFuncao from "../../views/2-funcao/Criar";
 import AlterarFuncao from "../../views/2-funcao/Alterar";
 import ExcluirFuncao from "../../views/2-funcao/Excluir";
 import ConsultarFuncao from "../../views/2-funcao/Consultar";
-/*
+
 // Importação do módulo Funcionário
 import ListarFuncionario from "../../views/3-funcionario/Listar";
 import CriarFuncionario from "../../views/3-funcionario/Criar";
 import AlterarFuncionario from "../../views/3-funcionario/Alterar";
 import ExcluirFuncionario from "../../views/3-funcionario/Excluir";
 import ConsultarFuncionario from "../../views/3-funcionario/Consultar";
-
+/*
 // Importação do módulo Tipo Quarto
 import ListarTipoQuarto from "../../views/4-tipo-quarto/Listar";
 import CriarTipoQuarto from "../../views/4-tipo-quarto/Criar";
@@ -113,7 +113,7 @@ export const routes: RouteObject[] = [
         path: `${ROTA.FUNCAO.POR_ID}/:id`,
         element: <ConsultarFuncao />,
       },
-/*
+
       // Rotas do módulo 3-funcionario
       {
         path: ROTA.FUNCIONARIO.LISTAR,
@@ -135,7 +135,7 @@ export const routes: RouteObject[] = [
         path: `${ROTA.FUNCIONARIO.POR_ID}/:idUsuario`,
         element: <ConsultarFuncionario />,
       },
-
+/*
       // Rotas do módulo 4-tipo-quarto
       {
         path: ROTA.TIPO_QUARTO.LISTAR,
