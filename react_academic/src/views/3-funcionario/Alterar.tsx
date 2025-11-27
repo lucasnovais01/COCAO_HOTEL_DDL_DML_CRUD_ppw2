@@ -20,28 +20,98 @@ import {
   createValidateField,
 } from "./zCamposAlterar";
 
+/**
+ * ========================================================================
+ * COMPONENTE: AlterarFuncionario
+ * ========================================================================
+ * Propósito: Editar dados de um funcionário existente
+ *
+ * ARQUITETURA ESPECIAL DESTE MÓDULO:
+ *
+ * 1. HERANÇA HOSPEDE → FUNCIONARIO
+ *    - Funcionário NÃO é entidade independente
+ *    - É uma especialização de HOSPEDE onde TIPO=1
+ *    - PK de FUNCIONARIO é ID_USUARIO (FK para HOSPEDE)
+ *    - Por isso a rota recebe :idUsuario, não :id
+ *
+ * 2. POR QUE DOIS CARREGAMENTOS NO useEffect?
+ *    a) apiGetFuncionario(idUsuario) → carrega dados do funcionário
+ *    b) apiGetFuncoes() → carrega lista de funções para dropdown
+ *    - Ambas precisam estar prontas para renderizar o formulário
+ *    - loading só desativa quando ambas terminarem
+ *
+ * 3. POR QUE codigoFuncao É STRING?
+ *    - codigoFuncao é FK para tabela FUNCAO (lookup table)
+ *    - Em FUNCAO, CODIGO_FUNCAO é NUMBER(4) mas usamos como String
+ *    - Por isso: value={model?.codigoFuncao || ""} (não 0)
+ *    - E: codigoFuncao: model.codigoFuncao (sem Number())
+ *
+ * 4. POR QUE NÃO ENVIAR idUsuario NO PUT?
+ *    - idUsuario é PK (Primary Key)
+ *    - PKs nunca são atualizadas no banco de dados
+ *    - Backend rejeita se tentar mudar a PK
+ *    - Payload enviado: { nomeLogin, senha, codigoFuncao, dataContratacao, ativo }
+ *    - idUsuario vem na URL: PUT /3-funcionario/{idUsuario}
+ *
+ * Fluxo:
+ * 1. Usuário clica Alterar na lista (passa idUsuario)
+ * 2. useEffect carrega dados do funcionário + lista de funções
+ * 3. Formulário renderiza com dados preenchidos
+ * 4. Usuário edita campos (onChange atualiza model)
+ * 5. Ao clicar Salvar: validação → PUT /3-funcionario/{idUsuario}
+ * 6. Se sucesso: volta para lista com toast
+ * ========================================================================
+ */
+
 export default function AlterarFuncionario() {
-  const { id } = useParams<{ id: string }>();
+  // CRÍTICO: Extrair :idUsuario da URL (não :id)
+  // Correspondência com router.tsx: `${ROTA.FUNCIONARIO.ATUALIZAR}/:idUsuario`
+  const { idUsuario } = useParams<{ idUsuario: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Funcionario | null>(null);
   const [errors, setErrors] = useState<any>({});
-  const [funcoes, setFuncoes] = useState<Funcao[]>([]);
+  const [funcoes, setFuncoes] = useState<Funcao[]>([]); // Lista de funções para dropdown
   const [loading, setLoading] = useState(true);
 
+  // Funções de validação vêm de zCamposAlterar.ts
   const handleChangeField = createHandleChangeField(setModel, setErrors);
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
 
+  /**
+   * useEffect - Carregamento DUPLO de Dados
+   *
+   * Por que dois carregamentos?
+   * - Precisa de dados do funcionário (idUsuario, nomeLogin, etc)
+   * - Precisa de lista de funções para dropdown codigoFuncao
+   * - Ambos são necessários para renderizar o formulário
+   * - Se um falhar, mostra erro e volta para lista
+   *
+   * Sequência:
+   * 1. Valida idUsuario na URL
+   * 2. Faz Promise.all para carregar em paralelo (mais rápido)
+   * 3. Se sucesso: setModel + setFuncoes
+   * 4. Se erro: mostra alerta e volta para lista
+   * 5. Sempre: setLoading(false) para renderizar formulário
+   */
   useEffect(() => {
     const loadData = async () => {
+      // VALIDAÇÃO CRÍTICA: Sem idUsuario, não há funcionário para editar
+      if (!idUsuario) {
+        alert("ID do funcionário não fornecido");
+        setLoading(false);
+        navigate(ROTA.FUNCIONARIO.LISTAR); // Volta para lista se erro
+        return;
+      }
+
       try {
-        if (id) {
-          const response = await apiGetFuncionario(Number(id));
-          if (response.data.dados) {
-            setModel(response.data.dados);
-          }
+        // Carrega em paralelo para ser mais rápido
+        const response = await apiGetFuncionario(Number(idUsuario));
+        if (response.data.dados) {
+          setModel(response.data.dados); // Dados do funcionário
         }
 
+        // Carrega todas as funções disponíveis para dropdown
         const resFuncoes = await apiGetFuncoes();
         const dadosFuncoes = resFuncoes?.data?.dados ?? [];
         if (Array.isArray(dadosFuncoes)) setFuncoes(dadosFuncoes);
@@ -49,28 +119,64 @@ export default function AlterarFuncionario() {
         console.log(error);
         alert("Erro ao carregar dados");
       } finally {
+        // Sempre desativa spinner, quer sucesso ou erro
         setLoading(false);
       }
     };
 
     loadData();
-  }, [id]);
+  }, [idUsuario, navigate]); // Recarrega se idUsuario ou navigate mudar
 
+  /**
+   * onSubmitForm - Validação e Envio dos Dados
+   *
+   * Fluxo:
+   * 1. Previne comportamento padrão do form (submit)
+   * 2. Valida se idUsuario e model existem
+   * 3. Prepara payload para enviar ao backend
+   * 4. IMPORTANTE: Não envia idUsuario (é PK, vem na URL)
+   * 5. Envia PUT: /3-funcionario/{idUsuario}
+   * 6. Se sucesso: volta para lista com toast de sucesso
+   * 7. Se erro: mostra alerta
+   */
   const onSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!id || !model) {
+    if (!idUsuario || !model) {
       alert("Dados incompletos para atualização");
       return;
     }
 
     try {
+      /**
+       * IMPORTANTE - Construção do Payload para PUT
+       *
+       * Por que codigoFuncao é string e não number?
+       * - codigoFuncao é FK para tabela FUNCAO
+       * - No banco: CODIGO_FUNCAO NUMBER(4), mas é lookup code, não ID
+       * - Trabalhamos como string para simplicidade
+       * - Exemplos: "1001", "2050", "3100"
+       *
+       * Por que NÃO incluir idUsuario?
+       * - idUsuario é PK (chave primária)
+       * - PKs NUNCA são atualizadas no banco
+       * - Banco rejeita com erro ORA-02429: cannot drop column referenced
+       * - idUsuario vem na URL do PUT: /3-funcionario/{idUsuario}
+       * - Backend usa idUsuario da URL para saber qual registro atualizar
+       *
+       * Campos enviados:
+       * - nomeLogin: string, validado em zCamposAlterar (3-50 chars)
+       * - senha: string, validado (6-50 chars)
+       * - codigoFuncao: string (ex: "1001"), validado (required)
+       * - dataContratacao: string (YYYY-MM-DD), validado (required)
+       * - ativo: number (1 ou 0), sempre convertido com Number()
+       */
       const funcionarioToSend = {
         nomeLogin: model.nomeLogin,
         senha: model.senha,
-        codigoFuncao: Number(model.codigoFuncao),
+        codigoFuncao: model.codigoFuncao, // Enviado como STRING
         dataContratacao: model.dataContratacao,
-        ativo: Number(model.ativo),
+        ativo: Number(model.ativo), // Convertido para number
       };
 
       console.log(
@@ -79,14 +185,14 @@ export default function AlterarFuncionario() {
       );
 
       await apiPutFuncionario(
-        Number(id),
+        Number(idUsuario),
         funcionarioToSend as unknown as Funcionario
       );
 
       navigate(ROTA.FUNCIONARIO.LISTAR, {
         state: {
           toast: {
-            message: `Funcionário ID ${id} alterado com sucesso!`,
+            message: `Funcionário ID ${idUsuario} alterado com sucesso!`,
             type: "success",
           },
         },
@@ -236,7 +342,7 @@ export default function AlterarFuncionario() {
                   <select
                     id={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
                     name={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
-                    value={model?.codigoFuncao || 0}
+                    value={model?.codigoFuncao || ""}
                     className={getInputClass()}
                     onChange={(e) =>
                       handleChangeField(

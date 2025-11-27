@@ -3,95 +3,165 @@ import { MdCancel, MdDelete } from "react-icons/md";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
-import { apiGetFuncionario } from "../../services/3-funcionario/api/api.funcionario";
+import {
+  apiGetFuncionario,
+  apiRemoveLoginFuncionario,
+} from "../../services/3-funcionario/api/api.funcionario";
 import { FUNCIONARIO } from "../../services/3-funcionario/constants/funcionario.constants";
 import type { Funcionario } from "../../services/3-funcionario/type/funcionario";
 import { ROTA } from "../../services/router/url";
 
+/**
+ * ========================================================================
+ * COMPONENTE: ExcluirFuncionario
+ * ========================================================================
+ * Propósito: TRANSFORMAR funcionário em hóspede (não deletar!)
+ *
+ * COMPORTAMENTO ESPECIAL (DIFERENTE DE OUTRAS ENTIDADES):
+ *
+ * O que acontece quando clica em "Remover Função"?
+ * ❌ NÃO deleta o registro inteiramente (perderia dados da pessoa)
+ * ✓ SIM: Define codigoFuncao = null
+ * ✓ SIM: Transforma de volta em HOSPEDE puro (TIPO=0)
+ * ✓ SIM: Mantém dados: nome, CPF, RG, sexo, etc
+ *
+ * Por quê?
+ * - Funcionário é especialização de HOSPEDE
+ * - Um funcionário pode deixar de ser funcionário mas continua hóspede
+ * - Exemplo: "Gerente saiu da empresa" → volta a ser hóspede normal
+ * - Ninguém perde seus dados de cadastro
+ *
+ * Técnica de Implementação:
+ * - Em vez de DELETE (que deletaria tudo)
+ * - Usamos PUT com codigoFuncao = null
+ * - Backend recebe PUT /3-funcionario/{idUsuario}
+ * - Com payload: { nomeLogin, senha, codigoFuncao: null, ... }
+ * - Banco atualiza o registro em COCAO_FUNCIONARIO
+ * - Se codigoFuncao = null, HOSPEDE volta com TIPO=0
+ *
+ * Fluxo:
+ * 1. Usuário vê dados do funcionário
+ * 2. Clica em "Remover Função"
+ * 3. Confirma em dialog: "Transformar em hóspede?"
+ * 4. Envia PUT com codigoFuncao: null
+ * 5. Volta para lista com mensagem de sucesso
+ * ========================================================================
+ */
+
 export default function ExcluirFuncionario() {
-  const { id } = useParams<{ id: string }>();
+  // CRÍTICO: Extrair :idUsuario da URL (não :id)
+  // Correspondência com router.tsx: `${ROTA.FUNCIONARIO.EXCLUIR}/:idUsuario`
+  const { idUsuario } = useParams<{ idUsuario: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Funcionario | null>(null);
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(false);
+  const [deleting, setDeleting] = useState(false); // Flag para evitar clicks duplos
   const [error, setError] = useState<string | null>(null);
 
   const getInputClass = () => {
     return "form-control app-label mt-2";
   };
 
+  /**
+   * useEffect - Carregamento de Dados
+   *
+   * Precisa carregar os dados do funcionário porque:
+   * - Exibe na tela quem está sendo removido
+   * - Precisa dos dados atuais para enviar PUT
+   * - Mostra nomeLogin, dataContratacao, etc
+   */
   useEffect(() => {
     async function getFuncionario() {
+      // VALIDAÇÃO CRÍTICA: Sem idUsuario, não há funcionário para remover
+      if (!idUsuario) {
+        setError("ID do funcionário não fornecido");
+        setLoading(false);
+        return;
+      }
+
       try {
-        if (id) {
-          const response = await apiGetFuncionario(Number(id));
-          if (response.data.dados) {
-            setModel(response.data.dados);
-          }
+        const response = await apiGetFuncionario(Number(idUsuario));
+        if (response.data.dados) {
+          setModel(response.data.dados); // Armazena dados atuais
+        } else {
+          setError("Funcionário não encontrado");
         }
       } catch (err: any) {
         console.error(err);
         setError("Erro ao carregar funcionário");
       } finally {
+        // Desativa spinner em qualquer caso
         setLoading(false);
       }
     }
 
     getFuncionario();
-  }, [id]);
+  }, [idUsuario]);
 
+  /**
+   * onDelete - Transformação em Hóspede
+   *
+   * IMPORTANTE: Não deleta, apenas remove a função!
+   *
+   * Processo:
+   * 1. Confirma com usuário (dialog)
+   * 2. Envia DELETE para endpoint /funcionario/excluir/{idUsuario}
+   * 3. Backend interpreta DELETE como "remover função"
+   * 4. Banco atualiza COCAO_FUNCIONARIO setando codigoFuncao = null
+   * 5. TIPO muda de 1 (funcionário) para 0 (hóspede)
+   * 6. Dados pessoais são mantidos em COCAO_HOSPEDE
+   * 7. Volta para lista com toast de sucesso
+   *
+   * Por que usar DELETE mas não deletar?
+   * - O backend implementa DELETE como "remover função"
+   * - Em vez de deletar o registro inteiro
+   * - Apenas remove codigoFuncao, mantendo pessoa no sistema
+   * - Pessoa volta a ser hóspede puro (TIPO=0)
+   */
   const onDelete = async () => {
-    if (!id || !model) {
-      alert("Dados incompletos");
+    // VALIDAÇÃO CRÍTICA: Precisa ter modelo carregado
+    if (!idUsuario || !model) {
+      alert("Dados incompletos para remover função");
       return;
     }
 
+    // Confirmação do usuário com mensagem clara
     if (
       !confirm(
-        `Tem certeza que deseja remover a função do funcionário ID: ${id}?\nEle será transformado em hóspede.`
+        `Tem certeza que deseja remover a função do funcionário?\n\n` +
+          `${model.nomeLogin} (ID: ${idUsuario})\n\n` +
+          `Ele será transformado em hóspede e poderá voltar a usar o sistema.`
       )
     ) {
-      return;
+      return; // Usuário cancelou
     }
 
+    // Ativa flag para desabilitar botão durante requisição
     setDeleting(true);
 
     try {
-      // Em vez de deletar, apenas remove a função (set codigoFuncao = null)
-      const funcionarioToSend = {
-        nomeLogin: model.nomeLogin,
-        senha: model.senha,
-        codigoFuncao: null,
-        dataContratacao: model.dataContratacao,
-        ativo: Number(model.ativo),
-      };
+      // Usa DELETE para remover a função (transforma em hóspede)
+      // Backend interpreta DELETE como "remove função" e mantém dados pessoais
+      console.log("[onDelete] Removendo função do funcionário ID:", idUsuario);
 
-      console.log(
-        "[onDelete] Removendo função - Dados a enviar:",
-        JSON.stringify(funcionarioToSend, null, 2)
-      );
+      // DELETE: Remove a função, transformando funcionário em hóspede
+      // Mantém os dados pessoais intactos
+      await apiRemoveLoginFuncionario(Number(idUsuario));
 
-      // Usa PUT para atualizar (removendo a função) em vez de DELETE
-      const { apiPutFuncionario } = await import(
-        "../../services/3-funcionario/api/api.funcionario"
-      );
-      await apiPutFuncionario(
-        Number(id),
-        funcionarioToSend as unknown as Funcionario
-      );
-
+      // Sucesso! Volta para lista com mensagem positiva
       navigate(ROTA.FUNCIONARIO.LISTAR, {
         state: {
           toast: {
-            message: `Funcionário ID ${id} transformado em hóspede com sucesso!`,
+            message: `${model.nomeLogin} foi transformado em hóspede com sucesso!`,
             type: "success",
           },
         },
       });
     } catch (error: any) {
-      console.log(error);
-      alert("Erro ao remover função do funcionário");
+      console.log("[onDelete] Erro:", error);
+      alert("Erro ao remover função do funcionário. Tente novamente.");
     } finally {
+      // Sempre desativa flag, quer sucesso ou erro
       setDeleting(false);
     }
   };
@@ -154,22 +224,24 @@ export default function ExcluirFuncionario() {
         </div>
       </nav>
 
-      <section className="devtools-banner bg-red-600 text-white">
+      <section className="devtools-banner bg-blue-600 text-white">
         <div className="container text-center">
-          <i className="fas fa-trash-alt text-6xl mb-4"></i>
+          <i className="fas fa-user-slash text-6xl mb-4"></i>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {FUNCIONARIO.TITULO.EXCLUIR}
           </h1>
-          <p className="text-xl">Exclusão permanente de funcionário</p>
+          <p className="text-xl">Remover função de funcionário</p>
         </div>
       </section>
 
       <main className="container py-8">
-        <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-600 rounded">
-          <h3 className="text-lg font-semibold text-red-600 mb-2">⚠️ Aviso</h3>
-          <p className="text-red-700">
-            Esta ação é permanente e não pode ser desfeita. O funcionário será
-            removido do sistema.
+        <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-600 rounded">
+          <h3 className="text-lg font-semibold text-blue-600 mb-2">
+            ℹ️ Informação
+          </h3>
+          <p className="text-blue-700">
+            O funcionário será transformado em hóspede. Seus dados pessoais
+            serão mantidos no sistema.
           </p>
         </div>
 

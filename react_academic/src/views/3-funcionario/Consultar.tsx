@@ -7,8 +7,30 @@ import { FUNCIONARIO } from "../../services/3-funcionario/constants/funcionario.
 import type { Funcionario } from "../../services/3-funcionario/type/funcionario";
 import { ROTA } from "../../services/router/url";
 
+/**
+ * ========================================================================
+ * COMPONENTE: ConsultarFuncionario
+ * ========================================================================
+ * Propósito: Exibir os dados de um funcionário em modo somente leitura
+ *
+ * IMPORTANTE - Por que precisa de :idUsuario?
+ * - Funcionário é uma especialização de HOSPEDE (herança)
+ * - A chave primária é ID_USUARIO (FK para HOSPEDE.ID_USUARIO)
+ * - Por isso a rota recebe :idUsuario e não :id
+ * - Rota definida em router.tsx: ${ROTA.FUNCIONARIO.POR_ID}/:idUsuario
+ *
+ * Fluxo de Execução:
+ * 1. Usuário clica em "Consultar" na lista (passa idUsuario na URL)
+ * 2. useParams extrai idUsuario da URL
+ * 3. useEffect carrega dados do backend assim que componente monta
+ * 4. Renderiza campos somente leitura com os dados
+ * ========================================================================
+ */
+
 export default function ConsultarFuncionario() {
-  const { id } = useParams<{ id: string }>();
+  // CRÍTICO: Extrair :idUsuario da URL (não :id)
+  // Correspondência com router.tsx: `${ROTA.FUNCIONARIO.POR_ID}/:idUsuario`
+  const { idUsuario } = useParams<{ idUsuario: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Funcionario | null>(null);
   const [loading, setLoading] = useState(true);
@@ -18,25 +40,59 @@ export default function ConsultarFuncionario() {
     return "form-control app-label mt-2";
   };
 
+  /**
+   * useEffect Hook - Carregamento de Dados
+   *
+   * Por que precisa disso?
+   * - React precisa buscar dados do backend quando componente monta
+   * - Sem o useEffect, a página ficaria branca/vazia
+   * - O spinner exibe "Carregando..." enquanto aguarda resposta
+   *
+   * Fluxo:
+   * 1. ✓ Validação: Existe idUsuario na URL?
+   * 2. ✓ Requisição: GET /sistema/3-funcionario/por-id/{idUsuario}
+   * 3. ✓ Tratamento: Armazena resposta em setModel(response.data.dados)
+   * 4. ✓ Erro: Se requisição falhar, mostra mensagem de erro
+   * 5. ✓ Limpeza: Desativa spinner (setLoading(false)) em qualquer caso
+   *
+   * IMPORTANTE: Adicionar [idUsuario] na dependência!
+   * - Se URL mudar para outro funcionário, useEffect roda novamente
+   * - Sem isso, dados da URL anterior continuam na tela
+   */
   useEffect(() => {
     async function getFuncionario() {
+      // VALIDAÇÃO CRÍTICA: Sem idUsuario, não há ID para buscar
+      // Se esta validação falhar = erro de roteamento (bug)
+      if (!idUsuario) {
+        setError("ID do funcionário não fornecido");
+        setLoading(false);
+        return; // Sai da função para evitar requisição com Number(undefined) = NaN
+      }
+
       try {
-        if (id) {
-          const response = await apiGetFuncionario(Number(id));
-          if (response.data.dados) {
-            setModel(response.data.dados);
-          }
+        // GET: Busca um funcionário específico pelo ID
+        // Endpoint: GET /sistema/3-funcionario/por-id/{idUsuario}
+        const response = await apiGetFuncionario(Number(idUsuario));
+
+        // response.data.dados contém:
+        // { idUsuario, nomeLogin, codigoFuncao, dataContratacao, ativo }
+        if (response.data.dados) {
+          setModel(response.data.dados); // Armazena dados para renderizar
+        } else {
+          setError("Funcionário não encontrado");
         }
       } catch (err: any) {
         console.error(err);
         setError("Erro ao carregar funcionário");
       } finally {
+        // IMPORTANTE: Executa sempre, quer sucesso ou erro
+        // Remove o spinner de "Carregando..."
         setLoading(false);
       }
     }
 
     getFuncionario();
-  }, [id]);
+  }, [idUsuario]); // Dependência: Se idUsuario mudar, recarrega dados
 
   const onCancel = () => {
     navigate(ROTA.FUNCIONARIO.LISTAR);
