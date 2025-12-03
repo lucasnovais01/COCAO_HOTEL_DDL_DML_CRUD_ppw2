@@ -4,11 +4,13 @@ import { MdCancel } from "react-icons/md";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
+import { apiGetTiposQuarto } from "../../services/4-tipo-quarto/api/api.tipo-quarto";
 import {
   apiGetQuarto,
   apiPutQuarto,
 } from "../../services/5-quarto/api/api.quarto";
 import { QUARTO } from "../../services/5-quarto/constants/quarto.constants";
+import type { TipoQuarto } from "../../type/4-tipo-quarto";
 import type { Quarto } from "../../type/5-quarto";
 
 import { ROTA } from "../../services/router/url";
@@ -26,26 +28,33 @@ export default function AlterarQuarto() {
     QUARTO.DADOS_INICIAIS as unknown as Quarto
   );
   const [errors, setErrors] = useState<any>({});
+  const [tiposQuarto, setTiposQuarto] = useState<TipoQuarto[]>([]);
 
   const handleChangeField = createHandleChangeField(setModel, setErrors);
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
 
   useEffect(() => {
-    async function load() {
+    async function loadData() {
       try {
+        // Carregar tipos de quarto
+        const resTipos = await apiGetTiposQuarto();
+        const dadosTipos = resTipos?.data?.dados ?? [];
+        if (Array.isArray(dadosTipos)) setTiposQuarto(dadosTipos);
+
+        // Carregar quarto
         if (idQuarto) {
           const res = await apiGetQuarto(Number(idQuarto));
           const dados = res?.data?.dados;
           if (dados) setModel(dados);
         }
       } catch (err) {
-        console.error("Erro ao carregar quarto:", err);
-        alert("Erro ao carregar quarto");
+        console.error("Erro ao carregar dados:", err);
+        alert("Erro ao carregar dados");
       }
     }
 
-    load();
+    loadData();
   }, [idQuarto]);
 
   const onSubmitForm = async (e: React.FormEvent) => {
@@ -142,20 +151,18 @@ export default function AlterarQuarto() {
                   {QUARTO.LABEL.CODIGO_TIPO_QUARTO}
                 </label>
                 <div className="form-field-wrapper">
-                  <input
+                  <select
                     id={QUARTO.FIELDS.CODIGO_TIPO_QUARTO}
                     name={QUARTO.FIELDS.CODIGO_TIPO_QUARTO}
-                    type="number"
-                    value={model.codigoTipoQuarto || ""}
+                    value={model.codigoTipoQuarto || 0}
                     className={getInputClass(
                       errors,
                       QUARTO.FIELDS.CODIGO_TIPO_QUARTO
                     )}
-                    autoComplete="off"
                     onChange={(e) =>
                       handleChangeField(
                         QUARTO.FIELDS.CODIGO_TIPO_QUARTO as keyof Quarto,
-                        e.target.value
+                        Number(e.target.value)
                       )
                     }
                     onBlur={(e) =>
@@ -164,7 +171,17 @@ export default function AlterarQuarto() {
                         e
                       )
                     }
-                  />
+                  >
+                    <option value={0}>-- Selecione um tipo de quarto --</option>
+                    {tiposQuarto.map((t) => (
+                      <option
+                        key={t.codigoTipoQuarto}
+                        value={t.codigoTipoQuarto}
+                      >
+                        {t.nomeTipo} ({t.codigoTipoQuarto})
+                      </option>
+                    ))}
+                  </select>
                   {showMensagem(QUARTO.FIELDS.CODIGO_TIPO_QUARTO)}
                 </div>
               </div>

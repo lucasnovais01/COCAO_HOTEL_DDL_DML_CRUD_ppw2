@@ -1,6 +1,6 @@
 import { http } from "../../axios/config.axios";
+import type { Quarto } from "../../type/5-quarto";
 import { API_QUARTO } from "../constants/quarto.constants";
-import type { Quarto } from "../type/quarto";
 
 export const apiGetQuartos = async (): Promise<any> => {
   console.log("[apiGetQuartos] Chamando endpoint:", API_QUARTO.LISTAR);
