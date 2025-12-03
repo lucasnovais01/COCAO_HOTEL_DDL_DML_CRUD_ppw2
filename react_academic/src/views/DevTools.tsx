@@ -7,12 +7,12 @@
 // 4. Importa ferramentas de navegação do React Router (`useNavigate`, `NavLink`) para redirecionamentos e links.
 // 5. Importa constantes de rotas (`ROTA`) para padronizar URLs de navegação no sistema.
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // import axios from "axios"; // não está mais usando axios diretamente, está usando o api.ts - 06-11-2025
 import type { ReactNode } from "react";
 
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ROTA } from "../services/router/url";
 
 import { http } from "../services/axios/config.axios";
@@ -26,7 +26,6 @@ import { REST_CONFIG } from "../services/constants/sistema.constant";
 // 3. Os dados seguem o formato esperado pelo backend, permitindo prototipação sem conexão real.
 // 4. Inclui comentários internos com exemplos desativados para expansão futura.
 // 5. Serve como base para testes locais e demonstração da UI sem dependência de servidor.
-
 
 // só descomentar para usar o mock
 
@@ -107,10 +106,6 @@ const mockApi: { [key: string]: any[] } = {
 };
 */
 
-
-
-
-
 // ============================================================
 // Parte 3 - Definição das Abas da Interface
 // ============================================================
@@ -121,17 +116,112 @@ const mockApi: { [key: string]: any[] } = {
 // 5. Usado tanto com mock quanto com dados reais do backend.
 
 const tabs = [
-  { key: "usuarios", label: "Usuários (Todos)", columns: ["idUsuario", "nomeHospede", "cpf", "rg", "sexo", "dataNascimento", "email", "telefone", "tipo", "ativo"] },
-  { key: "hospedes", label: "Hóspedes", columns: ["idUsuario", "nomeHospede", "cpf", "rg", "sexo", "dataNascimento", "email", "telefone", "ativo"] },
-  { key: "funcionarios", label: "Funcionários", columns: ["idUsuario", "nomeLogin", "codigoFuncao", "dataContratacao", "ativo"] },
-  { key: "funcoes", label: "Funções", columns: ["codigoFuncao", "nomeFuncao", "descricao", "nivelAcesso"] },
+  {
+    key: "usuarios",
+    label: "Usuários (Todos)",
+    columns: [
+      "idUsuario",
+      "nomeHospede",
+      "cpf",
+      "rg",
+      "sexo",
+      "dataNascimento",
+      "email",
+      "telefone",
+      "tipo",
+      "ativo",
+    ],
+  },
+  {
+    key: "hospedes",
+    label: "Hóspedes",
+    columns: [
+      "idUsuario",
+      "nomeHospede",
+      "cpf",
+      "rg",
+      "sexo",
+      "dataNascimento",
+      "email",
+      "telefone",
+      "ativo",
+    ],
+  },
+  {
+    key: "funcionarios",
+    label: "Funcionários",
+    columns: [
+      "idUsuario",
+      "nomeLogin",
+      "codigoFuncao",
+      "dataContratacao",
+      "ativo",
+    ],
+  },
+  {
+    key: "funcoes",
+    label: "Funções",
+    columns: ["codigoFuncao", "nomeFuncao", "descricao", "nivelAcesso"],
+  },
 
-  { key: "tipos-quarto", label: "Tipos de Quarto", columns: ["CODIGO_TIPO_QUARTO", "NOME_TIPO", "CAPACIDADE_MAXIMA", "VALOR_DIARIA"] },
-  { key: "quartos", label: "Quartos", columns: ["ID_QUARTO", "NUMERO", "CODIGO_TIPO_QUARTO", "STATUS_QUARTO", "ANDAR"] },
-  { key: "status-reserva", label: "Status Reserva", columns: ["CODIGO_STATUS", "DESCRICAO"] },
-  { key: "reservas", label: "Reservas", columns: ["ID_RESERVA", "ID_USUARIO", "ID_QUARTO", "DATA_CHECK_IN", "DATA_CHECK_OUT", "NUMERO_HOSPEDES", "VALOR_TOTAL", "NUMERO_DIARIAS", "CODIGO_STATUS"] },
-  { key: "servicos", label: "Serviços", columns: ["CODIGO_SERVICO", "NOME_SERVICO", "PRECO", "ATIVO"] },
-  { key: "hospede-servico", label: "Solicitações", columns: ["ID_SOLICITACAO", "ID_USUARIO", "CODIGO_SERVICO", "ID_RESERVA", "DATA_SOLICITACAO", "QUANTIDADE"] },
+  {
+    key: "tipos-quarto",
+    label: "Tipos de Quarto",
+    columns: [
+      "codigoTipoQuarto",
+      "nomeTipo",
+      "capacidadeMaxima",
+      "valorDiaria",
+    ],
+  },
+  {
+    key: "quartos",
+    label: "Quartos",
+    columns: [
+      "ID_QUARTO",
+      "NUMERO",
+      "CODIGO_TIPO_QUARTO",
+      "STATUS_QUARTO",
+      "ANDAR",
+    ],
+  },
+  {
+    key: "status-reserva",
+    label: "Status Reserva",
+    columns: ["CODIGO_STATUS", "DESCRICAO"],
+  },
+  {
+    key: "reservas",
+    label: "Reservas",
+    columns: [
+      "ID_RESERVA",
+      "ID_USUARIO",
+      "ID_QUARTO",
+      "DATA_CHECK_IN",
+      "DATA_CHECK_OUT",
+      "NUMERO_HOSPEDES",
+      "VALOR_TOTAL",
+      "NUMERO_DIARIAS",
+      "CODIGO_STATUS",
+    ],
+  },
+  {
+    key: "servicos",
+    label: "Serviços",
+    columns: ["CODIGO_SERVICO", "NOME_SERVICO", "PRECO", "ATIVO"],
+  },
+  {
+    key: "hospede-servico",
+    label: "Solicitações",
+    columns: [
+      "ID_SOLICITACAO",
+      "ID_USUARIO",
+      "CODIGO_SERVICO",
+      "ID_RESERVA",
+      "DATA_SOLICITACAO",
+      "QUANTIDADE",
+    ],
+  },
 ];
 
 // ============================================================
@@ -144,14 +234,16 @@ const tabs = [
 // 5. Inicializa `apiData` com `mockApi` como fallback seguro quando não houver dados carregados.
 
 export default function DevTools() {
-
   const [activeTab, setActiveTab] = useState("usuarios");
   const [searchTerm, setSearchTerm] = useState("");
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
   const navigate = useNavigate();
 
   // Se colocar false, ativa chamadas reais ao backend, e se colocar true, usa dados mock em memória
-/*
+  /*
   const USE_MOCK = true;
 
   // apiData contém dados mock (padrão) ou dados remotos carregados do backend
@@ -161,16 +253,16 @@ export default function DevTools() {
   // apiData contém dados remotos carregados do backend
   const [apiData, setApiData] = useState<{ [key: string]: any[] }>({});
 
-// ============================================================
-// Parte 5 - Lógica de Preparação e Filtragem de Dados
-// ============================================================
-// 1. Busca a configuração da aba atual (`currentTab`) com base no `activeTab`.
-// 2. Para a aba "usuarios", mescla hóspedes e funcionários, deduplicando por `ID_USUARIO`.
-// 3. Aplica filtros específicos: hóspedes (`TIPO === 0`) e enriquecimento de funcionários com nome do hóspede.
-// 4. Implementa busca global em todos os campos do item atual.
-// 5. Garante que `filteredData` sempre contenha apenas os registros relevantes e buscados.
+  // ============================================================
+  // Parte 5 - Lógica de Preparação e Filtragem de Dados
+  // ============================================================
+  // 1. Busca a configuração da aba atual (`currentTab`) com base no `activeTab`.
+  // 2. Para a aba "usuarios", mescla hóspedes e funcionários, deduplicando por `ID_USUARIO`.
+  // 3. Aplica filtros específicos: hóspedes (`TIPO === 0`) e enriquecimento de funcionários com nome do hóspede.
+  // 4. Implementa busca global em todos os campos do item atual.
+  // 5. Garante que `filteredData` sempre contenha apenas os registros relevantes e buscados.
 
-  const currentTab = tabs.find(t => t.key === activeTab)!;
+  const currentTab = tabs.find((t) => t.key === activeTab)!;
   let data: any[] = [];
 
   // Se a aba for 'usuarios', mesclar users/hospedes/funcionarios e deduplicar por ID_USUARIO
@@ -190,7 +282,7 @@ export default function DevTools() {
 
     (apiData.usuarios || []).forEach(pushIfNew);
     (apiData.hospedes || []).forEach(pushIfNew);
-  // mapear funcionários para formato similar a usuário antes de inserir
+    // mapear funcionários para formato similar a usuário antes de inserir
     (apiData.funcionarios || []).forEach((f: any) => {
       const item = {
         idUsuario: f.idUsuario,
@@ -219,45 +311,48 @@ export default function DevTools() {
     // Filtro para funcionários (join com hospedes)
     if (activeTab === "funcionarios") {
       data = data.map((f: any) => {
-        const h = (apiData.usuarios || []).find((u: any) => u.idUsuario === f.idUsuario);
+        const h = (apiData.usuarios || []).find(
+          (u: any) => u.idUsuario === f.idUsuario
+        );
         return { ...f, nomeHospede: h?.nomeHospede || "N/A" };
       });
     }
   }
 
   const filteredData = data.filter((item: any) =>
-    Object.values(item).some(v =>
+    Object.values(item).some((v) =>
       v?.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
-// ============================================================
-// Parte 6 - Utilitário de Feedback Visual (Toast)
-// ============================================================
-// 1. Função `showToast` exibe mensagens temporárias de sucesso ou erro.
-// 2. Define tipo do toast (`success` ou `error`) e limpa automaticamente após 3 segundos.
-// 3. Usada por todas as ações de UI para dar feedback imediato ao usuário.
-// 4. Centraliza o comportamento de notificações, evitando repetição de código.
-// 5. Integrada diretamente nas funções de ação (criar, editar, excluir).
+  // ============================================================
+  // Parte 6 - Utilitário de Feedback Visual (Toast)
+  // ============================================================
+  // 1. Função `showToast` exibe mensagens temporárias de sucesso ou erro.
+  // 2. Define tipo do toast (`success` ou `error`) e limpa automaticamente após 3 segundos.
+  // 3. Usada por todas as ações de UI para dar feedback imediato ao usuário.
+  // 4. Centraliza o comportamento de notificações, evitando repetição de código.
+  // 5. Integrada diretamente nas funções de ação (criar, editar, excluir).
 
-  const showToast = (message: string, type: "success" | "error" = "success") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
   };
 
-// ============================================================
-// Parte 7 - Carregamento de Dados do Backend (quando USE_MOCK = false)
-// ============================================================
-// 1. `useEffect` monitora mudanças em `activeTab` e dispara requisições apenas se mock estiver desativado.
-// 2. Define base URL do backend e mapeamento detalhado de abas para endpoints REST reais.
-// 3. Suporta endpoints únicos ou múltiplos (ex: "usuarios" consulta dois endpoints).
-// 4. Desembrulha envelope de resposta padrão do backend (`res.data.dados`) com fallback seguro.
-// 5. Trata erros com toast e console, mantendo a UI estável mesmo com falhas de rede.
+  // ============================================================
+  // Parte 7 - Carregamento de Dados do Backend (quando USE_MOCK = false)
+  // ============================================================
+  // 1. `useEffect` monitora mudanças em `activeTab` e dispara requisições apenas se mock estiver desativado.
+  // 2. Define base URL do backend e mapeamento detalhado de abas para endpoints REST reais.
+  // 3. Suporta endpoints únicos ou múltiplos (ex: "usuarios" consulta dois endpoints).
+  // 4. Desembrulha envelope de resposta padrão do backend (`res.data.dados`) com fallback seguro.
+  // 5. Trata erros com toast e console, mantendo a UI estável mesmo com falhas de rede.
 
   // Buscar os dados da aba atual no backend
   useEffect(() => {
-
-
     /*
       // Quando NÃO usar mock, buscar os dados da aba atual no backend
   useEffect(() => {
@@ -302,32 +397,30 @@ export default function DevTools() {
     // Endpoints simplificados, já que o baseURL inclui /rest/sistema/v1
 
     const backendMap: { [key: string]: string | string[] } = {
-      usuarios: ['/hospede/listar', '/funcionario/listar'],
-      hospedes: '/hospede/listar',
-      funcionarios: '/funcionario/listar',
-      funcoes: '/funcao/listar',
-      'tipos-quarto': '/tipo-quarto/listar',
-      quartos: '/quarto/listar',
-      'status-reserva': '/status-reserva/listar',
-      reservas: '/reserva/listar',
-      servicos: '/servico/listar',
-      'hospede-servico': '/hospede-servico/listar',
+      usuarios: ["/hospede/listar", "/funcionario/listar"],
+      hospedes: "/hospede/listar",
+      funcionarios: "/funcionario/listar",
+      funcoes: "/funcao/listar",
+      "tipos-quarto": "/tipo-quarto/listar",
+      quartos: "/quarto/listar",
+      "status-reserva": "/status-reserva/listar",
+      reservas: "/reserva/listar",
+      servicos: "/servico/listar",
+      "hospede-servico": "/hospede-servico/listar",
     };
 
-    
-
-/* ADICIONA console.log pra se identificamos o erro: pq não aparece registro nas tabelas */
+    /* ADICIONA console.log pra se identificamos o erro: pq não aparece registro nas tabelas */
 
     const fetchData = async () => {
       try {
         const mapping = backendMap[activeTab];
 
         // estes console log foram adicionados pra ver se eu identifico o erro
-        console.log('Fetching data for tab:', activeTab);
-        console.log('Using endpoint mapping:', mapping);
+        console.log("Fetching data for tab:", activeTab);
+        console.log("Using endpoint mapping:", mapping);
 
         if (!mapping) {
-          showToast('Endpoint backend não mapeado para esta aba', 'error');
+          showToast("Endpoint backend não mapeado para esta aba", "error");
           return;
         }
 
@@ -336,23 +429,21 @@ export default function DevTools() {
         const results: any[] = [];
 
         for (const ep of endpoints) {
-
           // estes console log foram adicionados pra ver se eu identifico o erro
-          console.log('Fetching endpoint:', ep);
-          console.log('Full URL:', `${REST_CONFIG.BASE_URL}${ep}`);
-          
+          console.log("Fetching endpoint:", ep);
+          console.log("Full URL:", `${REST_CONFIG.BASE_URL}${ep}`);
+
           const res = await http.get(ep);
 
           // este console log foi adicionado pra ver se a eu identifico o erro
-          console.log('Raw response:', res);
-          
+          console.log("Raw response:", res);
+
           // O backend normalmente devolve um envelope (ex.: { sucesso: true, dados: [...] })
           // portanto tentamos desembrulhar `res.data.dados` quando presente.
           const payload = res?.data?.dados ?? res?.data ?? [];
 
           // este console log foi adicionado pra ver se a eu identifico o erro
-          console.log('Processed payload:', payload);
-          
+          console.log("Processed payload:", payload);
 
           // Se o payload não for array, colocamos no array para manter a uniformidade
 
@@ -362,30 +453,28 @@ export default function DevTools() {
           // agora ficou assim pra facilitar debug:
 
           const processedPayload = Array.isArray(payload) ? payload : [payload];
-          console.log('Final processed payload:', processedPayload);
+          console.log("Final processed payload:", processedPayload);
           results.push(processedPayload);
         }
 
         // mesclar resultados (flatten) quando a aba consultou múltiplos endpoints
         const merged = ([] as any[]).concat(...results);
-        
+
         // Antes estava assim:
         // setApiData(prev => ({ ...prev, [activeTab]: merged }));
 
         // agora com console log pra debug:
 
-        console.log('Final merged data:', merged);
+        console.log("Final merged data:", merged);
 
-
-
-        setApiData(prev => {
+        setApiData((prev) => {
           const newData = { ...prev, [activeTab]: merged };
-          console.log('New API data state:', newData);
+          console.log("New API data state:", newData);
           return newData;
         });
       } catch (err) {
         console.error(err);
-        showToast('Erro ao carregar dados do servidor', 'error');
+        showToast("Erro ao carregar dados do servidor", "error");
       }
     };
 
@@ -394,28 +483,28 @@ export default function DevTools() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-// ============================================================
-// Parte 8 - Funções de Ação do Usuário (CRUD Simulado)
-// ============================================================
-// 1. `handleCreate`: exibe toast informando que a criação está em desenvolvimento.
-// 2. `handleEdit`: navega para tela de atualização via `ROTA` e exibe toast de confirmação.
-// 3. `handleDelete`: solicita confirmação via `confirm()` e exibe toast de sucesso simulado.
-// 4. Todas as funções mantêm feedback visual imediato via `showToast`.
-// 5. Estrutura preparada para integração futura com chamadas reais ao backend.
+  // ============================================================
+  // Parte 8 - Funções de Ação do Usuário (CRUD Simulado)
+  // ============================================================
+  // 1. `handleCreate`: exibe toast informando que a criação está em desenvolvimento.
+  // 2. `handleEdit`: navega para tela de atualização via `ROTA` e exibe toast de confirmação.
+  // 3. `handleDelete`: solicita confirmação via `confirm()` e exibe toast de sucesso simulado.
+  // 4. Todas as funções mantêm feedback visual imediato via `showToast`.
+  // 5. Estrutura preparada para integração futura com chamadas reais ao backend.
 
   // Ao clicar no botão "Criar", mostra a mensagem de toast
 
-  const handleCreate = () => showToast("Funcionalidade de criação em desenvolvimento", "success");
+  const handleCreate = () =>
+    showToast("Funcionalidade de criação em desenvolvimento", "success");
 
   // como tava antes (eu gostava):
   // const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
   const handleEdit = (id: number) => {
     try {
-
       // Navega para a rota de atualização de hóspede (adaptação direta)
       navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
     } catch (err) {
-      console.error('Erro ao navegar:', err);
+      console.error("Erro ao navegar:", err);
     }
 
     // O TOAST é importante para para feedback rápido (não deve ser removido), e eu gostei dele também
@@ -427,14 +516,14 @@ export default function DevTools() {
     }
   };
 
-// ============================================================
-// Parte 9 - Formatação de Valores para Exibição
-// ============================================================
-// 1. Função `formatValue` recebe chave e valor, retornando representação amigável.
-// 2. Converte booleanos para "Sim"/"Não", datas para formato brasileiro, valores monetários com R$.
-// 3. Aplica badges estilizados para status de quarto com classes CSS específicas.
-// 4. Retorna fallback "-" para valores nulos ou indefinidos.
-// 5. Garante consistência visual em toda a tabela, independentemente da origem dos dados.
+  // ============================================================
+  // Parte 9 - Formatação de Valores para Exibição
+  // ============================================================
+  // 1. Função `formatValue` recebe chave e valor, retornando representação amigável.
+  // 2. Converte booleanos para "Sim"/"Não", datas para formato brasileiro, valores monetários com R$.
+  // 3. Aplica badges estilizados para status de quarto com classes CSS específicas.
+  // 4. Retorna fallback "-" para valores nulos ou indefinidos.
+  // 5. Garante consistência visual em toda a tabela, independentemente da origem dos dados.
 
   const formatValue = (key: string, value: any): string | ReactNode => {
     if (value === true) return "Sim";
@@ -442,31 +531,39 @@ export default function DevTools() {
     const k = key.toString().toLowerCase();
     if (k.includes("data")) {
       const d = new Date(value);
-      return isNaN(d.getTime()) ? "Invalid Date" : d.toLocaleDateString("pt-BR");
+      return isNaN(d.getTime())
+        ? "Invalid Date"
+        : d.toLocaleDateString("pt-BR");
     }
-    if (k.includes("valor") || k === "preco") return `R$ ${parseFloat(value).toFixed(2)}`;
+    if (k.includes("valor") || k === "preco")
+      return `R$ ${parseFloat(value).toFixed(2)}`;
     if (k === "status_quarto" || k === "statusquarto") {
-      const status = value === "LIVRE" ? "status-livre" : value === "OCUPADO" ? "status-ocupado" : "status-manutencao";
+      const status =
+        value === "LIVRE"
+          ? "status-livre"
+          : value === "OCUPADO"
+          ? "status-ocupado"
+          : "status-manutencao";
       return <span className={`status-badge ${status}`}>{value}</span>;
     }
     return value?.toString() || "-";
   };
 
-// ============================================================
-// Parte 10 - Renderização JSX (Estrutura Visual Completa)
-// ============================================================
-// 1. Container principal com classes semânticas para estilização.
-// 2. Breadcrumb com navegação para dashboard e indicação de página atual.
-// 3. Banner com ícone, título e subtítulo explicativo do propósito da ferramenta.
-// 4. Seção de abas com rolagem horizontal e destaque visual da aba ativa.
-// 5. Área principal com busca, botão de criação, tabela responsiva, ações por linha e toast flutuante.
+  // ============================================================
+  // Parte 10 - Renderização JSX (Estrutura Visual Completa)
+  // ============================================================
+  // 1. Container principal com classes semânticas para estilização.
+  // 2. Breadcrumb com navegação para dashboard e indicação de página atual.
+  // 3. Banner com ícone, título e subtítulo explicativo do propósito da ferramenta.
+  // 4. Seção de abas com rolagem horizontal e destaque visual da aba ativa.
+  // 5. Área principal com busca, botão de criação, tabela responsiva, ações por linha e toast flutuante.
 
   return (
     <div className="padraoPagina">
       {/* Breadcrumb */}
       <nav className="breadcrumb">
         <div className="container flex items-center space-x-2 text-sm">
-          <NavLink 
+          <NavLink
             to="/sistema/dashboard"
             className="text-blue-600 hover:text-blue-700"
           >
@@ -490,10 +587,12 @@ export default function DevTools() {
       <section className="devtools-tabs">
         <div className="container">
           <div className="flex overflow-x-auto">
-            {tabs.map(tab => (
+            {tabs.map((tab) => (
               <button
                 key={tab.key}
-                className={`devtools-tab ${activeTab === tab.key ? "active" : ""}`}
+                className={`devtools-tab ${
+                  activeTab === tab.key ? "active" : ""
+                }`}
                 onClick={() => {
                   setActiveTab(tab.key);
                   setSearchTerm("");
@@ -513,7 +612,13 @@ export default function DevTools() {
           <div className="fixed top-20 right-4 z-50">
             <div className={`toast ${toast.type === "error" ? "error" : ""}`}>
               <div className="flex items-center">
-                <i className={`fas ${toast.type === "success" ? "fa-check" : "fa-exclamation-triangle"} mr-2`}></i>
+                <i
+                  className={`fas ${
+                    toast.type === "success"
+                      ? "fa-check"
+                      : "fa-exclamation-triangle"
+                  } mr-2`}
+                ></i>
                 <span>{toast.message}</span>
               </div>
             </div>
@@ -523,7 +628,9 @@ export default function DevTools() {
         {/* Tabela */}
         <div className="devtools-card">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-900">{currentTab.label}</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              {currentTab.label}
+            </h3>
             <div className="flex space-x-2">
               <input
                 type="text"
@@ -538,14 +645,13 @@ export default function DevTools() {
               >
                 <i className="fas fa-plus mr-1"></i>Criar
               </button>
-
             </div>
           </div>
           <div className="table-container">
             <table className="dev-table">
               <thead>
                 <tr>
-                  {currentTab.columns.map(col => (
+                  {currentTab.columns.map((col) => (
                     <th key={col}>{col}</th>
                   ))}
                   <th>Ações</th>
@@ -554,29 +660,44 @@ export default function DevTools() {
               <tbody>
                 {filteredData.length === 0 ? (
                   <tr>
-                    <td colSpan={currentTab.columns.length + 1} className="text-center py-4 text-gray-500">
+                    <td
+                      colSpan={currentTab.columns.length + 1}
+                      className="text-center py-4 text-gray-500"
+                    >
                       Nenhum registro encontrado.
                     </td>
                   </tr>
                 ) : (
                   filteredData.map((item: any) => {
-                    const id = item.idUsuario || item.idQuarto || item.idReserva || item.codigoFuncao || item.codigoTipoQuarto || item.codigoStatus || item.codigoServico || item.idSolicitacao;
+                    const id =
+                      item.idUsuario ||
+                      item.idQuarto ||
+                      item.idReserva ||
+                      item.codigoFuncao ||
+                      item.codigoTipoQuarto ||
+                      item.codigoStatus ||
+                      item.codigoServico ||
+                      item.idSolicitacao;
                     return (
                       <tr key={id}>
-                        {currentTab.columns.map(col => (
+                        {currentTab.columns.map((col) => (
                           <td key={col}>{formatValue(col, item[col])}</td>
                         ))}
 
                         <td className="actions">
-
-                          <button onClick={() => handleEdit(id)} className="btn-edit">
+                          <button
+                            onClick={() => handleEdit(id)}
+                            className="btn-edit"
+                          >
                             <i className="fas fa-edit"></i>
                           </button>
 
-                          <button onClick={() => handleDelete(id)} className="btn-delete">
+                          <button
+                            onClick={() => handleDelete(id)}
+                            className="btn-delete"
+                          >
                             <i className="fas fa-trash"></i>
                           </button>
-
                         </td>
                       </tr>
                     );

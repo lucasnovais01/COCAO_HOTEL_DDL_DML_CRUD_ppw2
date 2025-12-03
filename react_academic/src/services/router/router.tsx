@@ -34,13 +34,14 @@ import CriarTipoQuarto from "../../views/4-tipo-quarto/Criar";
 import AlterarTipoQuarto from "../../views/4-tipo-quarto/Alterar";
 import ExcluirTipoQuarto from "../../views/4-tipo-quarto/Excluir";
 import ConsultarTipoQuarto from "../../views/4-tipo-quarto/Consultar";
-/*
+
 // Importação do módulo Quarto
 import ListarQuarto from "../../views/5-quarto/Listar";
 import CriarQuarto from "../../views/5-quarto/Criar";
 import AlterarQuarto from "../../views/5-quarto/Alterar";
 import ExcluirQuarto from "../../views/5-quarto/Excluir";
 import ConsultarQuarto from "../../views/5-quarto/Consultar";
+/*
 */
 // 6-módulo reserva (futuro)
 
@@ -157,7 +158,7 @@ export const routes: RouteObject[] = [
         path: `${ROTA.TIPO_QUARTO.POR_ID}/:codigoTipoQuarto`,
         element: <ConsultarTipoQuarto />,
       },
-/*
+
 
       // Rotas do módulo 5-quarto
       {
@@ -180,6 +181,7 @@ export const routes: RouteObject[] = [
         path: `${ROTA.QUARTO.POR_ID}/:idQuarto`,
         element: <ConsultarQuarto />,
       },
+/*
 */
       // Rotas do módulo 6-reserva (futuro)
 
