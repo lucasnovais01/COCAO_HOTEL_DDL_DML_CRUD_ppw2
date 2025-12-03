@@ -145,6 +145,43 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Grid com opções CRUD para TIPO DE QUARTO */}
+        <div className="crud-container">
+          <h2>Tipo de Quarto</h2>
+
+          <div className="crud-grid">
+            {/* Botão Listar */}
+            <Link to={ROTA.TIPO_QUARTO.LISTAR} className="crud-btn crud-listar">
+              <i className="fas fa-list"></i>
+              <span>Listar</span>
+            </Link>
+
+            {/* Botão Buscar (Consultar) */}
+            <Link to={ROTA.TIPO_QUARTO.POR_ID + "/1"} className="crud-btn crud-buscar">
+              <i className="fas fa-search"></i>
+              <span>Buscar</span>
+            </Link>
+
+            {/* Botão Criar */}
+            <Link to={ROTA.TIPO_QUARTO.CRIAR} className="crud-btn crud-criar">
+              <i className="fas fa-plus"></i>
+              <span>Criar</span>
+            </Link>
+
+            {/* Botão Alterar */}
+            <Link to={ROTA.TIPO_QUARTO.ATUALIZAR + "/1"} className="crud-btn crud-atualizar">
+              <i className="fas fa-edit"></i>
+              <span>Alterar</span>
+            </Link>
+
+            {/* Botão Excluir */}
+            <Link to={ROTA.TIPO_QUARTO.EXCLUIR + "/1"} className="crud-btn crud-excluir">
+              <i className="fas fa-trash"></i>
+              <span>Excluir</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

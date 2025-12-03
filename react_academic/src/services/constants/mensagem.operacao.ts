@@ -8,7 +8,7 @@ export function criarMensagemOperacao(ENTITY_NAME: string) {
     },
     ATUALIZAR: {
       ACAO: `Atualizar cadastro de ${ENTITY_NAME}`,
-      SUCESSO: `${ENTITY_NAME} atualizado com sucesso`, // ← ESTAVA FALTANDO
+      SUCESSO: `${ENTITY_NAME} atualizado com sucesso`,
       ERRO: `Erro ao atualizar ${ENTITY_NAME}`,
       NAO_EXISTE: `${ENTITY_NAME} não encontrado`
     },
