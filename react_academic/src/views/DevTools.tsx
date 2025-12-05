@@ -178,11 +178,11 @@ const tabs = [
     key: "quartos",
     label: "Quartos",
     columns: [
-      "ID_QUARTO",
-      "NUMERO",
-      "CODIGO_TIPO_QUARTO",
-      "STATUS_QUARTO",
-      "ANDAR",
+      "idQuarto",
+      "numero",
+      "codigoTipoQuarto",
+      "statusQuarto",
+      "andar",
     ],
   },
   {
@@ -494,26 +494,78 @@ export default function DevTools() {
 
   // Ao clicar no botão "Criar", mostra a mensagem de toast
 
-  const handleCreate = () =>
+  // Mapeamento simples das abas para as rotas React definidas em `ROTA`.
+  // Usamos apenas os 5 módulos solicitados: Hóspede, Função, Funcionário, Tipo-Quarto, Quarto.
+  const routeMap: { [key: string]: any } = {
+    hospedes: ROTA.HOSPEDE,
+    funcoes: ROTA.FUNCAO,
+    funcionarios: ROTA.FUNCIONARIO,
+    "tipos-quarto": ROTA.TIPO_QUARTO,
+    quartos: ROTA.QUARTO,
+  };
+
+  const handleCreate = () => {
+    const mapping = routeMap[activeTab];
+    if (mapping) {
+      try {
+        navigate(mapping.CRIAR);
+        return;
+      } catch (err) {
+        console.error("Erro ao navegar para criar:", err);
+      }
+    }
     showToast("Funcionalidade de criação em desenvolvimento", "success");
+  };
 
   // como tava antes (eu gostava):
   // const handleEdit = (id: number) => showToast(`Editar item ID: ${id}`, "success");
   const handleEdit = (id: number) => {
-    try {
-      // Navega para a rota de atualização de hóspede (adaptação direta)
-      navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
-    } catch (err) {
-      console.error("Erro ao navegar:", err);
+    const mapping = routeMap[activeTab];
+    if (mapping) {
+      try {
+        navigate(`${mapping.ATUALIZAR}/${id}`);
+      } catch (err) {
+        console.error("Erro ao navegar para alterar:", err);
+        showToast(`Erro ao navegar para alterar item ID: ${id}`, "error");
+      }
+    } else {
+      // fallback mantido
+      try {
+        navigate(`${ROTA.HOSPEDE.ATUALIZAR}/${id}`);
+      } catch (err) {
+        console.error("Erro ao navegar (fallback):", err);
+      }
     }
 
-    // O TOAST é importante para para feedback rápido (não deve ser removido), e eu gostei dele também
     showToast(`Editar item ID: ${id}`, "success");
   };
   const handleDelete = (id: number) => {
-    if (confirm(`Tem certeza que deseja excluir o item ID: ${id}?`)) {
-      showToast(`Item ID ${id} excluído com sucesso!`, "success");
+    if (!confirm(`Tem certeza que deseja excluir o item ID: ${id}?`)) return;
+    const mapping = routeMap[activeTab];
+    if (mapping) {
+      try {
+        navigate(`${mapping.EXCLUIR}/${id}`);
+        return;
+      } catch (err) {
+        console.error("Erro ao navegar para excluir:", err);
+      }
     }
+    // fallback: apenas simular exclusão
+    showToast(`Item ID ${id} excluído (simulação)`, "success");
+  };
+
+  const handleConsult = (id: number) => {
+    const mapping = routeMap[activeTab];
+    if (mapping) {
+      try {
+        navigate(`${mapping.POR_ID}/${id}`);
+        return;
+      } catch (err) {
+        console.error("Erro ao navegar para consultar:", err);
+        showToast(`Erro ao navegar para consultar item ID: ${id}`, "error");
+      }
+    }
+    showToast("Consulta não disponível para esta aba", "error");
   };
 
   // ============================================================
@@ -537,6 +589,17 @@ export default function DevTools() {
     }
     if (k.includes("valor") || k === "preco")
       return `R$ ${parseFloat(value).toFixed(2)}`;
+    // Badge de status do quarto (resumo didático):
+    // - O `key` que identifica status é tratado case-insensitive (ex.:
+    //   'statusQuarto' -> 'statusquarto').
+    // - Mapeamos o valor textual do backend para uma classe CSS:
+    //     'LIVRE'      => 'status-livre'      (verde)
+    //     'OCUPADO'    => 'status-ocupado'    (vermelho)
+    //     qualquer outro => 'status-manutencao' (amarelo)
+    // - A tag retornada é <span className="status-badge {classe}">valor</span>,
+    //   permitindo ao CSS (arquivo de estilos) colorir o fundo/borda conforme a
+    //   classe. Dessa forma só controlamos a lógica aqui e delegamos a aparência
+    //   às regras CSS (.status-badge.status-livre etc.).
     if (k === "status_quarto" || k === "statusquarto") {
       const status =
         value === "LIVRE"
@@ -632,6 +695,21 @@ export default function DevTools() {
               {currentTab.label}
             </h3>
             <div className="flex space-x-2">
+              {/*
+                Campo de Busca (Resumo didático):
+                - Estado: `searchTerm` guarda o texto digitado pelo usuário.
+                - Comportamento: a cada alteração (`onChange`) atualizamos
+                  `searchTerm` imediatamente; não há debounce por enquanto.
+                - Filtragem: o array `filteredData` é calculado ao final da
+                  preparação dos dados e aplica este filtro global:
+                    Object.values(item).some(v => v?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+                  Ou seja: procura a substring digitada em qualquer campo
+                  do registro, de forma case-insensitive.
+                - Reinício: ao trocar de aba (`setActiveTab`) o `searchTerm`
+                  é limpo para evitar resultados escondidos de outra aba.
+                - Melhorias possíveis: adicionar debounce, mapear colunas a
+                  rótulos legíveis, ou oferecer filtro por coluna.
+              */}
               <input
                 type="text"
                 placeholder="Buscar..."
@@ -639,12 +717,15 @@ export default function DevTools() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button
-                onClick={handleCreate}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
-              >
-                <i className="fas fa-plus mr-1"></i>Criar
-              </button>
+              {/* Esconde o botão "Criar" apenas na aba Usuarios (Todos) */}
+              {activeTab !== "usuarios" && (
+                <button
+                  onClick={handleCreate}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+                >
+                  <i className="fas fa-plus mr-1"></i>Criar
+                </button>
+              )}
             </div>
           </div>
           <div className="table-container">
@@ -686,8 +767,17 @@ export default function DevTools() {
 
                         <td className="actions">
                           <button
+                            onClick={() => handleConsult(id)}
+                            className="btn-show"
+                            title="Consultar"
+                          >
+                            <i className="fas fa-eye"></i>
+                          </button>
+
+                          <button
                             onClick={() => handleEdit(id)}
                             className="btn-edit"
+                            title="Editar"
                           >
                             <i className="fas fa-edit"></i>
                           </button>
@@ -695,6 +785,7 @@ export default function DevTools() {
                           <button
                             onClick={() => handleDelete(id)}
                             className="btn-delete"
+                            title="Excluir"
                           >
                             <i className="fas fa-trash"></i>
                           </button>
