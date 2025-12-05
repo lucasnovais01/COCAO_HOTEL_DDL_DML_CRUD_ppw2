@@ -30,7 +30,39 @@ export default function CriarQuarto() {
   const handleChangeField = createHandleChangeField(setModel, setErrors);
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
-
+  /*
+   * loadTipos (didático)
+   * --------------------
+   * O objetivo desta função é buscar no backend a lista de "Tipos de Quarto"
+   * (tabela de referência / lookup) para popular o <select> que representa a
+   * chave estrangeira `codigoTipoQuarto` no formulário de criação.
+   *
+   * Fluxo resumido:
+   * 1) Chamamos `apiGetTiposQuarto()` que faz um GET na rota do backend.
+   *    - O axios retorna um objeto `res` e o corpo está em `res.data`.
+   *    - No padrão do backend deste projeto, o corpo tem a propriedade
+   *      `dados` (ex: `res.data.dados`) que contém o array de registros.
+   * 2) Extraímos `dados` com fallback para array vazio e validamos com
+   *    `Array.isArray(dados)` para garantir que recebemos uma lista.
+   * 3) Guardamos o resultado no estado local `tiposQuarto` com
+   *    `setTiposQuarto(dados)`. Esse estado é usado logo abaixo para
+   *    renderizar as <option> do <select>.
+   *
+   * Por que isso é útil / boas práticas:
+   * - Permite ao usuário escolher o tipo a partir de valores reais no banco,
+   *   evitando inputs manuais e inconsistências (FK garantida pelo frontend).
+   * - Mantém o formulário desacoplado do backend: caso a lista mude,
+   *   o select é atualizado automaticamente na próxima navegação.
+   * - Boa ideia: cachear os tipos (ex: em contexto/global) se forem usados
+   *   frequentemente, para reduzir chamadas repetidas.
+   *
+   * Observações de implementação:
+   * - Tratamos erros com try/catch e apenas logamos aqui; você pode exibir
+   *   uma mensagem ao usuário se quiser.
+   * - Garantir que o backend retorne `res.data.dados` no formato esperado
+   *   (cada item tem `codigoTipoQuarto` e `nomeTipo`) para que o <option>
+   *   funcione corretamente.
+   */
   useEffect(() => {
     async function loadTipos() {
       try {
