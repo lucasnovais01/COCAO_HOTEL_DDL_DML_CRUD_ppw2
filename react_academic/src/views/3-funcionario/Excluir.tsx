@@ -20,10 +20,10 @@ import { ROTA } from "../../services/router/url";
  * COMPORTAMENTO ESPECIAL (DIFERENTE DE OUTRAS ENTIDADES):
  *
  * O que acontece quando clica em "Remover Função"?
- * ❌ NÃO deleta o registro inteiramente (perderia dados da pessoa)
- * ✓ SIM: Define codigoFuncao = null
- * ✓ SIM: Transforma de volta em HOSPEDE puro (TIPO=0)
- * ✓ SIM: Mantém dados: nome, CPF, RG, sexo, etc
+ * NÃO deleta o registro inteiramente (perderia dados da pessoa)
+ * SIM: Define codigoFuncao = null
+ * SIM: Transforma de volta em HOSPEDE puro (TIPO=0)
+ * SIM: Mantém dados: nome, CPF, RG, sexo, etc
  *
  * Por quê?
  * - Funcionário é especialização de HOSPEDE
