@@ -13,10 +13,25 @@ export class QuartoServiceFindAll {
   ) {}
 
   async findAll(): Promise<QuartoResponse[]> {
+    console.log("[QuartoServiceFindAll] Iniciando busca de todos os quartos");
+
     const quartos = await this.quartoRepository
       .createQueryBuilder("quarto")
       .getMany();
 
-    return QuartoConverter.toListQuartoResponse(quartos);
+    console.log("[QuartoServiceFindAll] Quartos encontrados:", quartos.length);
+    console.log(
+      "[QuartoServiceFindAll] Dados brutos:",
+      JSON.stringify(quartos, null, 2)
+    );
+
+    const response = QuartoConverter.toListQuartoResponse(quartos);
+
+    console.log(
+      "[QuartoServiceFindAll] Resposta convertida:",
+      JSON.stringify(response, null, 2)
+    );
+
+    return response;
   }
 }
