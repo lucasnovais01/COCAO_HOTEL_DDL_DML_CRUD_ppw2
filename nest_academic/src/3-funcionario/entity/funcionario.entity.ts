@@ -4,21 +4,21 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 export class Funcionario extends BaseEntity {
   @PrimaryColumn({
     name: 'ID_USUARIO',
-    type: 'number',
+    type: 'int',
   })
   idUsuario?: number;
 
   @Column({
     name: 'CODIGO_FUNCAO',
-    type: 'number',
-    precision: 4,
+    type: 'int',
+    width: 4,
     nullable: false,
   })
   codigoFuncao?: number;
 
   @Column({
     name: 'NOME_LOGIN',
-    type: 'varchar2',
+    type: 'varchar',
     length: 50,
     nullable: false,
   })
@@ -26,7 +26,7 @@ export class Funcionario extends BaseEntity {
 
   @Column({
     name: 'SENHA',
-    type: 'varchar2',
+    type: 'varchar',
     length: 50,
     nullable: false,
   })
@@ -41,7 +41,7 @@ export class Funcionario extends BaseEntity {
 
   @Column({
     name: 'ATIVO',
-    type: 'number',
+    type: 'int',
     nullable: false,
     default: 1,
   })

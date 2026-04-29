@@ -1,56 +1,56 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity("COCAO_QUARTO")
+@Entity('COCAO_QUARTO')
 export class Quarto extends BaseEntity {
   @PrimaryGeneratedColumn({
-    name: "ID_QUARTO",
-    type: "int",
+    name: 'ID_QUARTO',
+    type: 'int',
   })
   idQuarto?: number;
 
   @Column({
-    name: "CODIGO_TIPO_QUARTO",
-    type: "number",
-    precision: 4,
+    name: 'CODIGO_TIPO_QUARTO',
+    type: 'int',
+    width: 4,
     nullable: false,
   })
   codigoTipoQuarto: number = 0;
 
   @Column({
-    name: "NUMERO",
-    type: "number",
+    name: 'NUMERO',
+    type: 'int',
     nullable: false,
     unique: true,
   })
   numero: number = 0;
 
   @Column({
-    name: "STATUS_QUARTO",
-    type: "varchar2",
+    name: 'STATUS_QUARTO',
+    type: 'varchar',
     length: 20,
     nullable: false,
-    default: "LIVRE",
+    default: 'LIVRE',
   })
-  statusQuarto: string = "LIVRE";
+  statusQuarto: string = 'LIVRE';
 
   @Column({
-    name: "ANDAR",
-    type: "number",
+    name: 'ANDAR',
+    type: 'int',
     nullable: false,
     default: 0,
   })
   andar: number = 0;
 
   @Column({
-    name: "CREATED_AT",
-    type: "timestamp",
+    name: 'CREATED_AT',
+    type: 'timestamp',
     nullable: false,
   })
   createdAt?: Date;
 
   @Column({
-    name: "UPDATED_AT",
-    type: "timestamp",
+    name: 'UPDATED_AT',
+    type: 'timestamp',
     nullable: false,
   })
   updatedAt?: Date;

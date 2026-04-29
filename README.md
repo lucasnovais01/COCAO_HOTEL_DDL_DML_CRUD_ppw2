@@ -21,6 +21,17 @@ PARA O REACTJS
     npm run dev
 
 
+
+
+
+cd C:\Users\lucas\COCAO_HOTEL_DDL_DML_CRUD_ppw2\nest_academic
+
+cd C:\Users\lucas\COCAO_HOTEL_DDL_DML_CRUD_ppw2\react_academic
+
+
+
+
+
 # Lista de instaladores (ordem correta, no final tem uma linha com todos de uma vez):
 
 
@@ -66,7 +77,10 @@ npm install class-validator
 npm install class-transformer
 
 ## TODOS DE UMA VEZ (NEST)
-npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm oracledb @types/oracledb @nestjs/config joi @types/joi class-validator class-transformer
+npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm oracledb @types/oracledb @nestjs/config joi @types/joi class-validator class-transformer mysql --save
+
+## NOVO, sem o ORACLE
+npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm  @nestjs/config joi @types/joi class-validator class-transformer mysql
 
 
 

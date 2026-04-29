@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import Joi from 'joi';
+
+import * as Joi from 'joi';
 // Importa os 9 módulos da aplicação:
 import { HospedeModule } from 'src/1-hospede/hospede.module';
 import { FuncaoModule } from 'src/2-funcao/funcao.module';
 import { FuncionarioModule } from 'src/3-funcionario/funcionario.module';
-import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module'
+import { TipoQuartoModule } from 'src/4-tipo-quarto/tipo-quarto.module';
 import { QuartoModule } from 'src/5-quarto/quarto.module';
 
-// Importa e executa a configuração do Oracle Client
-import './oracle-client.config';
+// era antigo usando o oracle
+// const oracledb = require('oracledb') as typeof import('oracledb');
+// oracledb.initOracleClient({
+//   libDir: 'C:\Oracle client\instantclient_23_9',
+// });
 
 /*
 // Foi criado o arquivo oracle-client.config.ts para isolar esta configuração específica do OracleDB:
@@ -21,49 +25,43 @@ oracledb.initOracleClient({
 });
 */
 
-// IMPORTANTE: OS DADOS DE @Module SÃO SENSÍVEIS !!!
 @Module({
   imports: [
-    // 1. ConfigModule: Gerencia variáveis de ambiente (do .env)
     ConfigModule.forRoot({
-      isGlobal: true, // Torna o módulo disponível globalmente // Validação (Joi) para garantir que o .env está preenchido corretamente
+      isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_TYPE: Joi.string().required(),
         DATABASE_HOST: Joi.string().required(),
-        DATABASE_PORT: Joi.number().required(),
+        DATABASE_PORT: Joi.number().default(1521),
         DATABASE_USERNAME: Joi.string().required(),
-        DATABASE_NAME: Joi.string().required(), //No Oracle, isso será o 'sid'
-        DATABASE_PASSWORD: Joi.string().required(),
+        DATABASE_DATABASE: Joi.string().required(),
+        //DATABASE_PASSWORD: Joi.string().required(),
         DATABASE_AUTOLOADENTITIES: Joi.boolean().default(true),
-        DATABASE_SYNCHRONIZE: Joi.boolean().default(false), //'false' é crucial em produção
-        DATABASE_LOGGING: Joi.boolean().default(true),
-        DATABASE_ROW_NUMBER: Joi.boolean().default(true),
+        DATABASE_SYNCHRONIZE: Joi.boolean().default(false),
+        //DATABASE_LOGGING: Joi.boolean().default(true),
       }),
     }),
-    // 2. TypeOrmModule: Configura a conexão com o banco de dados
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule], // Depende do ConfigModule
-      inject: [ConfigService], // Injeta o ConfigService para ler o .env
-      // 'useFactory' constrói a configuração da conexão
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'oracle',
+        type: 'mysql',
         host: configService.get('DATABASE_HOST'),
         port: configService.get('DATABASE_PORT'),
         username: configService.get('DATABASE_USERNAME'),
-        sid: configService.get('DATABASE_DATABASE'), // 'sid' é o padrão para Oracle. // Deveria eu trocar por 'DATABASE_NAME' ?
-
-        password: configService.get('DATABASE_PASSWORD'),
-        autoLoadEntities: configService.get('DATABASE_AUTOLOADENTITIES'), // Carrega entidades automaticamente
-        synchronize: configService.get('DATABASE_SYNCHRONIZE'), // Se 'true', atualiza o schema (não use em produção)
-        logging: ['query', 'error'], // Níveis de log
-        // entities: [Hospede], // Desnecessário se 'autoLoadEntities' for true
+        //sid: configService.get('DATABASE_DATABASE'), - acesso ao banco de dados oracle
+        database: configService.get('DATABASE_DATABASE'),
+        //password: configService.get('DATABASE_PASSWORD'),
+        //autoLoadEntities: configService.get('DATABASE_AUTOLOADENTITIES'),
+        entities: [__dirname + '/../**/*.entity.{ts,js}'],
+        synchronize: configService.get('DATABASE_SYNCHRONIZE'),
+        logging: ['query', 'error'],
       }),
     }),
     // 3. Módulo da Aplicação // Importa os módulos
     HospedeModule,
     FuncaoModule,
     FuncionarioModule,
-    
     TipoQuartoModule,
     QuartoModule,
     /*
@@ -72,6 +70,7 @@ oracledb.initOracleClient({
     ServicoModule,
     HospedeServicoModule,
     */
+    // AlterarSenhaModule,
   ],
 })
 export class AppModule {}

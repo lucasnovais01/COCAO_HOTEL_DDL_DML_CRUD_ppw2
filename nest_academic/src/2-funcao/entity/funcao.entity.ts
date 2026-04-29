@@ -4,14 +4,14 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 export class Funcao extends BaseEntity {
   @PrimaryColumn({
     name: 'CODIGO_FUNCAO',
-    type: 'number',
-    precision: 4,
+    type: 'int',
+    width: 4,
   })
   codigoFuncao?: number;
 
   @Column({
     name: 'NOME_FUNCAO',
-    type: 'varchar2',
+    type: 'varchar',
     length: 60,
     nullable: false,
   })
@@ -19,7 +19,7 @@ export class Funcao extends BaseEntity {
 
   @Column({
     name: 'DESCRICAO',
-    type: 'varchar2',
+    type: 'varchar',
     length: 200,
     nullable: true,
   })
@@ -27,8 +27,8 @@ export class Funcao extends BaseEntity {
 
   @Column({
     name: 'NIVEL_ACESSO',
-    type: 'number',
-    precision: 1,
+    type: 'int',
+    width: 1,
     nullable: false,
   })
   nivelAcesso: number = 1;
