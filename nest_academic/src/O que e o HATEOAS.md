@@ -45,49 +45,50 @@ Se você passar o `id`, também são criados links específicos do recurso:
 
 ## 3. Onde o HATEOAS já está sendo usado
 
-No módulo de hóspede, o HATEOAS aparece em:
+O HATEOAS está sendo usado em vários módulos principais do sistema:
 
 - `src/1-hospede/controllers/hospede.controller.create.ts`
+- `src/2-funcao/controllers/funcao.controller.create.ts`
+- `src/3-funcionario/controllers/funcionario.controller.create.ts`
+- `src/4-tipo-quarto/controllers/tipo-quarto.controller.create.ts`
+- `src/5-quarto/controllers/quarto.controller.create.ts`
 
-Nesse controller, o código é:
+Nesses controllers, o servidor monta `_link` com `gerarLinks(req, entity, id)` sempre que o recurso criado retorna um identificador válido.
 
-```ts
-const _link = gerarLinks(req, HOSPEDE);
-return MensagemSistema.showMensagem(
-  HttpStatus.CREATED,
-  'Hóspede cadastrado com sucesso!!!',
-  response,
-  ROTA.HOSPEDE.CREATE,
-  null,
-  _link,
-);
-```
+Isso faz com que a resposta JSON dos `POST` para cada entidade traga um campo `_link`.
 
-Isso faz com que a resposta JSON do `POST /rest/sistema/v1/hospede/criar` traga um campo `_link`.
+Além disso, nos controllers de listagem (`findAll`) das mesmas entidades, o sistema usa `geraPageLinks(req, response, entity)` para gerar links de paginação.
 
 ---
 
 ## 4. O que está funcionando corretamente
 
-Sim, o HATEOAS está funcionando no endpoint de criação.
-Quando você cria um hóspede, o servidor devolve `_link` junto com os dados.
+Sim, o HATEOAS está funcionando nos módulos principais.
 
-A resposta contém links para:
-- listar hóspedes
-- criar hóspede
+O servidor já devolve `_link` em respostas de criação e também em respostas de listagem paginada.
 
-Isso indica que o sistema já está seguindo a ideia do HATEOAS.
+As respostas contínuas de listagem paginada podem incluir:
+- `self`
+- `first`
+- `last`
+- `prev` (quando houver página anterior)
+- `next` (quando houver próxima página)
+
+Isso indica que a ideia de HATEOAS está em prática tanto para ações de recurso quanto para navegação de páginas.
 
 ---
 
 ## 5. O que ainda pode ser melhorado
 
-### 5.1. HATEOAS hoje existe apenas no CREATE
+### 5.1. HATEOAS ainda pode ser expandido
 
-Os outros controllers do hóspede (`findOne`, `findAll`, `update`, `remove`) não estão usando `gerarLinks` no momento.
-Ou seja, apenas o `create` envia os links.
+Hoje o HATEOAS está presente em vários pontos, mas ainda pode ser mais completo.
 
-### 5.2. O `id` do recurso não está sendo usado no `create`
+Por exemplo:
+- os controllers de `findOne`, `update` e `remove` já usam `gerarLinks`, mas é importante garantir que sempre passem o `id` correto ao montar os links.
+- os controllers de listagem paginada já usam `geraPageLinks`, o que é positivo, mas você pode verificar uniformidade de todos os módulos.
+
+### 5.2. O `id` do recurso deve ser usado sempre que houver recurso específico
 
 A função `gerarLinks` aceita um `id` opcional.
 Mas no controller de criação você chama `gerarLinks(req, HOSPEDE)` sem passar `id`.
