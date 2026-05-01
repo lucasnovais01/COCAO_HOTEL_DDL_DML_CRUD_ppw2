@@ -1,102 +1,49 @@
-import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
-import {
-  apiGetFuncao,
-  apiPutFuncao,
-} from "../../services/2-funcao/api/api.funcao";
 import { FUNCAO } from "../../services/2-funcao/constants/funcao.constants";
-import type { Funcao } from "../../type/2-funcao";
-
+import { useAlterar } from "../../services/2-funcao/hook/useAlterar";
 import { ROTA } from "../../services/router/url";
-import {
-  createHandleChangeField,
-  createShowMensagem,
-  createValidateField,
-} from "./zCamposAlterar";
 
 export default function AlterarFuncao() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const [model, setModel] = useState<Funcao | null>(null);
-  const [errors, setErrors] = useState<any>({});
+  const {
+    model,
+    loading,
+    handleChangeField,
+    validateField,
+    showMensagem,
+    getInputClass,
+    onSubmitForm,
+    onCancel,
+  } = useAlterar();
 
-  const handleChangeField = createHandleChangeField(setModel, setErrors);
-  const validateField = createValidateField(setErrors);
-  const showMensagem = createShowMensagem(errors);
-
-  useEffect(() => {
-    async function getFunc() {
-      try {
-        if (id) {
-          const response = await apiGetFuncao(id as any);
-          if (response.data.dados) {
-            setModel(response.data.dados);
-          }
-        }
-      } catch (error: any) {
-        console.log(error);
-        alert("Erro ao carregar função");
-      }
-    }
-
-    getFunc();
-  }, [id]);
-
-  const onSubmitForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!id || !model) {
-      alert("Dados incompletos para atualização");
-      return;
-    }
-
-    try {
-      const funcaoToSend = {
-        codigoFuncao: model.codigoFuncao,
-        nomeFuncao: model.nomeFuncao,
-        descricao: model.descricao || null,
-        nivelAcesso: Number(model.nivelAcesso),
-      };
-
-      console.log(
-        "[onSubmitForm] Dados a enviar:",
-        JSON.stringify(funcaoToSend, null, 2)
-      );
-
-      await apiPutFuncao(id as any, funcaoToSend as unknown as Funcao);
-
-      navigate(ROTA.FUNCAO.LISTAR, {
-        state: {
-          toast: {
-            message: `Função ${id} alterada com sucesso!`,
-            type: "success",
-          },
-        },
-      });
-    } catch (error: any) {
-      console.log(error);
-      alert("Erro ao atualizar função");
-    }
-  };
-
-  const onCancel = () => {
-    navigate(ROTA.FUNCAO.LISTAR);
-  };
-
-  const getInputClass = () => {
-    return "form-control app-label mt-2";
-  };
-
-  if (!model) {
+  if (loading) {
     return (
       <div className="padraoPagina">
         <div className="container py-8 text-center">
           <i className="fas fa-spinner fa-spin text-4xl"></i>
           <p className="mt-4">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!model) {
+    return (
+      <div className="padraoPagina">
+        <div className="container py-8 text-center">
+          <div className="card bg-red-50 border-l-4 border-red-600 p-6">
+            <h2 className="text-lg font-semibold text-red-600 mb-2">Erro</h2>
+            <p className="text-red-700">Função não encontrada.</p>
+            <NavLink
+              to={ROTA.FUNCAO.LISTAR}
+              className="text-blue-600 hover:text-blue-700 mt-4 inline-block"
+            >
+              ← Voltar para lista
+            </NavLink>
+          </div>
         </div>
       </div>
     );
@@ -127,9 +74,7 @@ export default function AlterarFuncao() {
       <section className="devtools-banner">
         <div className="container text-center">
           <i className="fas fa-tools text-6xl mb-4"></i>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Alterar Função
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Alterar Função</h1>
           <p className="text-xl">Edição de Função</p>
         </div>
       </section>
@@ -205,10 +150,7 @@ export default function AlterarFuncao() {
               </div>
 
               <div className="form-group">
-                <label
-                  htmlFor={FUNCAO.FIELDS.NIVEL_ACESSO}
-                  className="appLabel"
-                >
+                <label htmlFor={FUNCAO.FIELDS.NIVEL_ACESSO} className="appLabel">
                   {FUNCAO.LABEL.NIVEL_ACESSO}
                 </label>
                 <div className="form-field-wrapper">
@@ -218,10 +160,7 @@ export default function AlterarFuncao() {
                     value={model?.nivelAcesso || 1}
                     className={getInputClass()}
                     onChange={(e) =>
-                      handleChangeField(
-                        FUNCAO.FIELDS.NIVEL_ACESSO,
-                        e.target.value
-                      )
+                      handleChangeField(FUNCAO.FIELDS.NIVEL_ACESSO, e.target.value)
                     }
                     onBlur={(e) => validateField(FUNCAO.FIELDS.NIVEL_ACESSO, e)}
                   >

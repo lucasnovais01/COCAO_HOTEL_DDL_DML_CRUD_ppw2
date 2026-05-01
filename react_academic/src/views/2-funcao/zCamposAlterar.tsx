@@ -1,3 +1,11 @@
+
+// Os arquivos zCamposAlterar.tsx e zCamposCriar.tsx foram criados para centralizar a lógica de manipulação de campos e mensagens de erro
+// Mas não estão mais em uso, porque a lógica de validação e manipulação de campos foi integrada 
+// diretamente nos componentes Alterar.tsx e Criar.tsx para simplificar a estrutura do código e 
+// evitar abstrações desnecessárias.
+
+/*
+
 import React from "react";
 import { FUNCAO } from "../../services/2-funcao/constants/funcao.constants";
 import type { Funcao } from "../../type/2-funcao";
@@ -100,3 +108,5 @@ export const createShowMensagem = (errors: any) => {
 };
 
 export default MensagemErro;
+
+*/

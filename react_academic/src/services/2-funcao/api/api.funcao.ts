@@ -29,11 +29,15 @@ export const apiGetFuncoes = async (
   return response;
 };
 
+type GetFuncaoResponse = {
+  dados: Funcao;
+};
+
 export const apiGetFuncao = async (
   codigoFuncao: number,
-): Promise<AxiosResponse<unknown>> => {
+): Promise<AxiosResponse<GetFuncaoResponse>> => {
   console.log('[apiGetFuncao] Buscando função código:', codigoFuncao);
-  const response = await http.get(`${API_FUNCAO.POR_ID}/${codigoFuncao}`);
+  const response = await http.get<GetFuncaoResponse>(`${API_FUNCAO.POR_ID}/${codigoFuncao}`);
   return response;
 };
 

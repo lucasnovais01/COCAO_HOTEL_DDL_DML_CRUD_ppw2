@@ -1,219 +1,141 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useState, type FocusEvent, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROTA } from "../../router/url";
-import { apiGetHospede, apiPutHospede } from "../api/api.hospede";
-import { HOSPEDE } from "../constants/hospede.constants";
-import type { ErrosHospede, Hospede } from "../type/hospede";
+import { apiGetFuncao, apiPutFuncao } from "../api/api.funcao";
+import { FUNCAO } from "../constants/funcao.constants";
+import type { ErrosFuncao, Funcao } from "../type/funcao";
 
 export const useAlterar = () => {
-  const { idUsuario } = useParams<{ idUsuario: string }>();
-  const [model, setModel] = useState<Hospede | null>(null);
-  const [errors, setErrors] = useState<ErrosHospede>({});
-  const [loading, setLoading] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const [model, setModel] = useState<Funcao | null>(null);
+  const [errors, setErrors] = useState<ErrosFuncao>({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getHospede() {
+    async function getFuncao() {
       try {
-        if (!idUsuario) return;
-        const id = parseInt(idUsuario, 10);
-        const response = await apiGetHospede(id);
-        if (response?.data?.dados) {
-          setModel(response.data.dados);
+        if (!id) {
+          setLoading(false);
+          return;
         }
-      } catch (error: any) {
+
+        const response = await apiGetFuncao(Number(id));
+        if (response?.data?.dados) {
+          setModel(response.data.dados as Funcao);
+        }
+      } catch (error: unknown) {
         console.error(error);
-        alert(HOSPEDE.OPERACAO.POR_ID.ERRO);
+        alert(FUNCAO.OPERACAO.POR_ID.ERRO);
+      } finally {
+        setLoading(false);
       }
     }
 
-    getHospede();
-  }, [idUsuario]);
+    getFuncao();
+  }, [id]);
 
-  const handleChangeField = (name: keyof Hospede, value: string) => {
-    setModel((prev) =>
-      ({
-        ...(prev ?? {}),
-        [name]:
-          name === HOSPEDE.FIELDS.TIPO || name === HOSPEDE.FIELDS.ATIVO
-            ? Number(value)
-            : value,
-      } as unknown as Hospede),
-    );
+  const handleChangeField = (name: keyof Funcao, value: string) => {
+    const normalizedValue =
+      name === FUNCAO.FIELDS.NIVEL_ACESSO || name === FUNCAO.FIELDS.CODIGO
+        ? value === ""
+          ? undefined
+          : Number(value)
+        : value;
 
-    setErrors((prev) =>
-      ({
-        ...prev,
-        [name]: undefined,
-        [`${String(name)}Mensagem`]: undefined,
-      } as unknown as ErrosHospede),
-    );
+    setModel((prev) => ({
+      ...(prev ?? {}),
+      [name]: normalizedValue,
+    } as Funcao));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: undefined,
+      [`${String(name)}Mensagem`]: undefined,
+    } as unknown as ErrosFuncao));
   };
 
   const validateField = (
-    name: keyof Hospede,
-    e: FocusEvent<HTMLInputElement | HTMLSelectElement>,
+    name: keyof Funcao,
+    e: FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const value = (e.target as HTMLInputElement).value;
     const messages: string[] = [];
 
     switch (name) {
-      case HOSPEDE.FIELDS.NOME:
+      case FUNCAO.FIELDS.CODIGO:
         if (!value || String(value).trim().length === 0)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.BLANK);
-        if (value && String(value).length > 0 && String(value).length < 5)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MIN_LEN);
+          messages.push("Código da função é obrigatório");
+        break;
+
+      case FUNCAO.FIELDS.NOME:
+        if (!value || String(value).trim().length === 0)
+          messages.push("Nome da função é obrigatório");
+        if (value && String(value).length < 3)
+          messages.push("Nome deve ter no mínimo 3 caracteres");
         if (value && String(value).length > 100)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MAX_LEN);
+          messages.push("Nome deve ter no máximo 100 caracteres");
         break;
 
-      case HOSPEDE.FIELDS.CPF:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.CPF.BLANK);
-        if (value && !/^[0-9]+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.PATTERN);
-        if (value && value.length !== 11)
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN);
+      case FUNCAO.FIELDS.DESCRICAO:
+        if (value && String(value).length > 500)
+          messages.push("Descrição deve ter no máximo 500 caracteres");
         break;
 
-      case HOSPEDE.FIELDS.RG:
-        if (value) {
-          if (value.length < 7)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MIN_LEN);
-          if (value.length > 9)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MAX_LEN);
-        }
-        break;
-
-      case HOSPEDE.FIELDS.SEXO:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.SEXO.BLANK);
-        break;
-
-      case HOSPEDE.FIELDS.DATA_NASCIMENTO:
-        if (!value) {
-          messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK);
-        } else {
-          const d = new Date(value);
-          if (isNaN(d.getTime()))
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID);
-          else if (d >= new Date())
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST);
-          else {
-            const age = new Date().getFullYear() - d.getFullYear();
-            if (age < 18)
-              messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN);
-          }
-        }
-        break;
-
-      case HOSPEDE.FIELDS.EMAIL:
-        if (value && !/^\S+@\S+\.\S+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.EMAIL.VALID);
-        break;
-
-      case HOSPEDE.FIELDS.TELEFONE:
-        if (value && value.replace(/[^0-9]/g, "").length < 10)
-          messages.push(HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN);
+      case FUNCAO.FIELDS.NIVEL_ACESSO:
+        if (!value) messages.push("Nível de acesso é obrigatório");
         break;
 
       default:
         break;
     }
 
-    setErrors((prev) =>
-      ({
-        ...prev,
-        [name]: messages.length > 0,
-        [`${String(name)}Mensagem`]:
-          messages.length > 0 ? messages : undefined,
-      } as unknown as ErrosHospede),
-    );
+    setErrors((prev) => ({
+      ...prev,
+      [name]: messages.length > 0,
+      [`${String(name)}Mensagem`]:
+        messages.length > 0 ? messages : undefined,
+    } as unknown as ErrosFuncao));
   };
 
   const validarFormulario = (): boolean => {
-    const newErrors: ErrosHospede = {};
+    const newErrors: ErrosFuncao = {};
     let isFormValid = true;
 
-    if (!model?.nomeHospede || String(model.nomeHospede).trim().length === 0) {
-      newErrors.nomeHospede = true;
-      newErrors.nomeHospedeMensagem = [HOSPEDE.INPUT_ERROR.NOME.BLANK];
+    if (!model) {
+      return false;
+    }
+
+    if (!model.codigoFuncao && model.codigoFuncao !== 0) {
+      newErrors.codigoFuncao = true;
+      newErrors.codigoFuncaoMensagem = ["Código da função é obrigatório"];
       isFormValid = false;
     }
 
-    if (!model?.cpf) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.BLANK];
+    if (!model.nomeFuncao || String(model.nomeFuncao).trim().length === 0) {
+      newErrors.nomeFuncao = true;
+      newErrors.nomeFuncaoMensagem = ["Nome da função é obrigatório"];
       isFormValid = false;
-    } else if (!/^[0-9]+$/.test(String(model.cpf))) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.PATTERN];
+    } else if (String(model.nomeFuncao).length < 3) {
+      newErrors.nomeFuncao = true;
+      newErrors.nomeFuncaoMensagem = ["Nome deve ter no mínimo 3 caracteres"];
       isFormValid = false;
-    } else if (String(model.cpf).length !== 11) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN];
-      isFormValid = false;
-    }
-
-    if (model?.rg && String(model.rg).length < 7) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MIN_LEN];
-      isFormValid = false;
-    } else if (model?.rg && String(model.rg).length > 9) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MAX_LEN];
+    } else if (String(model.nomeFuncao).length > 100) {
+      newErrors.nomeFuncao = true;
+      newErrors.nomeFuncaoMensagem = ["Nome deve ter no máximo 100 caracteres"];
       isFormValid = false;
     }
 
-    if (!model?.sexo) {
-      newErrors.sexo = true;
-      newErrors.sexoMensagem = [HOSPEDE.INPUT_ERROR.SEXO.BLANK];
+    if (model.descricao && String(model.descricao).length > 500) {
+      newErrors.descricao = true;
+      newErrors.descricaoMensagem = ["Descrição deve ter no máximo 500 caracteres"];
       isFormValid = false;
     }
 
-    if (!model?.dataNascimento) {
-      newErrors.dataNascimento = true;
-      newErrors.dataNascimentoMensagem = [
-        HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK,
-      ];
-      isFormValid = false;
-    } else {
-      const d = new Date(String(model.dataNascimento));
-      if (isNaN(d.getTime())) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID,
-        ];
-        isFormValid = false;
-      } else if (d >= new Date()) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST,
-        ];
-        isFormValid = false;
-      } else {
-        const age = new Date().getFullYear() - d.getFullYear();
-        if (age < 18) {
-          newErrors.dataNascimento = true;
-          newErrors.dataNascimentoMensagem = [
-            HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN,
-          ];
-          isFormValid = false;
-        }
-      }
-    }
-
-    if (model?.email && !/^\S+@\S+\.\S+$/.test(String(model.email))) {
-      newErrors.email = true;
-      newErrors.emailMensagem = [HOSPEDE.INPUT_ERROR.EMAIL.VALID];
-      isFormValid = false;
-    }
-
-    if (
-      model?.telefone &&
-      String(model.telefone).replace(/[^0-9]/g, "").length < 10
-    ) {
-      newErrors.telefone = true;
-      newErrors.telefoneMensagem = [HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN];
+    if (model.nivelAcesso === undefined || model.nivelAcesso === null) {
+      newErrors.nivelAcesso = true;
+      newErrors.nivelAcessoMensagem = ["Nível de acesso é obrigatório"];
       isFormValid = false;
     }
 
@@ -221,37 +143,28 @@ export const useAlterar = () => {
     return isFormValid;
   };
 
-  const getInputClass = (field?: keyof ErrosHospede): string => {
-    if (field && errors[field]) return "form-control is-invalid app-label input-error mt-2";
+  const getInputClass = (field?: keyof ErrosFuncao): string => {
+    if (field && errors[field])
+      return "form-control is-invalid app-label input-error mt-2";
     return "form-control app-label mt-2";
   };
 
-  const showMensagem = (field: keyof Hospede) => {
-    const msgKey = `${String(field)}Mensagem` as keyof ErrosHospede;
-    const m = errors[msgKey] as any;
-    if (!m) return null;
+  const showMensagem = (field: keyof Funcao) => {
+    const msgKey = `${String(field)}Mensagem` as keyof ErrosFuncao;
+    const messages = errors[msgKey] as string[] | undefined;
+    if (!messages || messages.length === 0) return null;
 
     return (
       <div className="input-error-messages">
-        {Array.isArray(m)
-          ? m.map((message, index) => (
-              <div
-                className="invalid-feedback"
-                style={{ display: "block" }}
-                key={index}
-              >
-                {message}
-              </div>
-            ))
-          : [m].map((message, index) => (
-              <div
-                className="invalid-feedback"
-                style={{ display: "block" }}
-                key={index}
-              >
-                {message}
-              </div>
-            ))}
+        {messages.map((message, index) => (
+          <div
+            className="invalid-feedback"
+            style={{ display: "block" }}
+            key={index}
+          >
+            {message}
+          </div>
+        ))}
       </div>
     );
   };
@@ -259,7 +172,7 @@ export const useAlterar = () => {
   const onSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!idUsuario || !model) {
+    if (!id || !model) {
       return;
     }
 
@@ -268,27 +181,34 @@ export const useAlterar = () => {
     }
 
     setLoading(true);
+
     try {
-      const id = parseInt(idUsuario, 10);
-      await apiPutHospede(id, model);
-      navigate(ROTA.HOSPEDE.LISTAR, {
+      const codigo = Number(id);
+      await apiPutFuncao(codigo, {
+        codigoFuncao: model.codigoFuncao,
+        nomeFuncao: model.nomeFuncao,
+        descricao: model.descricao ?? undefined,
+        nivelAcesso: Number(model.nivelAcesso ?? 1),
+      });
+
+      navigate(ROTA.FUNCAO.LISTAR, {
         state: {
           toast: {
-            message: `Hóspede ID ${id} alterado com sucesso!`,
+            message: FUNCAO.OPERACAO.ATUALIZAR.SUCESSO,
             type: "success",
           },
         },
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      alert(HOSPEDE.OPERACAO.ATUALIZAR.ERRO);
+      alert(FUNCAO.OPERACAO.ATUALIZAR.ERRO);
     } finally {
       setLoading(false);
     }
   };
 
   const onCancel = () => {
-    navigate(ROTA.HOSPEDE.LISTAR);
+    navigate(ROTA.FUNCAO.LISTAR);
   };
 
   return {

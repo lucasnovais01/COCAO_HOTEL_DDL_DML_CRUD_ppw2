@@ -1,83 +1,23 @@
-import { useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
-import { apiPostFuncao } from "../../services/2-funcao/api/api.funcao";
 import { FUNCAO } from "../../services/2-funcao/constants/funcao.constants";
-import type { Funcao } from "../../type/2-funcao";
-
+import { useCriar } from "../../services/2-funcao/hook/useCriar";
 import { ROTA } from "../../services/router/url";
-import {
-  createHandleChangeField,
-  createShowMensagem,
-  createValidateField,
-} from "./zCamposCriar";
 
 export default function CriarFuncao() {
-  const navigate = useNavigate();
-  const [model, setModel] = useState<Funcao>({
-    codigoFuncao: "",
-    nomeFuncao: "",
-    descricao: "",
-    nivelAcesso: 1,
-  } as Funcao);
-  const [errors, setErrors] = useState<any>({});
-  const [loading, setLoading] = useState(false);
-
-  const handleChangeField = createHandleChangeField(setModel, setErrors);
-  const validateField = createValidateField(setErrors);
-  const showMensagem = createShowMensagem(errors);
-
-  const onSubmitForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!model) {
-      alert("Dados incompletos para criação");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const funcaoToSend = {
-        codigoFuncao: model.codigoFuncao,
-        nomeFuncao: model.nomeFuncao,
-        descricao: model.descricao || null,
-        nivelAcesso: Number(model.nivelAcesso),
-      };
-
-      console.log(
-        "[onSubmitForm] Dados a enviar:",
-        JSON.stringify(funcaoToSend, null, 2)
-      );
-
-      await apiPostFuncao(funcaoToSend as unknown as Funcao);
-
-      navigate(ROTA.FUNCAO.LISTAR, {
-        state: {
-          toast: {
-            message: "Função criada com sucesso!",
-            type: "success",
-          },
-        },
-      });
-    } catch (error: any) {
-      console.error("[onSubmitForm] Erro:", error);
-      alert("Erro ao criar função");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onCancel = () => {
-    navigate(ROTA.FUNCAO.LISTAR);
-  };
-
-  const getInputClass = () => {
-    return "form-control app-label mt-2";
-  };
+  const {
+    model,
+    loading,
+    handleChangeField,
+    validateField,
+    showMensagem,
+    getInputClass,
+    onSubmitForm,
+    onCancel,
+  } = useCriar();
 
   return (
     <div className="padraoPagina">
