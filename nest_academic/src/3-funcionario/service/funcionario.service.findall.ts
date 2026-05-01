@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Funcionario } from '../entity/funcionario.entity';
-import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FuncionarioResponse } from '../dto/response/funcionario.response';
+import { PAGINATION } from 'src/commons/enum/paginacao.enum';
+import { Pageable } from 'src/commons/pagination/page.response';
+import { Page } from 'src/commons/pagination/page.sistema';
+import { Repository } from 'typeorm';
 import { FuncionarioConverter } from '../dto/converter/funcionario.converter';
+import { FuncionarioResponse } from '../dto/response/funcionario.response';
+import { Funcionario } from '../entity/funcionario.entity';
 
 @Injectable()
 export class FuncionarioServiceFindAll {
@@ -12,23 +15,41 @@ export class FuncionarioServiceFindAll {
     private funcionarioRepository: Repository<Funcionario>,
   ) {}
 
-  async findAll(): Promise<FuncionarioResponse[]> {
-    const funcionarios = await this.funcionarioRepository
+  async findAll(
+    page: number = PAGINATION.PAGE,
+    pageSize: number = PAGINATION.PAGESIZE,
+    props: string = 'nomeLogin',
+    order: 'ASC' | 'DESC' = PAGINATION.ASC,
+    search?: string,
+  ): Promise<Page<FuncionarioResponse>> {
+    const allowedFields = [
+      'idUsuario',
+      'codigoFuncao',
+      'nomeLogin',
+      'dataContratacao',
+      'ativo',
+    ];
+
+    const pageable = new Pageable(page, pageSize, props, order, allowedFields);
+
+    const query = this.funcionarioRepository
       .createQueryBuilder('funcionario')
-      .getMany();
+      .orderBy(`funcionario.${pageable.props}`, pageable.order)
+      .skip(pageable.offset)
+      .take(pageable.limit);
 
-    /*
-    // Este console.log que me ajudou a achar um bug esquisito
+    if (search?.trim()) {
+      const searchTerm = `%${search.trim().toLowerCase()}%`;
+      query.where(
+        'LOWER(funcionario.nomeLogin) LIKE :searchTerm OR funcionario.codigoFuncao LIKE :searchTerm',
+        { searchTerm },
+      );
+    }
 
-    console.log(
-      '[FuncionarioServiceFindAll] registros encontrados:',
-      funcionarios?.length ?? 0,
-    );
-    console.log(
-      '[FuncionarioServiceFindAll] amostra:',
-      funcionarios?.slice(0, 5),
-    );
-*/
-    return FuncionarioConverter.toListFuncionarioResponse(funcionarios);
+    const [funcionarios, totalElements] = await query.getManyAndCount();
+    const content =
+      FuncionarioConverter.toListFuncionarioResponse(funcionarios);
+
+    return Page.of(content, totalElements, pageable);
   }
 }
