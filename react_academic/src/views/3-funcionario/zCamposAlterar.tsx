@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import { FUNCIONARIO } from "../../services/3-funcionario/constants/funcionario.constants";
 import type { Funcionario } from "../../services/3-funcionario/type/funcionario";

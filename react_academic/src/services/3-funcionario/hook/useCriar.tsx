@@ -1,224 +1,153 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, type FocusEvent, type FormEvent } from "react";
+import { useEffect, useState, type FocusEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Hospede } from "../../../type/1-hospede";
+import type { Funcao } from "../../../type/2-funcao";
+import { apiGetHospedes } from "../../1-hospede/api/api.hospede";
+import { apiGetFuncoes } from "../../2-funcao/api/api.funcao";
 import { ROTA } from "../../router/url";
-import { apiPostHospede } from "../api/api.hospede";
-import { HOSPEDE } from "../constants/hospede.constants";
-import type { ErrosHospede, Hospede } from "../type/hospede";
+import { apiPostFuncionario } from "../api/api.funcionario";
+import { FUNCIONARIO } from "../constants/funcionario.constants";
+import type { Funcionario } from "../type/funcionario";
+
+type ErrosFuncionario = Record<string, any>;
 
 export const useCriar = () => {
-  const [model, setModel] = useState<Hospede>(
-    HOSPEDE.DADOS_INICIAIS as unknown as Hospede,
+  const [model, setModel] = useState<Funcionario>(
+    FUNCIONARIO.DADOS_INICIAIS as Funcionario,
   );
-  const [errors, setErrors] = useState<ErrosHospede>({});
+  const [errors, setErrors] = useState<ErrosFuncionario>({});
   const [loading, setLoading] = useState(false);
+  const [hospedes, setHospedes] = useState<Hospede[]>([]);
+  const [funcoes, setFuncoes] = useState<Funcao[]>([]);
   const navigate = useNavigate();
 
-  const handleChangeField = (name: keyof Hospede, value: string) => {
-    setModel((prev) =>
-      ({
-        ...(prev ?? (HOSPEDE.DADOS_INICIAIS as unknown as Hospede)),
-        [name]:
-          name === HOSPEDE.FIELDS.TIPO || name === HOSPEDE.FIELDS.ATIVO
-            ? Number(value)
-            : value,
-      } as unknown as Hospede),
-    );
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const resHospedes = await apiGetHospedes(1, 100);
+        const dadosHospedes = resHospedes?.data?.dados;
+        const hospedeList = Array.isArray(dadosHospedes)
+          ? dadosHospedes
+          : Array.isArray(dadosHospedes?.content)
+          ? dadosHospedes.content
+          : [];
 
-    setErrors((prev) =>
-      ({
-        ...prev,
-        [name]: undefined,
-        [`${String(name)}Mensagem`]: undefined,
-      } as unknown as ErrosHospede),
-    );
+        setHospedes(hospedeList);
+
+        const resFuncoes = await apiGetFuncoes(1, 100);
+        const dadosFuncoes = resFuncoes?.data?.dados;
+        const funcaoList = Array.isArray(dadosFuncoes)
+          ? dadosFuncoes
+          : Array.isArray(dadosFuncoes?.content)
+          ? dadosFuncoes.content
+          : [];
+
+        setFuncoes(funcaoList);
+      } catch (error: unknown) {
+        console.error(error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const handleChangeField = (
+    name: keyof Funcionario,
+    value: string | number | undefined,
+  ) => {
+    setModel((prev: Funcionario) => ({
+      ...(prev ?? {}),
+      [name]: value,
+    } as Funcionario));
+
+    setErrors((prev: ErrosFuncionario) => ({
+      ...prev,
+      [name]: undefined,
+      [`${String(name)}Mensagem`]: undefined,
+    }));
   };
 
   const validateField = (
-    name: keyof Hospede,
+    name: keyof Funcionario,
     e: FocusEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const value = (e.target as HTMLInputElement).value;
     const messages: string[] = [];
 
     switch (name) {
-      case HOSPEDE.FIELDS.NOME:
+      case FUNCIONARIO.FIELDS.ID:
+        if (!value || value === "0")
+          messages.push("Hóspede é obrigatório");
+        break;
+
+      case FUNCIONARIO.FIELDS.NOME_LOGIN:
         if (!value || String(value).trim().length === 0)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.BLANK);
-        if (value && String(value).length > 0 && String(value).length < 5)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MIN_LEN);
-        if (value && String(value).length > 100)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MAX_LEN);
+          messages.push(FUNCIONARIO.INPUT_ERROR.NOME_LOGIN.BLANK);
         break;
 
-      case HOSPEDE.FIELDS.CPF:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.CPF.BLANK);
-        if (value && !/^[0-9]+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.PATTERN);
-        if (value && value.length !== 11)
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN);
+      case FUNCIONARIO.FIELDS.SENHA:
+        if (!value || String(value).trim().length === 0)
+          messages.push(FUNCIONARIO.INPUT_ERROR.SENHA.BLANK);
         break;
 
-      case HOSPEDE.FIELDS.RG:
-        if (value) {
-          if (value.length < 7)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MIN_LEN);
-          if (value.length > 9)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MAX_LEN);
-        }
+      case FUNCIONARIO.FIELDS.CODIGO_FUNCAO:
+        if (!value || value === "")
+          messages.push(FUNCIONARIO.INPUT_ERROR.CODIGO_FUNCAO.BLANK);
         break;
 
-      case HOSPEDE.FIELDS.SEXO:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.SEXO.BLANK);
-        break;
-
-      case HOSPEDE.FIELDS.DATA_NASCIMENTO:
-        if (!value) {
-          messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK);
-        } else {
-          const d = new Date(value);
-          if (isNaN(d.getTime()))
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID);
-          else if (d >= new Date())
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST);
-          else {
-            const age = new Date().getFullYear() - d.getFullYear();
-            if (age < 18)
-              messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN);
-          }
-        }
-        break;
-
-      case HOSPEDE.FIELDS.EMAIL:
-        if (value && !/^\S+@\S+\.\S+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.EMAIL.VALID);
-        break;
-
-      case HOSPEDE.FIELDS.TELEFONE:
-        if (value && value.replace(/[^0-9]/g, "").length < 10)
-          messages.push(HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN);
-        break;
-
-      case HOSPEDE.FIELDS.TIPO:
-        if (value === "" || value === undefined)
-          messages.push(HOSPEDE.INPUT_ERROR.TIPO.BLANK);
+      case FUNCIONARIO.FIELDS.DATA_CONTRATACAO:
+        if (!value || String(value).trim().length === 0)
+          messages.push(FUNCIONARIO.INPUT_ERROR.DATA_CONTRATACAO.BLANK);
         break;
 
       default:
         break;
     }
 
-    setErrors((prev) =>
-      ({
-        ...prev,
-        [name]: messages.length > 0,
-        [`${String(name)}Mensagem`]:
-          messages.length > 0 ? messages : undefined,
-      } as unknown as ErrosHospede),
-    );
+    setErrors((prev: ErrosFuncionario) => ({
+      ...prev,
+      [name]: messages.length > 0,
+      [`${String(name)}Mensagem`]:
+        messages.length > 0 ? messages : undefined,
+    }));
   };
 
   const validarFormulario = (): boolean => {
-    const newErrors: ErrosHospede = {};
+    const newErrors: ErrosFuncionario = {};
     let isFormValid = true;
 
-    const valores = {
-      nomeHospede: model.nomeHospede,
-      cpf: model.cpf,
-      rg: model.rg,
-      sexo: model.sexo,
-      dataNascimento: model.dataNascimento,
-      email: model.email,
-      telefone: model.telefone,
-      tipo: model.tipo,
-    } as const;
-
-    if (!valores.nomeHospede || String(valores.nomeHospede).trim().length === 0) {
-      newErrors.nomeHospede = true;
-      newErrors.nomeHospedeMensagem = [HOSPEDE.INPUT_ERROR.NOME.BLANK];
+    if (!model.idUsuario || model.idUsuario === 0) {
+      newErrors.idUsuario = true;
+      newErrors.idUsuarioMensagem = ["Hóspede é obrigatório"];
       isFormValid = false;
     }
 
-    if (!valores.cpf) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.BLANK];
-      isFormValid = false;
-    } else if (!/^[0-9]+$/.test(String(valores.cpf))) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.PATTERN];
-      isFormValid = false;
-    } else if (String(valores.cpf).length !== 11) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN];
+    if (!model.nomeLogin || String(model.nomeLogin).trim().length === 0) {
+      newErrors.nomeLogin = true;
+      newErrors.nomeLoginMensagem = ["Nome de login é obrigatório"];
       isFormValid = false;
     }
 
-    if (valores.rg && String(valores.rg).length < 7) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MIN_LEN];
-      isFormValid = false;
-    } else if (valores.rg && String(valores.rg).length > 9) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MAX_LEN];
+    if (!model.senha || String(model.senha).trim().length === 0) {
+      newErrors.senha = true;
+      newErrors.senhaMensagem = ["Senha é obrigatória"];
       isFormValid = false;
     }
 
-    if (!valores.sexo) {
-      newErrors.sexo = true;
-      newErrors.sexoMensagem = [HOSPEDE.INPUT_ERROR.SEXO.BLANK];
-      isFormValid = false;
-    }
-
-    if (!valores.dataNascimento) {
-      newErrors.dataNascimento = true;
-      newErrors.dataNascimentoMensagem = [
-        HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK,
+    if (!model.codigoFuncao || model.codigoFuncao === 0) {
+      newErrors.codigoFuncao = true;
+      newErrors.codigoFuncaoMensagem = [
+        "Código da função é obrigatório",
       ];
       isFormValid = false;
-    } else {
-      const d = new Date(String(valores.dataNascimento));
-      if (isNaN(d.getTime())) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID,
-        ];
-        isFormValid = false;
-      } else if (d >= new Date()) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST,
-        ];
-        isFormValid = false;
-      } else {
-        const age = new Date().getFullYear() - d.getFullYear();
-        if (age < 18) {
-          newErrors.dataNascimento = true;
-          newErrors.dataNascimentoMensagem = [
-            HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN,
-          ];
-          isFormValid = false;
-        }
-      }
     }
 
-    if (valores.email && !/^\S+@\S+\.\S+$/.test(String(valores.email))) {
-      newErrors.email = true;
-      newErrors.emailMensagem = [HOSPEDE.INPUT_ERROR.EMAIL.VALID];
-      isFormValid = false;
-    }
-
-    if (
-      valores.telefone &&
-      String(valores.telefone).replace(/[^0-9]/g, "").length < 10
-    ) {
-      newErrors.telefone = true;
-      newErrors.telefoneMensagem = [HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN];
-      isFormValid = false;
-    }
-
-    if (valores.tipo === undefined || valores.tipo === null) {
-      newErrors.tipo = true;
-      newErrors.tipoMensagem = [HOSPEDE.INPUT_ERROR.TIPO.BLANK];
+    if (!model.dataContratacao || String(model.dataContratacao).trim().length === 0) {
+      newErrors.dataContratacao = true;
+      newErrors.dataContratacaoMensagem = [
+        "Data de contratação é obrigatória",
+      ];
       isFormValid = false;
     }
 
@@ -226,37 +155,28 @@ export const useCriar = () => {
     return isFormValid;
   };
 
-  const getInputClass = (field?: keyof ErrosHospede): string => {
-    if (field && errors[field]) return "form-control is-invalid app-label input-error mt-2";
+  const getInputClass = (field?: keyof ErrosFuncionario): string => {
+    if (field && errors[field])
+      return "form-control is-invalid app-label input-error mt-2";
     return "form-control app-label mt-2";
   };
 
-  const showMensagem = (field: keyof Hospede) => {
-    const msgKey = `${String(field)}Mensagem` as keyof ErrosHospede;
-    const m = errors[msgKey] as any;
-    if (!m) return null;
+  const showMensagem = (field: keyof Funcionario) => {
+    const msgKey = `${String(field)}Mensagem`;
+    const messages = errors[msgKey] as string[] | undefined;
+    if (!messages || messages.length === 0) return null;
 
     return (
       <div className="input-error-messages">
-        {Array.isArray(m)
-          ? m.map((message, index) => (
-              <div
-                className="invalid-feedback"
-                style={{ display: "block" }}
-                key={index}
-              >
-                {message}
-              </div>
-            ))
-          : [m].map((message, index) => (
-              <div
-                className="invalid-feedback"
-                style={{ display: "block" }}
-                key={index}
-              >
-                {message}
-              </div>
-            ))}
+        {messages.map((message, index) => (
+          <div
+            className="invalid-feedback"
+            style={{ display: "block" }}
+            key={index}
+          >
+            {message}
+          </div>
+        ))}
       </div>
     );
   };
@@ -271,46 +191,43 @@ export const useCriar = () => {
     setLoading(true);
 
     try {
-      const hospedeToSend = {
-        nomeHospede: model.nomeHospede,
-        cpf: model.cpf,
-        rg: model.rg || null,
-        sexo: model.sexo,
-        dataNascimento: model.dataNascimento
-          ? String(model.dataNascimento)
-          : "",
-        email: model.email || null,
-        telefone: model.telefone || null,
-        tipo: Number(model.tipo),
+      const funcionarioToSend: Funcionario = {
+        idUsuario: Number(model.idUsuario),
+        nomeLogin: model.nomeLogin,
+        senha: model.senha,
+        codigoFuncao: Number(model.codigoFuncao ?? 0),
+        dataContratacao: model.dataContratacao,
         ativo: Number(model.ativo ?? 1),
-      } as unknown as Hospede;
+      };
 
-      await apiPostHospede(hospedeToSend);
+      await apiPostFuncionario(funcionarioToSend);
 
-      navigate(ROTA.HOSPEDE.LISTAR, {
+      navigate(ROTA.FUNCIONARIO.LISTAR, {
         state: {
           toast: {
-            message: HOSPEDE.OPERACAO.CRIAR.SUCESSO,
+            message: "Funcionário criado com sucesso!",
             type: "success",
           },
         },
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      alert(HOSPEDE.OPERACAO.CRIAR.ERRO);
+      alert("Erro ao criar funcionário");
     } finally {
       setLoading(false);
     }
   };
 
   const onCancel = () => {
-    navigate(ROTA.HOSPEDE.LISTAR);
+    navigate(ROTA.FUNCIONARIO.LISTAR);
   };
 
   return {
     model,
     errors,
     loading,
+    hospedes,
+    funcoes,
     handleChangeField,
     validateField,
     showMensagem,
