@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -30,8 +31,15 @@ export default function ListarFuncionario() {
     async function load() {
       try {
         const res = await apiGetFuncionarios();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setFuncionarios(dados);
+        const dados = res?.data?.dados;
+
+        const funcionarioList = Array.isArray(dados)
+          ? dados
+          : Array.isArray(dados?.content)
+          ? dados.content
+          : [];
+
+        setFuncionarios(funcionarioList);
       } catch (err) {
         console.error("Erro ao buscar funcionários:", err);
         showToast("Erro ao carregar funcionários", "error");

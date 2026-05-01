@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
@@ -40,13 +41,23 @@ export default function CriarFuncionario() {
   useEffect(() => {
     async function loadData() {
       try {
-        const resHospedes = await apiGetHospedes();
-        const dadosHospedes = resHospedes?.data?.dados ?? [];
-        if (Array.isArray(dadosHospedes)) setHospedes(dadosHospedes);
+        const resHospedes = await apiGetHospedes(1, 100);
+        const dadosHospedes = resHospedes?.data?.dados;
+        const hospedeList = Array.isArray(dadosHospedes)
+          ? dadosHospedes
+          : Array.isArray(dadosHospedes?.content)
+          ? dadosHospedes.content
+          : [];
+        setHospedes(hospedeList);
 
-        const resFuncoes = await apiGetFuncoes();
-        const dadosFuncoes = resFuncoes?.data?.dados ?? [];
-        if (Array.isArray(dadosFuncoes)) setFuncoes(dadosFuncoes);
+        const resFuncoes = await apiGetFuncoes(1, 100);
+        const dadosFuncoes = resFuncoes?.data?.dados;
+        const funcaoList = Array.isArray(dadosFuncoes)
+          ? dadosFuncoes
+          : Array.isArray(dadosFuncoes?.content)
+          ? dadosFuncoes.content
+          : [];
+        setFuncoes(funcaoList);
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
       }
@@ -242,7 +253,9 @@ export default function CriarFuncionario() {
                     onChange={(e) =>
                       handleChangeField(
                         FUNCIONARIO.FIELDS.CODIGO_FUNCAO,
-                        e.target.value
+                        e.target.value === ''
+                          ? undefined
+                          : Number(e.target.value),
                       )
                     }
                     onBlur={(e) =>

@@ -21,7 +21,6 @@ export default function ListarFuncao() {
   const [pageSize] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
-  const [hateoasLinks, setHateoasLinks] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPagingInfo, setShowPagingInfo] = useState(false);
   const [toast, setToast] = useState<{
@@ -41,14 +40,10 @@ export default function ListarFuncao() {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      setHateoasLinks(null);
 
       try {
         const res = await apiGetFuncoes(currentPage, pageSize);
         const dados = res?.data?.dados;
-        const linkPayload = res?.data?._link ?? null;
-
-        setHateoasLinks(linkPayload);
 
         if (dados && !Array.isArray(dados) && Array.isArray(dados.content)) {
           const pageData = dados as PaginatedFuncaoData;
@@ -307,14 +302,6 @@ export default function ListarFuncao() {
                   Próximo
                 </button>
               </div>
-            </div>
-          )}
-          {hateoasLinks && (
-            <div className="mt-4 text-sm text-gray-700">
-              <strong>Links HATEOAS:</strong>
-              <pre className="whitespace-pre-wrap break-words bg-gray-50 p-3 rounded-lg text-xs">
-                {JSON.stringify(hateoasLinks, null, 2)}
-              </pre>
             </div>
           )}
         </div>

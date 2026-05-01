@@ -69,7 +69,7 @@ export default function AlterarFuncionario() {
   const { idUsuario } = useParams<{ idUsuario: string }>();
   const navigate = useNavigate();
   const [model, setModel] = useState<Funcionario | null>(null);
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Record<string, unknown>>({});
   const [funcoes, setFuncoes] = useState<Funcao[]>([]); // Lista de funções para dropdown
   const [loading, setLoading] = useState(true);
 
@@ -112,10 +112,15 @@ export default function AlterarFuncionario() {
         }
 
         // Carrega todas as funções disponíveis para dropdown
-        const resFuncoes = await apiGetFuncoes();
-        const dadosFuncoes = resFuncoes?.data?.dados ?? [];
-        if (Array.isArray(dadosFuncoes)) setFuncoes(dadosFuncoes);
-      } catch (error: any) {
+        const resFuncoes = await apiGetFuncoes(1, 100);
+        const dadosFuncoes = resFuncoes?.data?.dados;
+        const funcaoList = Array.isArray(dadosFuncoes)
+          ? dadosFuncoes
+          : Array.isArray(dadosFuncoes?.content)
+          ? dadosFuncoes.content
+          : [];
+        setFuncoes(funcaoList);
+      } catch (error: unknown) {
         console.log(error);
         alert("Erro ao carregar dados");
       } finally {
@@ -171,13 +176,19 @@ export default function AlterarFuncionario() {
        * - dataContratacao: string (YYYY-MM-DD), validado (required)
        * - ativo: number (1 ou 0), sempre convertido com Number()
        */
-      const funcionarioToSend = {
+      const funcionarioToSend: Partial<Funcionario> = {
         nomeLogin: model.nomeLogin,
-        senha: model.senha,
-        codigoFuncao: model.codigoFuncao, // Enviado como STRING
         dataContratacao: model.dataContratacao,
         ativo: Number(model.ativo), // Convertido para number
       };
+
+      if (model.senha && String(model.senha).trim().length > 0) {
+        funcionarioToSend.senha = model.senha;
+      }
+
+      if (model.codigoFuncao != null) {
+        funcionarioToSend.codigoFuncao = Number(model.codigoFuncao);
+      }
 
       console.log(
         "[onSubmitForm] Dados a enviar:",
@@ -197,7 +208,7 @@ export default function AlterarFuncionario() {
           },
         },
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
       alert("Erro ao atualizar funcionário");
     }
@@ -342,19 +353,21 @@ export default function AlterarFuncionario() {
                   <select
                     id={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
                     name={FUNCIONARIO.FIELDS.CODIGO_FUNCAO}
-                    value={model?.codigoFuncao || ""}
+                    value={model?.codigoFuncao ?? ""}
                     className={getInputClass()}
                     onChange={(e) =>
                       handleChangeField(
                         FUNCIONARIO.FIELDS.CODIGO_FUNCAO,
-                        e.target.value
+                        e.target.value === ''
+                          ? undefined
+                          : Number(e.target.value),
                       )
                     }
                     onBlur={(e) =>
                       validateField(FUNCIONARIO.FIELDS.CODIGO_FUNCAO, e)
                     }
                   >
-                    <option value={0}>-- Selecione uma função --</option>
+                    <option value="">-- Selecione uma função --</option>
                     {funcoes.map((f) => (
                       <option key={f.codigoFuncao} value={f.codigoFuncao}>
                         {f.nomeFuncao} ({f.codigoFuncao})

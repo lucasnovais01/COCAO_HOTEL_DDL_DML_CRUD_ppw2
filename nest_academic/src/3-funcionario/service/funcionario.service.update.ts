@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FuncionarioConverter } from '../dto/converter/funcionario.converter';
-import { FuncionarioRequest } from '../dto/request/funcionario.request';
-import { Repository } from 'typeorm';
-import { Funcionario } from '../entity/funcionario.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FuncionarioConverter } from '../dto/converter/funcionario.converter';
+import { FuncionarioUpdateRequest } from '../dto/request/funcionario.update.request';
 import { FuncionarioResponse } from '../dto/response/funcionario.response';
+import { Funcionario } from '../entity/funcionario.entity';
 
 @Injectable()
 export class FuncionarioServiceUpdate {
@@ -15,7 +15,7 @@ export class FuncionarioServiceUpdate {
 
   async update(
     id: number,
-    funcionarioRequest: FuncionarioRequest,
+    funcionarioRequest: FuncionarioUpdateRequest,
   ): Promise<FuncionarioResponse | null> {
     const funcionario = await this.funcionarioRepository.findOneBy({
       idUsuario: id,

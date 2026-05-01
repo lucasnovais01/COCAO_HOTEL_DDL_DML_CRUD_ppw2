@@ -15,7 +15,7 @@ import { ApiPutDoc } from 'src/commons/decorators/swagger.decorators';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import { gerarLinks } from 'src/commons/utils/hateoas.utils';
-import { FuncionarioRequest } from '../dto/request/funcionario.request';
+import { FuncionarioUpdateRequest } from '../dto/request/funcionario.update.request';
 import { FuncionarioResponse } from '../dto/response/funcionario.response';
 import { FuncionarioServiceUpdate } from '../service/funcionario.service.update';
 
@@ -32,7 +32,7 @@ export class FuncionarioControllerUpdate {
       ERRO: 'Erro ao atualizar funcionário',
       NAO_LOCALIZADO: 'Funcionário não encontrado',
     },
-    FuncionarioRequest,
+    FuncionarioUpdateRequest,
     FuncionarioResponse,
   )
   @HttpCode(HttpStatus.OK)
@@ -40,7 +40,7 @@ export class FuncionarioControllerUpdate {
   async update(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
-    @Body() funcionarioRequest: FuncionarioRequest,
+    @Body() funcionarioRequest: FuncionarioUpdateRequest,
   ): Promise<Result<FuncionarioResponse | null>> {
     const response = await this.funcionarioServiceUpdate.update(
       id,

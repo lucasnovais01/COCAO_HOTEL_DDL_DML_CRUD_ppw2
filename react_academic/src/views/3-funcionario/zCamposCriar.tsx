@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { FUNCIONARIO } from "../../services/3-funcionario/constants/funcionario.constants";
 import type { Funcionario } from "../../services/3-funcionario/type/funcionario";
@@ -33,7 +34,10 @@ export const createHandleChangeField = (
   setModel: React.Dispatch<React.SetStateAction<Funcionario>>,
   setErrors: React.Dispatch<React.SetStateAction<any>>
 ) => {
-  return (name: keyof Funcionario, value: string | number) => {
+  return (
+    name: keyof Funcionario,
+    value: string | number | undefined,
+  ) => {
     setModel((prev) => ({ ...prev, [name]: value }));
     setErrors((prev: any) => ({
       ...prev,
