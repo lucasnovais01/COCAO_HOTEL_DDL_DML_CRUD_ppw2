@@ -480,7 +480,6 @@ export default function DevTools() {
 
     fetchData();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   // ============================================================

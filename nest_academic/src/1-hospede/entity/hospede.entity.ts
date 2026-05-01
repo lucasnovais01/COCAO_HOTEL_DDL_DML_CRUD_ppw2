@@ -1,5 +1,4 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
 /**
  * Entidade que representa a tabela COCAO_HOSPEDE no banco de dados.
  * Superclasse para hóspedes e funcionários (generalização).

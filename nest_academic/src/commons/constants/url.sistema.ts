@@ -25,7 +25,9 @@ export const CLIENTE = 'http://localhost:3000';
 // const ROTA_AUTH = 'rest/auth';
 
 const API_VERSION = 'v1';
-const ROTA_SISTEMA = `rest/sistema/${API_VERSION}`;
+export const ROTA_SISTEMA = `rest/sistema/${API_VERSION}`; // Exemplo: /rest/sistema/v1/hospede/listar
+// Precisa do export pra usar no hateoas.utils.ts, mas não tem mais função, pois as rotas estão sendo geradas pela função gerarRotasSistema
+// pq não tem mais função, pois as rotas estão sendo geradas pela função gerarRotasSistema, mas mantive aqui pra não quebrar o código do hateoas.utils.ts
 const ROTA_AUTH = `rest/auth/${API_VERSION}`;
 
 // Ações REST padronizadas
@@ -90,6 +92,22 @@ function gerarRotasSistema(entity: string) {
     UPDATE: `${base}/${UPDATE}`,
     DELETE: `${base}/${DELETE}`,
   };
+
+  /*
+// Código do meu Professor, mantive aqui só pra referência, mas não é mais usado
+
+function gerarRotasSistema(entity: string) {
+  const base = `/${ROTA_SISTEMA}/${entity}`;
+  return {
+    BASE: base,
+    LIST: `/${LIST}`,
+    CREATE: `/${CREATE}`,
+    BY_ID: `/${BY_ID}/:id`,
+    UPDATE: `/${UPDATE}/:id`,
+    DELETE: `/${DELETE}/:id`,
+  };
+}
+*/
 
   // Adiciona uma estrutura ENDPOINTS que contém apenas o sufixo da rota
   // (sem a base). Isso facilita o uso em decorators do NestJS

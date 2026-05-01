@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+
 import { Response } from 'express';
+import { Link } from './mensagem';
 import { MensagemSistema } from './mensagem.sistema';
 
 export function sendHttpResponse<T>(
@@ -8,14 +12,11 @@ export function sendHttpResponse<T>(
   dados: T | null,
   path: string | null,
   erro: string | any | null,
+  _link: Record<string, Link> | null,
 ) {
   return res
     .status(status)
-    .json(MensagemSistema.showMensagem(status, mensagem, dados, path, erro));
+    .json(
+      MensagemSistema.showMensagem(status, mensagem, dados, path, erro, _link),
+    );
 }
-
-// Erro no any, na linha 10
-// 'any' overrides all other types in this union type.eslint@typescript-eslint/no-redundant-type-constituents
-
-// E na linha 14: Unsafe argument of type `any` assigned to a parameter of type `string | null`.eslint@typescript-eslint/no-unsafe-argument
-// (parameter) erro: any

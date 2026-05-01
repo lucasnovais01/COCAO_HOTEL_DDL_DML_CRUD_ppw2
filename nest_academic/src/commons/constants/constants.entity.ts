@@ -1,3 +1,5 @@
+// Não está sendo usado, mas pode ser útil para centralizar mensagens de operação
+
 export function criarMensagemOperacao(ENTITY_NAME: string) {
   return {
     CRIAR: {

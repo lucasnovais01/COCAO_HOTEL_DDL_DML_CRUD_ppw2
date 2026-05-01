@@ -13,8 +13,6 @@ export interface Hospede {
   updatedAt?: Date;
 }
 
-// Feito na última aula
-
 export interface ErrosHospede {
   idUsuario?: boolean;
   nomeHospede?: boolean;

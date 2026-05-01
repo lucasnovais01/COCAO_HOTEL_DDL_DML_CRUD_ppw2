@@ -11,49 +11,25 @@ import { HospedeServiceCreate } from '../service/hospede.service.create';
 import { ROTA } from 'src/commons/constants/url.sistema';
 import { HospedeResponse } from '../dto/response/hospede.response';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
-
 import type { Request } from 'express';
-
 import { Result } from 'src/commons/mensagem/mensagem';
 
-// =================================================================
-// HISTÓRICO DE TENTATIVAS E SOLUÇÃO
-// =================================================================
+import { HOSPEDE } from 'src/commons/constants/constants.sistema';
+import { gerarLinks } from 'src/commons/utils/hateoas.utils';
 
-// TENTATIVA 1 (não funcionou):
-// Problema: Rota duplicada por causa do prefixo global
-// @Controller('rest/sistema/v1/hospede')
-// @Post('criar')
-
-// TENTATIVA 2 (FUNCIONOU!):
-// Solução: Remover a barra inicial da rota base e usar apenas o sufixo no @Post
 @Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial '/' da rota
 export class HospedeControllerCreate {
-  constructor(private readonly hospedeServiceCreate: HospedeServiceCreate) {
-    /*
-    // Como eu consegui achar o que causava erro 404:
-    // Log para debug e documentação das rotas
-    console.log('\nDEBUG ROTAS DO CONTROLLER:');
-    console.log('BASE (original):', ROTA.HOSPEDE.BASE);
-    console.log('BASE (sem / inicial):', ROTA.HOSPEDE.BASE.substring(1));
-    console.log('CREATE:', ROTA.HOSPEDE.CREATE);
-    */
-  }
-
+  constructor(private readonly hospedeServiceCreate: HospedeServiceCreate) {}
   // Define o código de status HTTP 201 (Created) para a resposta
   @HttpCode(HttpStatus.CREATED)
   // Usa o endpoint definido em ROTA.HOSPEDE.ENDPOINTS para evitar manipulações de string
-  // Mantemos o histórico: antes usávamos .split('/').pop() para extrair o sufixo 'criar'
-
-  // ROTA.HOSPEDE.CREATE = "/rest/sistema/v1/hospede/criar"
-  // .split('/') = [ "", "rest", "sistema", "v1", "hospede", "criar" ]
-  // .pop() = "criar"
   @Post(ROTA.HOSPEDE.ENDPOINTS.CREATE)
   async create(
     @Req() req: Request,
     @Body() hospedeRequest: HospedeRequest,
   ): Promise<Result<HospedeResponse>> {
     const response = await this.hospedeServiceCreate.create(hospedeRequest);
+    const _link = gerarLinks(req, HOSPEDE.ENTITY);
     return MensagemSistema.showMensagem(
       HttpStatus.CREATED,
       'Hóspede cadastrado com sucesso!!!',
@@ -61,6 +37,7 @@ export class HospedeControllerCreate {
       ROTA.HOSPEDE.CREATE, // Antes: res.path , para pegar o caminho da requisição, mas tava dando erro de tipo
       // Agora é o mesmo valor do decorator @Post(ROTA.HOSPEDE.CREATE)
       null,
+      _link,
     );
   }
 }
