@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -29,8 +30,8 @@ export default function ListarTipoQuarto() {
     async function load() {
       try {
         const res = await apiGetTiposQuarto();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setTipos(dados);
+        const dados = res?.data?.dados;
+        setTipos(extractListFromResponse(dados));
       } catch (err) {
         console.error("Erro ao buscar tipos de quarto:", err);
         showToast("Erro ao carregar tipos de quarto", "error");
@@ -52,6 +53,12 @@ export default function ListarTipoQuarto() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
+
+  const extractListFromResponse = (dados: any): TipoQuarto[] => {
+    if (Array.isArray(dados)) return dados;
+    if (dados && Array.isArray(dados.content)) return dados.content;
+    return [];
+  };
 
   const filteredData = tipos.filter((f) =>
     Object.values(f).some((v) =>

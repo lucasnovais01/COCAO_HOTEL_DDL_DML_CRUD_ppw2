@@ -52,8 +52,8 @@ INSERT INTO COCAO_SERVICO (CODIGO_SERVICO, NOME_SERVICO, PRECO, ATIVO) VALUES
 INSERT INTO COCAO_HOSPEDE (NOME_HOSPEDE, CPF, RG, SEXO, DATA_NASCIMENTO, EMAIL, TELEFONE, TIPO) VALUES
 ('Ana Silva', '11122233344', '1234567', 'F', '1990-05-15', 'ana@email.com', '11987654321', 0),
 ('Pedro Santos', '22233344455', '2345678', 'M', '1985-10-20', 'pedro@email.com', '11976543210', 0),
-('Carla Souza', '33344455566', '3456789', 'F', '1995-02-10', 'carla@email.com', '11965432109', 1),
-('Marcos Oliveira', '44455566677', '4567890', 'M', '1980-12-05', 'marcos@email.com', '11954321098', 1),
+('Carla Souza', '33344455566', '3456789', 'F', '1995-02-10', 'carla@email.com', '11965432109', 0),
+('Marcos Oliveira', '44455566677', '4567890', 'M', '1980-12-05', 'marcos@email.com', '11954321098', 0),
 ('Julia Lima', '99988877766', '9876543', 'F', '1992-07-30', 'julia@email.com', '11999998888', 0);
 
 -- =============================================================-========

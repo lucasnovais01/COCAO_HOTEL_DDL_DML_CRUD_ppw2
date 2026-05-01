@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -30,8 +31,8 @@ export default function ListarQuarto() {
     async function load() {
       try {
         const res = await apiGetQuartos();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setQuartos(dados);
+        const dados = res?.data?.dados;
+        setQuartos(extractListFromResponse(dados));
       } catch (err) {
         console.error("Erro ao buscar quartos:", err);
         showToast("Erro ao carregar quartos", "error");
@@ -53,6 +54,12 @@ export default function ListarQuarto() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state]);
+
+  const extractListFromResponse = (dados: any): Quarto[] => {
+    if (Array.isArray(dados)) return dados;
+    if (dados && Array.isArray(dados.content)) return dados.content;
+    return [];
+  };
 
   const filteredData = quartos.filter((f) =>
     Object.values(f).some((v) =>
