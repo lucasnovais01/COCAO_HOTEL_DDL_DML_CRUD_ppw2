@@ -1,29 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { TipoQuartoConverter } from "../dto/converter/tipo-quarto.converter";
-import { TipoQuartoRequest } from "../dto/request/tipo-quarto.request";
-import { TipoQuartoResponse } from "../dto/response/tipo-quarto.response";
-import { TipoQuarto } from "../entity/tipo-quarto.entity";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { TipoQuartoConverter } from '../dto/converter/tipo-quarto.converter';
+import { TipoQuartoRequest } from '../dto/request/tipo-quarto.request';
+import { TipoQuartoResponse } from '../dto/response/tipo-quarto.response';
+import { TipoQuarto } from '../entity/tipo-quarto.entity';
 
 @Injectable()
 export class TipoQuartoServiceUpdate {
   constructor(
     @InjectRepository(TipoQuarto)
-    private tipoQuartoRepository: Repository<TipoQuarto>
+    private tipoQuartoRepository: Repository<TipoQuarto>,
   ) {}
 
   async update(
     id: number,
-    tipoQuartoRequest: TipoQuartoRequest
+    tipoQuartoRequest: TipoQuartoRequest,
   ): Promise<TipoQuartoResponse | null> {
     const tipoQuarto = await this.tipoQuartoRepository.findOneBy({
       codigoTipoQuarto: id,
     });
     if (!tipoQuarto) {
       throw new HttpException(
-        "Tipo de quarto não encontrado",
-        HttpStatus.NOT_FOUND
+        'Tipo de quarto não encontrado',
+        HttpStatus.NOT_FOUND,
       );
     }
 

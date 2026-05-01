@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Quarto } from "../entity/quarto.entity";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Quarto } from '../entity/quarto.entity';
 
 @Injectable()
 export class QuartoServiceRemove {
   constructor(
     @InjectRepository(Quarto)
-    private quartoRepository: Repository<Quarto>
+    private quartoRepository: Repository<Quarto>,
   ) {}
 
   async remove(id: number): Promise<void> {
@@ -15,7 +15,7 @@ export class QuartoServiceRemove {
       idQuarto: id,
     });
     if (!quarto) {
-      throw new HttpException("Quarto não encontrado", HttpStatus.NOT_FOUND);
+      throw new HttpException('Quarto não encontrado', HttpStatus.NOT_FOUND);
     }
 
     await this.quartoRepository.delete({ idQuarto: id });
