@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
+import PaginationFooter from "../../components/pagination/PaginationFooter";
 import { apiGetQuartos } from "../../services/5-quarto/api/api.quarto";
 import { QUARTO } from "../../services/5-quarto/constants/quarto.constants";
 import { ROTA } from "../../services/router/url";
@@ -12,6 +13,11 @@ import type { Quarto } from "../../type/5-quarto";
 export default function ListarQuarto() {
   const [quartos, setQuartos] = useState<Quarto[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -30,17 +36,24 @@ export default function ListarQuarto() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await apiGetQuartos();
+        setLoading(true);
+        const res = await apiGetQuartos(currentPage, pageSize);
         const dados = res?.data?.dados;
-        setQuartos(extractListFromResponse(dados));
+        const quartoList = extractListFromResponse(dados);
+
+        setQuartos(quartoList);
+        setTotalPages(dados?.totalPages ?? 1);
+        setTotalElements(dados?.totalElements ?? quartoList.length);
       } catch (err) {
         console.error("Erro ao buscar quartos:", err);
         showToast("Erro ao carregar quartos", "error");
+      } finally {
+        setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [currentPage, pageSize]);
 
   useEffect(() => {
     const anyState: any = location.state;
@@ -233,6 +246,19 @@ export default function ListarQuarto() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <PaginationFooter
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+          {loading && (
+            <div className="text-center text-gray-600 mt-3">Carregando...</div>
+          )}
         </div>
       </main>
     </div>

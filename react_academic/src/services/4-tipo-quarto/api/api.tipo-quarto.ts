@@ -1,17 +1,37 @@
+import type { AxiosResponse } from "axios";
 import { http } from "../../axios/config.axios";
 import { API_TIPO_QUARTO } from "../constants/tipo-quarto.constants";
 import type { TipoQuarto } from "../type/tipo-quarto";
 
-export const apiGetTiposQuarto = async (): Promise<any> => {
-  console.log("[apiGetTiposQuarto] Chamando endpoint:", API_TIPO_QUARTO.LISTAR);
-  const response = await http.get(API_TIPO_QUARTO.LISTAR);
+type GetTiposQuartoResponse = {
+  dados?:
+    | {
+        content: TipoQuarto[];
+        totalElements?: number;
+        totalPages?: number;
+      }
+    | TipoQuarto[];
+};
+
+export const apiGetTiposQuarto = async (
+  page: number = 1,
+  pageSize: number = 5,
+): Promise<AxiosResponse<GetTiposQuartoResponse>> => {
+  console.log(
+    "[apiGetTiposQuarto] Chamando endpoint:",
+    API_TIPO_QUARTO.LISTAR,
+    { page, pageSize }
+  );
+  const response = await http.get(API_TIPO_QUARTO.LISTAR, {
+    params: { page, pageSize },
+  });
   console.log("[apiGetTiposQuarto] Resposta recebida:", response);
   return response;
 };
 
 export const apiGetTipoQuarto = async (
   codigoTipoQuarto: number
-): Promise<any> => {
+): Promise<AxiosResponse<unknown>> => {
   console.log(
     "[apiGetTipoQuarto] Buscando tipo de quarto código:",
     codigoTipoQuarto
@@ -24,7 +44,7 @@ export const apiGetTipoQuarto = async (
 
 export const apiPostTipoQuarto = async (
   tipoQuarto: TipoQuarto
-): Promise<any> => {
+): Promise<AxiosResponse<unknown>> => {
   console.log("[apiPostTipoQuarto] Criando tipo de quarto:", tipoQuarto);
   console.log("[apiPostTipoQuarto] Endpoint:", API_TIPO_QUARTO.CRIAR);
   console.log(
@@ -42,15 +62,14 @@ export const apiPostTipoQuarto = async (
     console.log("[apiPostTipoQuarto] Status:", response?.status);
     console.log("[apiPostTipoQuarto] Data:", response?.data);
     return response;
-  } catch (error: any) {
-    console.error("[apiPostTipoQuarto] ERRO - Detalhes completos:", {
-      message: error.message,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      headers: error.response?.headers,
-    });
-    console.error("[apiPostTipoQuarto] Full error object:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("[apiPostTipoQuarto] ERRO - Detalhes completos:", {
+        message: error.message,
+      });
+    } else {
+      console.error("[apiPostTipoQuarto] ERRO desconhecido:", error);
+    }
     throw error;
   }
 };
@@ -58,7 +77,7 @@ export const apiPostTipoQuarto = async (
 export const apiPutTipoQuarto = async (
   codigoTipoQuarto: number,
   tipoQuarto: TipoQuarto
-): Promise<any> => {
+): Promise<AxiosResponse<unknown>> => {
   console.log(
     "[apiPutTipoQuarto] Atualizando tipo de quarto código:",
     codigoTipoQuarto
@@ -77,7 +96,7 @@ export const apiPutTipoQuarto = async (
 
 export const apiDeleteTipoQuarto = async (
   codigoTipoQuarto: number
-): Promise<any> => {
+): Promise<AxiosResponse<unknown>> => {
   console.log(
     "[apiDeleteTipoQuarto] Excluindo tipo de quarto código:",
     codigoTipoQuarto

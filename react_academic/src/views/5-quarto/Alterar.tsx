@@ -34,13 +34,19 @@ export default function AlterarQuarto() {
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
 
+  const extractTiposQuarto = (dados: any): TipoQuarto[] => {
+    if (Array.isArray(dados)) return dados;
+    if (dados && Array.isArray(dados.content)) return dados.content;
+    return [];
+  };
+
   useEffect(() => {
     async function loadData() {
       try {
         // Carregar tipos de quarto
-        const resTipos = await apiGetTiposQuarto();
-        const dadosTipos = resTipos?.data?.dados ?? [];
-        if (Array.isArray(dadosTipos)) setTiposQuarto(dadosTipos);
+        const resTipos = await apiGetTiposQuarto(1, 100);
+        const dadosTipos = resTipos?.data?.dados;
+        setTiposQuarto(extractTiposQuarto(dadosTipos));
 
         // Carregar quarto
         if (idQuarto) {

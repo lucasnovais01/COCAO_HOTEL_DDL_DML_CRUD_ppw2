@@ -30,6 +30,12 @@ export default function CriarQuarto() {
   const handleChangeField = createHandleChangeField(setModel, setErrors);
   const validateField = createValidateField(setErrors);
   const showMensagem = createShowMensagem(errors);
+
+  const extractTiposQuarto = (dados: any): TipoQuarto[] => {
+    if (Array.isArray(dados)) return dados;
+    if (dados && Array.isArray(dados.content)) return dados.content;
+    return [];
+  };
   /*
    * loadTipos (didático)
    * --------------------
@@ -66,9 +72,9 @@ export default function CriarQuarto() {
   useEffect(() => {
     async function loadTipos() {
       try {
-        const res = await apiGetTiposQuarto();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setTiposQuarto(dados);
+        const res = await apiGetTiposQuarto(1, 100);
+        const dados = res?.data?.dados;
+        setTiposQuarto(extractTiposQuarto(dados));
       } catch (err) {
         console.error("[CriarQuarto] Erro ao carregar tipos de quarto:", err);
       }

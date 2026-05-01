@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
+import PaginationFooter from "../../components/pagination/PaginationFooter";
 import { apiGetTiposQuarto } from "../../services/4-tipo-quarto/api/api.tipo-quarto";
 import { TIPO_QUARTO } from "../../services/4-tipo-quarto/constants/tipo-quarto.constants";
 import { ROTA } from "../../services/router/url";
@@ -12,6 +13,11 @@ import type { TipoQuarto } from "../../type/4-tipo-quarto";
 export default function ListarTipoQuarto() {
   const [tipos, setTipos] = useState<TipoQuarto[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -29,17 +35,25 @@ export default function ListarTipoQuarto() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await apiGetTiposQuarto();
+        setLoading(true);
+        const res = await apiGetTiposQuarto(currentPage, pageSize);
         const dados = res?.data?.dados;
-        setTipos(extractListFromResponse(dados));
+        const tipoList = extractListFromResponse(dados);
+        const pageInfo = Array.isArray(dados) ? null : dados;
+
+        setTipos(tipoList);
+        setTotalPages(pageInfo?.totalPages ?? 1);
+        setTotalElements(pageInfo?.totalElements ?? tipoList.length);
       } catch (err) {
         console.error("Erro ao buscar tipos de quarto:", err);
         showToast("Erro ao carregar tipos de quarto", "error");
+      } finally {
+        setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [currentPage, pageSize]);
 
   useEffect(() => {
     const anyState: any = location.state;
@@ -237,6 +251,19 @@ export default function ListarTipoQuarto() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <PaginationFooter
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+          {loading && (
+            <div className="text-center text-gray-600 mt-3">Carregando...</div>
+          )}
         </div>
       </main>
     </div>

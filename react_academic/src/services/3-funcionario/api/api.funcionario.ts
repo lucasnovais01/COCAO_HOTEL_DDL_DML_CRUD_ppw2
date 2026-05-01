@@ -24,12 +24,18 @@ import type { Funcionario } from "../type/funcionario";
  * Endpoint: GET /3-funcionario/listar
  * Retorno: { dados: Funcionario[] }
  */
-export const apiGetFuncionarios = async (): Promise<any> => {
+export const apiGetFuncionarios = async (
+  page: number = 1,
+  pageSize: number = 5,
+): Promise<any> => {
   console.log(
     "[apiGetFuncionarios] Chamando endpoint:",
-    API_FUNCIONARIO.LISTAR
+    API_FUNCIONARIO.LISTAR,
+    { page, pageSize }
   );
-  const response = await http.get(API_FUNCIONARIO.LISTAR);
+  const response = await http.get(API_FUNCIONARIO.LISTAR, {
+    params: { page, pageSize },
+  });
   console.log("[apiGetFuncionarios] Resposta recebida:", response);
   return response;
 };

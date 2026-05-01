@@ -2,9 +2,17 @@ import { http } from "../../axios/config.axios";
 import type { Quarto } from "../../type/5-quarto";
 import { API_QUARTO } from "../constants/quarto.constants";
 
-export const apiGetQuartos = async (): Promise<any> => {
-  console.log("[apiGetQuartos] Chamando endpoint:", API_QUARTO.LISTAR);
-  const response = await http.get(API_QUARTO.LISTAR);
+export const apiGetQuartos = async (
+  page: number = 1,
+  pageSize: number = 5,
+): Promise<any> => {
+  console.log("[apiGetQuartos] Chamando endpoint:", API_QUARTO.LISTAR, {
+    page,
+    pageSize,
+  });
+  const response = await http.get(API_QUARTO.LISTAR, {
+    params: { page, pageSize },
+  });
   console.log("[apiGetQuartos] Resposta recebida:", response);
   return response;
 };

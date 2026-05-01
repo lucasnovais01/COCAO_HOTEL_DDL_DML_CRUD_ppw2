@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
+import PaginationFooter from "../../components/pagination/PaginationFooter";
 import { apiGetFuncionarios } from "../../services/3-funcionario/api/api.funcionario";
 import { FUNCIONARIO } from "../../services/3-funcionario/constants/funcionario.constants";
 import type { Funcionario } from "../../services/3-funcionario/type/funcionario";
@@ -12,6 +13,11 @@ import { ROTA } from "../../services/router/url";
 export default function ListarFuncionario() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -30,7 +36,8 @@ export default function ListarFuncionario() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await apiGetFuncionarios();
+        setLoading(true);
+        const res = await apiGetFuncionarios(currentPage, pageSize);
         const dados = res?.data?.dados;
 
         const funcionarioList = Array.isArray(dados)
@@ -40,14 +47,18 @@ export default function ListarFuncionario() {
           : [];
 
         setFuncionarios(funcionarioList);
+        setTotalPages(dados?.totalPages ?? 1);
+        setTotalElements(dados?.totalElements ?? funcionarioList.length);
       } catch (err) {
         console.error("Erro ao buscar funcionários:", err);
         showToast("Erro ao carregar funcionários", "error");
+      } finally {
+        setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [currentPage, pageSize]);
 
   useEffect(() => {
     const anyState: any = location.state;
@@ -237,6 +248,19 @@ export default function ListarFuncionario() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <PaginationFooter
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+          {loading && (
+            <div className="text-center text-gray-600 mt-3">Carregando...</div>
+          )}
         </div>
       </main>
     </div>
