@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PAGINATION } from 'src/commons/enum/paginacao.enum';
-import { Page, Pageable } from 'src/commons/pagination/page.sistema';
+import { Pageable } from 'src/commons/pagination/page.response';
+import { Page } from 'src/commons/pagination/page.sistema';
 import { Repository } from 'typeorm';
 import { ConverterHospede } from '../dto/converter/hospede.converter';
 import { HospedeResponse } from '../dto/response/hospede.response';
