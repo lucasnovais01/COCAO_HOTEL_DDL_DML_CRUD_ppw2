@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FuncionarioConverter } from '../dto/converter/funcionario.converter';
-import { FuncionarioUpdateRequest } from '../dto/request/funcionario.update.request';
+import { FuncionarioUpdateRequest } from '../dto/request/funcionario.request';
 import { FuncionarioResponse } from '../dto/response/funcionario.response';
 import { Funcionario } from '../entity/funcionario.entity';
 

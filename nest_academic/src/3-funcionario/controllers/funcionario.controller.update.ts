@@ -15,7 +15,7 @@ import { ApiPutDoc } from 'src/commons/decorators/swagger.decorators';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import { gerarLinks } from 'src/commons/utils/hateoas.utils';
-import { FuncionarioUpdateRequest } from '../dto/request/funcionario.update.request';
+import { FuncionarioUpdateRequest } from '../dto/request/funcionario.request';
 import { FuncionarioResponse } from '../dto/response/funcionario.response';
 import { FuncionarioServiceUpdate } from '../service/funcionario.service.update';
 
