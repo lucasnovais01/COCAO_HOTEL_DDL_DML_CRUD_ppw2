@@ -4,6 +4,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { Hospede } from "../../type/1-hospede";
 
 import "../../assets/css/7-form.css";
+import PaginationFooter from "../../components/pagination/PaginationFooter";
 import { apiGetHospedes } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import { ROTA } from "../../services/router/url";
@@ -16,6 +17,11 @@ export default function ListarHospede() {
   // --- Estado local ---------------------------------------------------
   const [hospedes, setHospedes] = useState<Hospede[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -45,17 +51,28 @@ export default function ListarHospede() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await apiGetHospedes();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setHospedes(dados);
+        setLoading(true);
+        const res = await apiGetHospedes(
+          currentPage,
+          pageSize,
+          'nomeHospede',
+          'ASC',
+          searchTerm,
+        );
+        const dados = res?.data?.dados;
+        setHospedes(dados?.content ?? []);
+        setTotalPages(dados?.totalPages ?? 1);
+        setTotalElements(dados?.totalElements ?? 0);
       } catch (err) {
         console.error("Erro ao buscar hóspedes:", err);
         showToast("Erro ao carregar hóspedes", "error");
+      } finally {
+        setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [currentPage, pageSize, searchTerm]);
 
   // Se a rota foi chamada com state.toast (por exemplo, vindo de Criar.tsx),
   // exibimos o toast recebido e limpamos o state para não repetir a mensagem.
@@ -77,11 +94,7 @@ export default function ListarHospede() {
   // 3 - Filtragem / busca simples
   //    - Busca global em todas as propriedades do objeto
   // ============================================================
-  const filteredData = hospedes.filter((h) =>
-    Object.values(h).some((v) =>
-      v?.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+  const filteredData = hospedes;
 
   // ============================================================
   // 4 - Toast / feedback - TEMPO DE EXIBIÇÃO
@@ -209,7 +222,10 @@ export default function ListarHospede() {
                 placeholder="Buscar..."
                 className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setSearchTerm(e.target.value);
+                }}
               />
               <button
                 onClick={handleCreate}
@@ -275,6 +291,19 @@ export default function ListarHospede() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <PaginationFooter
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+          {loading && (
+            <div className="text-center text-gray-600 mt-3">Carregando...</div>
+          )}
         </div>
       </main>
     </div>

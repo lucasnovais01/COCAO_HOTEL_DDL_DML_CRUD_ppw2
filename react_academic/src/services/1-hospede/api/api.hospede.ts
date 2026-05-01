@@ -33,10 +33,26 @@ import type { Hospede } from "../type/hospede";
  */
 
 // Lista todos os hóspedes (sem filtro de tipo)
-export const apiGetHospedes = async (): Promise<any> => {
+export const apiGetHospedes = async (
+  page: number = 1,
+  pageSize: number = 5,
+  props: string = 'nomeHospede',
+  order: 'ASC' | 'DESC' = 'ASC',
+  searchTerm?: string,
+): Promise<any> => {
   console.log('[apiGetHospedes] Chamando endpoint:', API_HOSPEDE.LISTAR);
-  // const response = await http.get(ROTA.HOSPEDE.LISTAR);
-  const response = await http.get(API_HOSPEDE.LISTAR);
+  const params = new URLSearchParams();
+  params.append('page', String(page));
+  params.append('pageSize', String(pageSize));
+  params.append('props', props);
+  params.append('order', order);
+  if (searchTerm) {
+    params.append('searchTerm', searchTerm);
+  }
+
+  const url = `${API_HOSPEDE.LISTAR}?${params.toString()}`;
+  console.log('[apiGetHospedes] URL final:', url);
+  const response = await http.get(url);
   console.log('[apiGetHospedes] Resposta recebida:', response);
   return response;
 };

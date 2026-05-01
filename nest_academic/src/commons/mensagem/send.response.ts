@@ -12,7 +12,7 @@ export function sendHttpResponse<T>(
   dados: T | null,
   path: string | null,
   erro: string | any | null,
-  _link: Record<string, Link> | null,
+  _link?: Record<string, Link> | null,
 ) {
   return res
     .status(status)

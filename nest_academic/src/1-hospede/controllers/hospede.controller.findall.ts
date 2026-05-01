@@ -1,27 +1,47 @@
-import { Controller, Get, HttpCode, HttpStatus, Req } from '@nestjs/common';
-import { HospedeServiceFindAll } from '../service/hospede.service.findall';
-import { ROTA } from 'src/commons/constants/url.sistema';
-import { HospedeResponse } from '../dto/response/hospede.response';
-import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
-import { Result } from 'src/commons/mensagem/mensagem';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Query,
+  Req,
+} from '@nestjs/common';
 import type { Request } from 'express';
+import { ROTA } from 'src/commons/constants/url.sistema';
+import { PAGINATION } from 'src/commons/enum/paginacao.enum';
+import { Result } from 'src/commons/mensagem/mensagem';
+import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
+import { Page } from 'src/commons/pagination/page.sistema';
+import { HospedeResponse } from '../dto/response/hospede.response';
+import { HospedeServiceFindAll } from '../service/hospede.service.findall';
 
-@Controller(ROTA.HOSPEDE.BASE.substring(1))  // Remove a barra inicial para evitar duplicação
+@Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerFindAll {
   constructor(private readonly hospedeServiceFindAll: HospedeServiceFindAll) {}
 
   @HttpCode(HttpStatus.OK) // 200
-  // Usa o endpoint definido em ROTA.HOSPEDE.ENDPOINTS para manter clareza
-  // Histórico: antes usávamos .split('/').pop() para extrair 'listar'
   @Get(ROTA.HOSPEDE.ENDPOINTS.LIST)
-  async findAll(@Req() res: Request): Promise<Result<HospedeResponse[]>> {
-    const response = await this.hospedeServiceFindAll.findAll();
+  async findAll(
+    @Req() req: Request,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('props') props?: string,
+    @Query('order') order?: 'ASC' | 'DESC',
+    @Query('searchTerm') search?: string,
+  ): Promise<Result<Page<HospedeResponse>>> {
+    const response = await this.hospedeServiceFindAll.findAll(
+      page ? Number(page) : PAGINATION.PAGE,
+      pageSize ? Number(pageSize) : PAGINATION.PAGESIZE,
+      props ?? 'nomeHospede',
+      order ?? PAGINATION.ASC,
+      search,
+    );
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
       'Lista de hóspedes gerada com sucesso!',
       response,
-      ROTA.HOSPEDE.LIST,
+      req.path,
       null,
     );
   }

@@ -6,13 +6,13 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { HospedeRequest } from '../dto/request/hospede.request';
-import { HospedeServiceCreate } from '../service/hospede.service.create';
-import { ROTA } from 'src/commons/constants/url.sistema';
-import { HospedeResponse } from '../dto/response/hospede.response';
-import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import type { Request } from 'express';
+import { ROTA } from 'src/commons/constants/url.sistema';
 import { Result } from 'src/commons/mensagem/mensagem';
+import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
+import { HospedeRequest } from '../dto/request/hospede.request';
+import { HospedeResponse } from '../dto/response/hospede.response';
+import { HospedeServiceCreate } from '../service/hospede.service.create';
 
 import { HOSPEDE } from 'src/commons/constants/constants.sistema';
 import { gerarLinks } from 'src/commons/utils/hateoas.utils';
@@ -29,7 +29,10 @@ export class HospedeControllerCreate {
     @Body() hospedeRequest: HospedeRequest,
   ): Promise<Result<HospedeResponse>> {
     const response = await this.hospedeServiceCreate.create(hospedeRequest);
-    const _link = gerarLinks(req, HOSPEDE.ENTITY);
+    const _link = gerarLinks(req, HOSPEDE);
+    // não é HOSPEDE.ENTITY, porque a função gerarLinks espera o nome da entidade no singular,
+    // e HOSPEDE.ENTITY é "hospedes" (plural)
+    // a função gerarLinks fica em utils/hateoas.utils.ts, e ela gera os links com base no nome da entidade, então precisa ser no singular
     return MensagemSistema.showMensagem(
       HttpStatus.CREATED,
       'Hóspede cadastrado com sucesso!!!',
