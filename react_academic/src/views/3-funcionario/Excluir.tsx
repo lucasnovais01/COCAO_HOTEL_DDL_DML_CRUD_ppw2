@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { MdCancel, MdDelete } from "react-icons/md";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
@@ -32,18 +33,16 @@ import { ROTA } from "../../services/router/url";
  * - Ninguém perde seus dados de cadastro
  *
  * Técnica de Implementação:
- * - Em vez de DELETE (que deletaria tudo)
- * - Usamos PUT com codigoFuncao = null
- * - Backend recebe PUT /3-funcionario/{idUsuario}
- * - Com payload: { nomeLogin, senha, codigoFuncao: null, ... }
- * - Banco atualiza o registro em COCAO_FUNCIONARIO
- * - Se codigoFuncao = null, HOSPEDE volta com TIPO=0
+ * - O backend trata a remoção como exclusão do registro de funcionário
+ * - Backend recebe DELETE /3-funcionario/{idUsuario}
+ * - O registro COCAO_FUNCIONARIO é removido
+ * - COCAO_HOSPEDE é atualizado para tipo = 0
  *
  * Fluxo:
  * 1. Usuário vê dados do funcionário
  * 2. Clica em "Remover Função"
  * 3. Confirma em dialog: "Transformar em hóspede?"
- * 4. Envia PUT com codigoFuncao: null
+ * 4. Envia DELETE para /3-funcionario/{idUsuario}
  * 5. Volta para lista com mensagem de sucesso
  * ========================================================================
  */

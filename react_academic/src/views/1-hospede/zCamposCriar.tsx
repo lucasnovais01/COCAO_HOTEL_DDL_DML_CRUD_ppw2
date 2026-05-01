@@ -1,3 +1,6 @@
+
+/*
+
 import React from "react";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import type { ErrosHospede, Hospede } from "../../type/1-hospede";
@@ -46,9 +49,9 @@ export const MensagemErro: React.FC<{
   if (!error || !mensagem || mensagem.length === 0) return null;
 
   // Renderiza o container de mensagens com estilo flexível
+  // Mapeia cada mensagem do array em um <div> separado
   return (
     <div className="input-error-messages">
-      {/* Mapeia cada mensagem do array em um <div> separado */}
       {mensagem.map((m, i) => (
         <div key={i} className="invalid-feedback" style={{ display: "block" }}>
           {m}
@@ -386,7 +389,7 @@ export const createShowMensagem = (errors: ErrosHospede) => {
 //           // Quando sai do campo, valida
 //           onBlur={(e) => validateField(HOSPEDE.FIELDS.NOME, e)}
 //         />
-//         {/* Renderiza mensagens de erro (se houver) */}
+            // Renderiza mensagens de erro (se houver)
 //         {_showMensagem(HOSPEDE.FIELDS.NOME)}
 //       </div>
 //     </div>
@@ -395,3 +398,5 @@ export const createShowMensagem = (errors: ErrosHospede) => {
 // ============================================================
 
 export default MensagemErro;
+
+*/

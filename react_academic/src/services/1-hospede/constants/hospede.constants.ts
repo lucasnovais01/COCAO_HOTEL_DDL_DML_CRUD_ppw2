@@ -78,7 +78,7 @@ export const HOSPEDE = {
     RG: {
       BLANK: `O RG do ${ENTITY_NAME} deve ser informado`,
       VALID: `Informe um RG válido`,
-      MAX_LEN: `O RG deve ter no máximo 20 caracteres`,
+      MAX_LEN: `O RG deve ter no máximo 9 caracteres`,
       MIN_LEN: `O RG deve ter no mínimo 7 caracteres`,
     },
     SEXO: {

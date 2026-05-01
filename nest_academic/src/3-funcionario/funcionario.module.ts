@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Funcionario } from './entity/funcionario.entity';
+import { Hospede } from 'src/1-hospede/entity/hospede.entity';
 import { FuncionarioControllerCreate } from './controllers/funcionario.controller.create';
 import { FuncionarioControllerFindAll } from './controllers/funcionario.controller.findall';
 import { FuncionarioControllerFindOne } from './controllers/funcionario.controller.findone';
@@ -29,7 +30,7 @@ const funcionarioServices = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Funcionario])],
+  imports: [TypeOrmModule.forFeature([Funcionario, Hospede])],
   controllers: [...funcionarioControllers],
   providers: [...funcionarioServices],
 })

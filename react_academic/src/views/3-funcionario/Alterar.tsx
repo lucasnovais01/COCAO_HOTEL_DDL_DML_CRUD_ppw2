@@ -418,7 +418,7 @@ export default function AlterarFuncionario() {
                   <select
                     id={FUNCIONARIO.FIELDS.ATIVO}
                     name={FUNCIONARIO.FIELDS.ATIVO}
-                    value={model?.ativo || 1}
+                    value={model?.ativo ?? 1}
                     className={getInputClass()}
                     onChange={(e) =>
                       handleChangeField(

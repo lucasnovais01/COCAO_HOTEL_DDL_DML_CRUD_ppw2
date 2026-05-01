@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { http } from "../../axios/config.axios";
 import { API_FUNCIONARIO } from "../constants/funcionario.constants";
 import type { Funcionario } from "../type/funcionario";
@@ -135,10 +136,9 @@ export const apiPutFuncionario = async (
  * Parâmetro URL: idUsuario (ID_USUARIO em COCAO_FUNCIONARIO)
  * Retorno: Status de sucesso
  *
- * IMPORTANTE: Este endpoint NÃO deleta o registro!
- * - Remove a função (codigoFuncao = "")
- * - Transforma funcionário em hóspede (TIPO = 0)
- * - Mantém dados pessoais intactos em COCAO_HOSPEDE
+ * IMPORTANTE: Este endpoint remove o registro de COCAO_FUNCIONARIO
+ * - Reclassifica o usuário em COCAO_HOSPEDE com TIPO = 0
+ * - Mantém os dados pessoais em COCAO_HOSPEDE
  *
  * Uso: Excluir.tsx - ao clicar em "Remover Função"
  */

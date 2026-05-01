@@ -1,3 +1,13 @@
+
+// Não está mais em uso, devido a centralização
+
+/* 
+
+// Tanto o zCamposAlterar.tsx quanto o zCamposCriar.tsx são arquivos que centralizam a lógica 
+// de manipulação de campos do formulário, como validação, exibição de mensagens de erro e 
+// atualização do estado. Eles são usados para manter os componentes Alterar.tsx e Criar.tsx 
+// limpos e focados apenas na renderização.
+
 import React from "react";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
 import type { ErrosHospede, Hospede } from "../../type/1-hospede";
@@ -38,9 +48,9 @@ export const MensagemErro: React.FC<{
   if (!error || !mensagem || mensagem.length === 0) return null;
 
   // Renderiza o container de mensagens com estilo flexível
+  // Mapeia cada mensagem do array em um <div> separado
   return (
     <div className="input-error-messages">
-      {/* Mapeia cada mensagem do array em um <div> separado */}
       {mensagem.map((m, i) => (
         <div key={i} className="invalid-feedback" style={{ display: "block" }}>
           {m}
@@ -119,6 +129,9 @@ export const getInputClass = (
 //   // Depois no input:
 //   <input onChange={(e) => handleChangeField(HOSPEDE.FIELDS.NOME, e.target.value)} />
 //
+
+/*
+
 export const createHandleChangeField = (
   setModel: React.Dispatch<React.SetStateAction<Hospede | null>>,
   setErrors: React.Dispatch<React.SetStateAction<ErrosHospede>>
@@ -367,7 +380,7 @@ export const createShowMensagem = (errors: ErrosHospede) => {
 //           // Quando sai do campo, valida
 //           onBlur={(e) => validateField(HOSPEDE.FIELDS.NOME, e)}
 //         />
-//         {/* Renderiza mensagens de erro (se houver) */}
+
 //         {_showMensagem(HOSPEDE.FIELDS.NOME)}
 //       </div>
 //     </div>
@@ -376,3 +389,5 @@ export const createShowMensagem = (errors: ErrosHospede) => {
 // ============================================================
 
 export default MensagemErro;
+
+*/

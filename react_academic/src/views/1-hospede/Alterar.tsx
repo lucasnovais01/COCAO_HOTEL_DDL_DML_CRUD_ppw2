@@ -1,114 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
-import {
-  apiGetHospede,
-  apiPutHospede,
-} from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
-import type { ErrosHospede, Hospede } from "../../type/1-hospede";
-
-// código estava ficando uma sujeira, então extraí as funções de manipulação de campos
-
-import {
-  createHandleChangeField,
-  createShowMensagem,
-  createValidateField,
-} from "./zCamposAlterar";
+import { useAlterar } from "../../services/1-hospede/hook/useAlterar";
 import { ROTA } from "../../services/router/url";
 
 export default function AlterarHospede() {
-  // ============================================================
-  // ADAPTAÇÃO 1: Mudança de idCidade para idUsuario
-  // O professor usava idCidade (string), agora usamos idUsuario (number)
-  // Precisamos converter string → number com parseInt()
-  // ============================================================
-  const { idUsuario } = useParams<{ idUsuario: string }>();
-  const navigate = useNavigate();
-  const [model, setModel] = useState<Hospede | null>(null);
-  const [errors, setErrors] = useState<ErrosHospede>({});
-
-  // Importar funções do módulo de campos
-  const handleChangeField = createHandleChangeField(setModel, setErrors);
-  const validateField = createValidateField(setErrors);
-  const showMensagem = createShowMensagem(errors);
+  const {
+    model,
+    loading,
+    handleChangeField,
+    validateField,
+    showMensagem,
+    getInputClass,
+    onSubmitForm,
+    onCancel,
+  } = useAlterar();
 
   // ============================================================
-  // useEffect para buscar os dados do hóspede ao carregar a página
+  // RENDERIZAÇÃO DO FORMULÁRIO
   // ============================================================
-  useEffect(() => {
-    async function getHospede() {
-      try {
-        if (idUsuario) {
-          // ADAPTAÇÃO: Converter string para number antes de enviar para a API
-          const id = parseInt(idUsuario, 10);
-          const response = await apiGetHospede(id);
-          console.log(response.data.dados);
 
-          if (response.data.dados) {
-            setModel(response.data.dados);
-          }
-        }
-      } catch (error: any) {
-        console.log(error);
-        alert(HOSPEDE.OPERACAO.POR_ID.ERRO);
-      }
-    }
-
-    getHospede();
-  }, [idUsuario]);
-
-  // ============================================================
-  // Função para enviar o formulário
-  // ============================================================
-  const onSubmitForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!idUsuario || !model) {
-      alert("Dados incompletos para atualização");
-      return;
-    }
-
-    try {
-      // ADAPTAÇÃO: Converter string para number
-      const id = parseInt(idUsuario, 10);
-      await apiPutHospede(id, model);
-      
-      // não estava funcionando com alert
-      // alert(HOSPEDE.OPERACAO.ATUALIZAR.SUCESSO);
-      
-      // Em vez de alert, navegamos com toast via state
-      navigate("/sistema/hospede/listar", {
-        state: {
-          toast: {
-            message: `Hóspede ID ${id} alterado com sucesso!`,
-            type: "success",
-          },
-        },
-      });
-    } catch (error: any) {
-      console.log(error);
-      alert(HOSPEDE.OPERACAO.ATUALIZAR.ERRO);
-    }
-  };
-
-  // ============================================================
-  // Função para cancelar e voltar para a listagem
-  // ============================================================
-  const onCancel = () => {
-    navigate("/sistema/hospede/listar");
-  };
-
-  // ============================================================
-  // Classe CSS para os inputs
-  // ============================================================
-  const getInputClass = () => {
-    return "form-control app-label mt-2";
-  };
 
   // ============================================================
   // RENDERIZAÇÃO DO FORMULÁRIO
@@ -366,6 +280,7 @@ export default function AlterarHospede() {
                 type="submit"
                 className="btn btn-sucess"
                 title={HOSPEDE.OPERACAO.ATUALIZAR.ACAO}
+                disabled={loading}
               >
                 <span className="btn-icon">
                   <i>

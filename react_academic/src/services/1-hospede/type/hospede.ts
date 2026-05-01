@@ -4,7 +4,7 @@ export interface Hospede {
   cpf?: string;
   rg?: string;
   sexo?: string;
-  dataNascimento?: Date;
+  dataNascimento?: string | Date;
   email?: string;
   telefone?: string;
   tipo?: number;

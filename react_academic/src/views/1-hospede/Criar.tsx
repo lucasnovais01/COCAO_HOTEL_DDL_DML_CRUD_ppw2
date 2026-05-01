@@ -1,111 +1,23 @@
-import { useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "../../assets/css/7-form.css";
-import { apiPostHospede } from "../../services/1-hospede/api/api.hospede";
 import { HOSPEDE } from "../../services/1-hospede/constants/hospede.constants";
-import type { ErrosHospede, Hospede } from "../../type/1-hospede";
-
-// Código de validação e manipulação de campos extraído para zCamposCriar.tsx
+import { useCriar } from "../../services/1-hospede/hook/useCriar";
 import { ROTA } from "../../services/router/url";
-import {
-  createHandleChangeField,
-  createShowMensagem,
-  createValidateField,
-} from "./zCamposCriar";
 
 export default function CriarHospede() {
-  const navigate = useNavigate();
-  const [model, setModel] = useState<Hospede>(
-    HOSPEDE.DADOS_INICIAIS as unknown as Hospede
-  );
-  const [errors, setErrors] = useState<ErrosHospede>({});
-  const [loading, setLoading] = useState(false);
-
-  // Importar funções do módulo de campos
-  const handleChangeField = createHandleChangeField(setModel, setErrors);
-  const validateField = createValidateField(setErrors);
-  const showMensagem = createShowMensagem(errors);
-
-  // ============================================================
-  // Função para enviar o formulário (CREATE)
-  // ============================================================
-  const onSubmitForm = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!model) {
-      alert("Dados incompletos para criação");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      /*
-        PROBLEMA: O backend retornava 400 Bad Request mesmo com URL correta.
-        
-        CAUSA: 
-        1. Enviávamos idUsuario: 0 (não deve ser enviado em CREATE, é auto-gerado)
-        2. Campos opcionais vazios eram enviados como "" (backend esperava null/undefined)
-        
-        SOLUÇÃO:
-        - Remover idUsuario do payload (não incluir na requisição)
-        - Converter campos vazios de strings para null (rg, email, telefone)
-        - Garantir tipo e ativo como números, não strings
-      */
-      const hospedeToSend = {
-        nomeHospede: model.nomeHospede,
-        cpf: model.cpf,
-        rg: model.rg || null,
-        sexo: model.sexo,
-        dataNascimento: model.dataNascimento
-          ? String(model.dataNascimento)
-          : "",
-        email: model.email || null,
-        telefone: model.telefone || null,
-        tipo: Number(model.tipo),
-        ativo: Number(model.ativo),
-      };
-
-      console.log(
-        "[onSubmitForm] Dados a enviar (sem idUsuario, opcionais como null):",
-        JSON.stringify(hospedeToSend, null, 2)
-      );
-
-      await apiPostHospede(hospedeToSend as unknown as Hospede);
-
-      // Em vez de alert, navegamos com toast via state
-      navigate(ROTA.HOSPEDE.LISTAR, {
-        state: {
-          toast: {
-            message: HOSPEDE.OPERACAO.CRIAR.SUCESSO,
-            type: "success",
-          },
-        },
-      });
-    } catch (error: any) {
-      console.error("[onSubmitForm] Erro:", error);
-      alert(HOSPEDE.OPERACAO.CRIAR.ERRO);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ============================================================
-  // Função para cancelar e voltar para a listagem
-  // ============================================================
-  const onCancel = () => {
-    navigate(ROTA.HOSPEDE.LISTAR);
-  };
-
-  // ============================================================
-  // Classe CSS para os inputs
-  // ============================================================
-  const getInputClass = () => {
-    return "form-control app-label mt-2";
-  };
+  const {
+    model,
+    loading,
+    handleChangeField,
+    validateField,
+    showMensagem,
+    getInputClass,
+    onSubmitForm,
+    onCancel,
+  } = useCriar();
 
   // ============================================================
   // RENDERIZAÇÃO DO FORMULÁRIO
