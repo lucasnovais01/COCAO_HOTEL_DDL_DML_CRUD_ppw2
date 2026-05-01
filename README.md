@@ -79,8 +79,8 @@ npm install class-transformer
 ## TODOS DE UMA VEZ (NEST)
 npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm oracledb @types/oracledb @nestjs/config joi @types/joi class-validator class-transformer mysql --save
 
-## NOVO, sem o ORACLE
-npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm typeorm  @nestjs/config joi @types/joi class-validator class-transformer mysql
+## NOVO, sem o ORACLE, ADICIONADO O SWAGGER
+npm install @nestjs/core @nestjs/common @nestjs/platform-express reflect-metadata rxjs @types/node @types/express @nestjs/typeorm @nestjs/swagger typeorm  @nestjs/config joi @types/joi class-validator class-transformer mysql
 
 
 

@@ -2,7 +2,7 @@
  * ==============================================================
  * DOCUMENTAÇÃO DE DIFERENÇAS ENTRE IMPLEMENTAÇÃO E MODELO
  * ==============================================================
- * 
+ *
  * IMPORTANTE:
  * - Este arquivo é puramente para documentação
  * - Os imports e códigos são apenas para referência
@@ -29,7 +29,7 @@
  * 2. Para que serve cada seção (@Module decorators)
  * 3. Como segue o padrão do professor
  * 4. Tutorial completo para referência futura
- * 
+ *
  * JUSTIFICATIVA:
  * - O módulo Hóspede é central para o sistema hoteleiro
  * - Precisa ser bem documentado para manutenção futura
@@ -47,11 +47,11 @@
  * 1. Tratamento de Rotas:
  *    - Professor: Usa ROTA.CIDADE.BASE diretamente
  *    - Nossa: Remove barra inicial com substring(1) para evitar duplicação
- * 
+ *
  * 2. Organização de Endpoints:
  *    - Professor: Usa ROTA.CIDADE.CREATE direto
  *    - Nossa: Usa ROTA.HOSPEDE.ENDPOINTS.CREATE para melhor organização
- * 
+ *
  * 3. Documentação:
  *    - Professor: Comentários básicos sobre a funcionalidade
  *    - Nossa: Documentação extensa incluindo:
@@ -59,18 +59,18 @@
  *      * Explicação didática do controller
  *      * Tutorial sobre métodos String
  *      * Solução detalhada do problema de rotas 404
- * 
+ *
  * JUSTIFICATIVA DAS MUDANÇAS:
  * 1. Problemas de Rota:
  *    - Enfrentamos erro 404 devido à duplicação de prefixos
  *    - Solução com substring(1) mantém compatibilidade com NestJS
- * 
+ *
  * 2. Documentação Expandida:
  *    - Sistema hoteleiro mais complexo que cidade
  *    - Necessidade de manter histórico de decisões
  *    - Facilitar manutenção futura
  *    - Servir como referência para outros desenvolvedores
- * 
+ *
  * 3. Organização de Endpoints:
  *    - Maior número de rotas no sistema hoteleiro
  *    - Necessidade de melhor organização
@@ -130,7 +130,7 @@ export class HospedeRequest {
  *      * Validações de email (@IsEmail)
  *      * Enums (@IsIn)
  *      * Conversões de tipo (@Type)
- * 
+ *
  * 2. Documentação:
  *    - Professor: Comentários básicos sobre campos opcionais
  *    - Nossa: Documentação completa incluindo:
@@ -138,29 +138,29 @@ export class HospedeRequest {
  *      * Relação com DDL do banco
  *      * Diferenças do modelo original
  *      * Tutorial de uso
- * 
+ *
  * 3. Mensagens de Erro:
  *    - Professor: Mensagens simples
  *    - Nossa: Mensagens detalhadas e específicas para cada tipo de erro
- * 
+ *
  * 4. Integração com Banco:
  *    - Professor: Foco na validação básica
  *    - Nossa: Alinhamento com constraints do DDL:
  *      * Tamanhos máximos
  *      * Padrões de regex
  *      * Campos nullable
- * 
+ *
  * JUSTIFICATIVA DAS MUDANÇAS:
  * 1. Complexidade do Domínio:
  *    - Sistema hoteleiro tem mais regras de negócio
  *    - Dados pessoais precisam de validação rigorosa
  *    - Necessidade de conformidade com DDL
- * 
+ *
  * 2. Documentação Expandida:
  *    - DTO é ponto crítico de entrada de dados
  *    - Necessidade de documentar relação com banco
  *    - Facilitar manutenção e debug
- * 
+ *
  * 3. Mensagens de Erro:
  *    - Melhor experiência para usuário final
  *    - Facilita depuração de problemas
@@ -235,36 +235,36 @@ export class HospedeServiceCreate {
  * 1. Validação de Unicidade:
  *    - Professor: Verifica por nomeCidade
  *    - Nossa: Verifica por CPF (chave natural mais apropriada)
- * 
+ *
  * 2. Documentação:
- *    - Professor: 
+ *    - Professor:
  *      * Mantém código antigo comentado para referência
  *      * Comentários básicos sobre funcionalidade
  *    - Nossa:
  *      * Documentação completa em formato tutorial
  *      * Explicação do fluxo de operação
  *      * Integração com outros componentes
- * 
+ *
  * 3. Organização do Código:
- *    - Professor: 
+ *    - Professor:
  *      * Mantém código legado comentado
  *      * Foco na implementação atual
  *    - Nossa:
  *      * Separação clara de responsabilidades
  *      * Documentação da integração com TypeORM
  *      * Explicação das escolhas de design
- * 
+ *
  * JUSTIFICATIVA DAS MUDANÇAS:
  * 1. Regras de Negócio:
  *    - Sistema hoteleiro requer validações mais rigorosas
  *    - CPF é identificador natural mais adequado que nome
  *    - Necessidade de documentar fluxo complexo
- * 
+ *
  * 2. Manutenibilidade:
  *    - Documentação clara facilita manutenção
  *    - Tutorial ajuda novos desenvolvedores
  *    - Explicação do papel no contexto maior
- * 
+ *
  * 3. Integração:
  *    - Documentação da interação com outros componentes
  *    - Explicação do papel do converter
@@ -342,14 +342,14 @@ export class ConverterHospede {
 /**
  * DIFERENÇAS:
  * 1. Tratamento de Campos:
- *    - Professor: 
+ *    - Professor:
  *      * Mapeamento simples de 2-3 campos
  *      * Sem distinção entre obrigatórios/opcionais
  *    - Nossa:
  *      * Mapeamento extenso de múltiplos campos
  *      * Separação clara entre obrigatórios e opcionais
  *      * Verificação undefined para campos opcionais
- * 
+ *
  * 2. Serialização:
  *    - Professor:
  *      * Uso direto de plainToInstance
@@ -358,7 +358,7 @@ export class ConverterHospede {
  *      * Processo em duas etapas com instanceToPlain
  *      * Documentação do processo de serialização
  *      * Explicação dos motivos das escolhas
- * 
+ *
  * 3. Documentação:
  *    - Professor:
  *      * Comentários básicos
@@ -368,18 +368,18 @@ export class ConverterHospede {
  *      * Tutorial de uso
  *      * Explicação das diferenças do modelo
  *      * Detalhes de integração
- * 
+ *
  * JUSTIFICATIVA DAS MUDANÇAS:
  * 1. Complexidade dos Dados:
  *    - Sistema hoteleiro tem mais campos
  *    - Necessidade de tratamento específico para opcionais
  *    - Garantia de integridade dos dados
- * 
+ *
  * 2. Segurança na Serialização:
  *    - Processo em duas etapas evita vazamento de dados
  *    - Melhor integração com TypeORM
  *    - Prevenção de problemas com metadados
- * 
+ *
  * 3. Manutenibilidade:
  *    - Documentação facilita entendimento
  *    - Tutorial ajuda novos desenvolvedores
@@ -444,13 +444,13 @@ export class Hospede extends BaseEntity {
 /**
  * DIFERENÇAS:
  * 1. Geração de ID:
- *    - Professor: 
+ *    - Professor:
  *      * Usa 'increment' (genérico)
  *      * Inicializa ID com 0
  *    - Nossa:
  *      * Usa 'identity' (otimizado para Oracle 12c+)
  *      * Sem inicialização (gerenciado pelo banco)
- * 
+ *
  * 2. Definição de Campos:
  *    - Professor:
  *      * Campos básicos sem nullable
@@ -459,7 +459,7 @@ export class Hospede extends BaseEntity {
  *      * Campos com nullable explícito
  *      * Inicialização seletiva
  *      * Tipos específicos do Oracle
- * 
+ *
  * 3. Documentação:
  *    - Professor:
  *      * Comentários básicos sobre PK
@@ -469,7 +469,7 @@ export class Hospede extends BaseEntity {
  *      * Explicação das diferenças do modelo
  *      * Tutorial de uso
  *      * Detalhes de integração com Oracle
- * 
+ *
  * 4. Integridade com Banco:
  *    - Professor:
  *      * Mapeamento básico
@@ -478,23 +478,23 @@ export class Hospede extends BaseEntity {
  *      * Alinhamento com DDL
  *      * Documentação de constraints
  *      * Explicação de checks e validações
- * 
+ *
  * JUSTIFICATIVA DAS MUDANÇAS:
  * 1. Otimização Oracle:
  *    - Uso de 'identity' mais eficiente
  *    - Evita sequências extras
  *    - Reduz conflitos de ID
- * 
+ *
  * 2. Clareza de Código:
  *    - Nullable explícito documenta DDL
  *    - Inicialização seletiva evita valores desnecessários
  *    - Tipos específicos garantem compatibilidade
- * 
+ *
  * 3. Manutenibilidade:
  *    - Documentação facilita manutenção
  *    - Tutorial ajuda novos desenvolvedores
  *    - Explicação das decisões técnicas
- * 
+ *
  * 4. Robustez:
  *    - Alinhamento com DDL previne erros
  *    - Documentação de constraints ajuda debug
