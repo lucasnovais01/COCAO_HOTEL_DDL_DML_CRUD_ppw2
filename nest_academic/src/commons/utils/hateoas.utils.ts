@@ -38,7 +38,7 @@ export function gerarLinks(
     };
     link.excluir = {
       href: `${baseUrl}/excluir/${id}`,
-      method: 'PUT',
+      method: 'DELETE',
     };
   }
 
@@ -54,5 +54,39 @@ export function geraPageLinks(
   const host = req.get('host');
   const baseUrl = `${protocol}://${host}/${ROTA_SISTEMA}/${entity.toLowerCase()}`;
 
-  return null;
+  const params = new URLSearchParams({
+    page: String(page.page),
+    pageSize: String(page.pageSize),
+  });
+
+  const links: Record<string, Link> = {
+    self: {
+      href: `${baseUrl}/listar?${params.toString()}`,
+      method: 'GET',
+    },
+    first: {
+      href: `${baseUrl}/listar?page=1&pageSize=${page.pageSize}`,
+      method: 'GET',
+    },
+    last: {
+      href: `${baseUrl}/listar?page=${page.totalPages}&pageSize=${page.pageSize}`,
+      method: 'GET',
+    },
+  };
+
+  if (page.page > 1) {
+    links.prev = {
+      href: `${baseUrl}/listar?page=${page.page - 1}&pageSize=${page.pageSize}`,
+      method: 'GET',
+    };
+  }
+
+  if (page.page < page.totalPages) {
+    links.next = {
+      href: `${baseUrl}/listar?page=${page.page + 1}&pageSize=${page.pageSize}`,
+      method: 'GET',
+    };
+  }
+
+  return links;
 }

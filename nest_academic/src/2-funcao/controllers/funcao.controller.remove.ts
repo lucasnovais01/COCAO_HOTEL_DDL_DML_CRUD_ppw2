@@ -7,17 +7,22 @@ import {
   ParseIntPipe,
   Req,
 } from '@nestjs/common';
-import { FuncaoServiceRemove } from '../service/funcao.service.remove';
+import type { Request } from 'express';
 import { ROTA } from 'src/commons/constants/url.sistema';
-
+import { ApiDeleteDoc } from 'src/commons/decorators/swagger.decorators';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
-import type { Request } from 'express';
+import { FuncaoServiceRemove } from '../service/funcao.service.remove';
 
 @Controller(ROTA.FUNCAO.BASE.substring(1))
 export class FuncaoControllerRemove {
   constructor(private readonly funcaoServiceRemove: FuncaoServiceRemove) {}
 
+  @ApiDeleteDoc({
+    ACAO: 'Excluir função',
+    SUCESSO: 'Função excluída com sucesso',
+    NAO_LOCALIZADO: 'Função não encontrada',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(ROTA.FUNCAO.ENDPOINTS.DELETE)
   async remove(
@@ -26,9 +31,7 @@ export class FuncaoControllerRemove {
   ): Promise<Result<void>> {
     await this.funcaoServiceRemove.remove(id);
 
-    const rawPath =
-      (req as any).path ?? (req as any).url ?? (req as any).originalUrl;
-    const path: string | null = typeof rawPath === 'string' ? rawPath : null;
+    const path = req.url ?? null;
 
     return MensagemSistema.showMensagem(
       HttpStatus.NO_CONTENT,

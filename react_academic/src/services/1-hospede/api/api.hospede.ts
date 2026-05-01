@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { http } from "../../axios/config.axios";
 import { API_HOSPEDE } from "../constants/api.hospede"; // Importa as rotas corretas da API
                                                         // em vez de usar ROTA que tem /sistema
@@ -36,7 +37,7 @@ import type { Hospede } from "../type/hospede";
 export const apiGetHospedes = async (
   page: number = 1,
   pageSize: number = 5,
-  props: string = 'nomeHospede',
+  props: string = 'idUsuario',
   order: 'ASC' | 'DESC' = 'ASC',
   searchTerm?: string,
 ): Promise<any> => {

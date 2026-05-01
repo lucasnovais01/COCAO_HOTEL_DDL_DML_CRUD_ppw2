@@ -8,9 +8,22 @@ import { FUNCAO } from "../../services/2-funcao/constants/funcao.constants";
 import { ROTA } from "../../services/router/url";
 import type { Funcao } from "../../type/2-funcao";
 
+type PaginatedFuncaoData = {
+  content: Funcao[];
+  totalElements?: number;
+  totalPages?: number;
+};
+
 export default function ListarFuncao() {
   const [funcoes, setFuncoes] = useState<Funcao[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [hateoasLinks, setHateoasLinks] = useState<Record<string, unknown> | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPagingInfo, setShowPagingInfo] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -18,31 +31,60 @@ export default function ListarFuncao() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const columns = ["codigoFuncao", "nomeFuncao", "descricao", "nivelAcesso"];
+  const columns: Array<keyof Funcao> = [
+    "codigoFuncao",
+    "nomeFuncao",
+    "descricao",
+    "nivelAcesso",
+  ];
 
   useEffect(() => {
     async function load() {
+      setLoading(true);
+      setHateoasLinks(null);
+
       try {
-        const res = await apiGetFuncoes();
-        const dados = res?.data?.dados ?? [];
-        if (Array.isArray(dados)) setFuncoes(dados);
+        const res = await apiGetFuncoes(currentPage, pageSize);
+        const dados = res?.data?.dados;
+        const linkPayload = res?.data?._link ?? null;
+
+        setHateoasLinks(linkPayload);
+
+        if (dados && !Array.isArray(dados) && Array.isArray(dados.content)) {
+          const pageData = dados as PaginatedFuncaoData;
+          setFuncoes(pageData.content ?? []);
+          setTotalElements(pageData.totalElements ?? 0);
+          setTotalPages(pageData.totalPages ?? 1);
+          setShowPagingInfo(true);
+        } else if (Array.isArray(dados)) {
+          setFuncoes(dados);
+          setTotalElements(dados.length);
+          setTotalPages(1);
+          setShowPagingInfo(false);
+        } else {
+          setFuncoes([]);
+          setTotalElements(0);
+          setTotalPages(1);
+          setShowPagingInfo(false);
+        }
       } catch (err) {
         console.error("Erro ao buscar funções:", err);
         showToast("Erro ao carregar funções", "error");
+      } finally {
+        setLoading(false);
       }
     }
 
     load();
-  }, []);
+  }, [currentPage, pageSize]);
 
   useEffect(() => {
-    const anyState: any = location.state;
-    if (anyState && anyState.toast) {
-      const t = anyState.toast as {
-        message: string;
-        type: "success" | "error";
-      };
-      showToast(t.message, t.type);
+    const state = location.state as
+      | { toast?: { message: string; type: "success" | "error" } }
+      | null;
+
+    if (state?.toast) {
+      showToast(state.toast.message, state.toast.type);
       navigate(location.pathname, { replace: true, state: {} });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,12 +123,15 @@ export default function ListarFuncao() {
     navigate(`${ROTA.FUNCAO.POR_ID}/${codigo}`);
   };
 
-  const formatValue = (key: string, value: any): string | ReactNode => {
+  const formatValue = (
+    key: keyof Funcao,
+    value: unknown,
+  ): string | ReactNode => {
     if (value === true) return "Sim";
     if (value === false) return "Não";
-    const k = key.toLowerCase();
+    const k = key.toString().toLowerCase();
     if (k.includes("data")) {
-      const d = new Date(value);
+      const d = new Date(value as string | number);
       return isNaN(d.getTime()) ? "-" : d.toLocaleDateString("pt-BR");
     }
     if (k === "nivelacesso") {
@@ -98,10 +143,10 @@ export default function ListarFuncao() {
         case 3:
           return "3 - Avançado";
         default:
-          return value?.toString() || "-";
+          return value == null ? "-" : String(value);
       }
     }
-    return value?.toString() || "-";
+    return value == null ? "-" : String(value);
   };
 
   return (
@@ -158,7 +203,10 @@ export default function ListarFuncao() {
                 placeholder="Buscar..."
                 className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
               <button
                 onClick={handleCreate}
@@ -169,9 +217,14 @@ export default function ListarFuncao() {
             </div>
           </div>
 
-          <div className="table-container">
-            <table className="dev-table">
-              <thead>
+          {loading ? (
+            <div className="text-center py-8 text-gray-500">
+              Carregando funções...
+            </div>
+          ) : (
+            <div className="table-container">
+              <table className="dev-table">
+                <thead>
                 <tr>
                   {columns.map((col) => (
                     <th key={col}>
@@ -198,10 +251,10 @@ export default function ListarFuncao() {
                     </td>
                   </tr>
                 ) : (
-                  filteredData.map((f) => (
-                    <tr key={f.codigoFuncao ?? Math.random()}>
+                  filteredData.map((f, index) => (
+                    <tr key={f.codigoFuncao ?? index}>
                       {columns.map((col) => (
-                        <td key={col}>{formatValue(col, (f as any)[col])}</td>
+                        <td key={col}>{formatValue(col, f[col])}</td>
                       ))}
                       <td className="actions">
                         <button
@@ -232,6 +285,38 @@ export default function ListarFuncao() {
               </tbody>
             </table>
           </div>
+          )}
+          {showPagingInfo && (
+            <div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-4">
+              <div className="text-sm text-gray-600">
+                Página {currentPage} de {totalPages} · {totalElements} registros
+              </div>
+              <div className="flex gap-2">
+                <button
+                  disabled={currentPage <= 1}
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Anterior
+                </button>
+                <button
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Próximo
+                </button>
+              </div>
+            </div>
+          )}
+          {hateoasLinks && (
+            <div className="mt-4 text-sm text-gray-700">
+              <strong>Links HATEOAS:</strong>
+              <pre className="whitespace-pre-wrap break-words bg-gray-50 p-3 rounded-lg text-xs">
+                {JSON.stringify(hateoasLinks, null, 2)}
+              </pre>
+            </div>
+          )}
         </div>
       </main>
     </div>

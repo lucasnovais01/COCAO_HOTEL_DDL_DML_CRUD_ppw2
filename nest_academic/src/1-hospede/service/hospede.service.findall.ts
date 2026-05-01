@@ -42,6 +42,7 @@ export class HospedeServiceFindAll {
 
     const content = ConverterHospede.toListHospedeResponse(hospedes);
     const pageable = new Pageable(page, pageSize, props, order, [
+      'idUsuario',
       'nomeHospede',
       'cpf',
       'email',

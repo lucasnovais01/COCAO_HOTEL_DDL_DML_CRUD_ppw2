@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -55,7 +56,7 @@ export default function ListarHospede() {
         const res = await apiGetHospedes(
           currentPage,
           pageSize,
-          'nomeHospede',
+          'idUsuario',
           'ASC',
           searchTerm,
         );

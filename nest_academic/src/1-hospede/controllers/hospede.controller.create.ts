@@ -29,7 +29,10 @@ export class HospedeControllerCreate {
     @Body() hospedeRequest: HospedeRequest,
   ): Promise<Result<HospedeResponse>> {
     const response = await this.hospedeServiceCreate.create(hospedeRequest);
-    const _link = gerarLinks(req, HOSPEDE);
+    const _link = gerarLinks(req, HOSPEDE, response?.idUsuario);
+
+    // atualizado de (req, HOSPEDE) para (req, HOSPEDE. response?.idUsuario) por que a função gerarLinks precisa do nome da entidade no singular (HOSPEDE) e do ID para gerar os links corretamente.
+
     // não é HOSPEDE.ENTITY, porque a função gerarLinks espera o nome da entidade no singular,
     // e HOSPEDE.ENTITY é "hospedes" (plural)
     // a função gerarLinks fica em utils/hateoas.utils.ts, e ela gera os links com base no nome da entidade, então precisa ser no singular
@@ -37,8 +40,8 @@ export class HospedeControllerCreate {
       HttpStatus.CREATED,
       'Hóspede cadastrado com sucesso!!!',
       response,
-      ROTA.HOSPEDE.CREATE, // Antes: res.path , para pegar o caminho da requisição, mas tava dando erro de tipo
-      // Agora é o mesmo valor do decorator @Post(ROTA.HOSPEDE.CREATE)
+      // ROTA.HOSPEDE.CREATE, não é mais necessário porque agora usamos req.path que já tem a rota completa
+      req.path,
       null,
       _link,
     );

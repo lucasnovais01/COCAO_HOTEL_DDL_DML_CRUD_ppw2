@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Req,
 } from '@nestjs/common';
-import { HospedeServiceRemove } from '../service/hospede.service.remove';
+import { HOSPEDE } from 'src/commons/constants/constants.sistema';
 import { ROTA } from 'src/commons/constants/url.sistema';
+import { gerarLinks } from 'src/commons/utils/hateoas.utils';
+import { HospedeServiceRemove } from '../service/hospede.service.remove';
 
+import type { Request } from 'express';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
-import type { Request } from 'express';
 
 @Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerRemove {
@@ -30,7 +32,7 @@ export class HospedeControllerRemove {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Result<void>> {
     await this.hospedeServiceRemove.remove(id);
-    // 204: não retornar corpo
+    const _link = gerarLinks(req, HOSPEDE, id);
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const rawPath =
@@ -39,11 +41,12 @@ export class HospedeControllerRemove {
     const path: string | null = typeof rawPath === 'string' ? rawPath : null;
 
     return MensagemSistema.showMensagem(
-      HttpStatus.NO_CONTENT, // O NO_CONTENT é o normal, porém, não volta nada
+      HttpStatus.OK,
       'Hóspede excluído com sucesso!',
       null,
       path,
       null,
+      _link,
     );
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // ============================================================
 // Parte 1 - Importações e Dependências
 // ============================================================
@@ -16,7 +17,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { ROTA } from "../services/router/url";
 
 import { http } from "../services/axios/config.axios";
-import { REST_CONFIG } from "../services/constants/sistema.constant";
 
 // ============================================================
 // Parte 2 - Configuração Inicial de Mock e Estrutura de Dados
@@ -236,10 +236,17 @@ const tabs = [
 export default function DevTools() {
   const [activeTab, setActiveTab] = useState("usuarios");
   const [searchTerm, setSearchTerm] = useState("");
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [hateoasLinks, setHateoasLinks] = useState<Record<string, any> | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPagingInfo, setShowPagingInfo] = useState(false);
+  const [toast, setToast] = useState<
+    | { message: string; type: "success" | "error" }
+    | null
+  >(null);
   const navigate = useNavigate();
 
   // Se colocar false, ativa chamadas reais ao backend, e se colocar true, usa dados mock em memória
@@ -353,49 +360,6 @@ export default function DevTools() {
 
   // Buscar os dados da aba atual no backend
   useEffect(() => {
-    /*
-      // Quando NÃO usar mock, buscar os dados da aba atual no backend
-  useEffect(() => {
-    if (USE_MOCK) return;
-
-    const BACKEND_BASE = 'http://localhost:8000'; // adjust if your API is hosted elsewhere
-
-    // Mapear chaves locais das abas para endpoints REST no backend (caminho completo após o host)
-    // Extremamente importante:
-
-    const backendMap: { [key: string]: string | string[] } = {
-      usuarios: ['/rest/sistema/v1/hospede/listar', '/rest/sistema/v1/funcionario/listar'],
-      hospedes: '/rest/sistema/v1/hospede/listar',
-      funcionarios: '/rest/sistema/v1/funcionario/listar',
-      funcoes: '/rest/sistema/v1/funcao/listar',
-      'tipos-quarto': '/rest/sistema/v1/tipo-quarto/listar',
-      quartos: '/rest/sistema/v1/quarto/listar',
-      'status-reserva': '/rest/sistema/v1/status-reserva/listar',
-      reservas: '/rest/sistema/v1/reserva/listar',
-      servicos: '/rest/sistema/v1/servico/listar',
-      'hospede-servico': '/rest/sistema/v1/hospede-servico/listar',
-    };
-    */
-
-    // segunda tentativa, estava assim antes:
-
-    /*
-    const backendMap: { [key: string]: string | string[] } = {
-      usuarios: ['/hospede', '/funcionario'],
-      hospedes: '/hospede',
-      funcionarios: '/funcionario',
-      funcoes: '/funcao',
-      'tipos-quarto': '/tipo-quarto',
-      quartos: '/quarto',
-      'status-reserva': '/status-reserva',
-      reservas: '/reserva',
-      servicos: '/servico',
-      'hospede-servico': '/hospede-servico',
-    };
-    */
-
-    // Endpoints simplificados, já que o baseURL inclui /rest/sistema/v1
-
     const backendMap: { [key: string]: string | string[] } = {
       usuarios: ["/hospede/listar", "/funcionario/listar"],
       hospedes: "/hospede/listar",
@@ -409,78 +373,63 @@ export default function DevTools() {
       "hospede-servico": "/hospede-servico/listar",
     };
 
-    /* ADICIONA console.log pra se identificamos o erro: pq não aparece registro nas tabelas */
-
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setHateoasLinks(null);
+
         const mapping = backendMap[activeTab];
-
-        // estes console log foram adicionados pra ver se eu identifico o erro
-        console.log("Fetching data for tab:", activeTab);
-        console.log("Using endpoint mapping:", mapping);
-
         if (!mapping) {
           showToast("Endpoint backend não mapeado para esta aba", "error");
+          setLoading(false);
           return;
         }
 
-        // suportar endpoint único ou múltiplos (ex.: 'usuarios' que junta 2 endpoints)
         const endpoints = Array.isArray(mapping) ? mapping : [mapping];
         const results: any[] = [];
+        let pageInfo: any = null;
 
         for (const ep of endpoints) {
-          // estes console log foram adicionados pra ver se eu identifico o erro
-          console.log("Fetching endpoint:", ep);
-          console.log("Full URL:", `${REST_CONFIG.BASE_URL}${ep}`);
-
-          const res = await http.get(ep);
-
-          // este console log foi adicionado pra ver se a eu identifico o erro
-          console.log("Raw response:", res);
-
-          // O backend normalmente devolve um envelope (ex.: { sucesso: true, dados: [...] })
-          // portanto tentamos desembrulhar `res.data.dados` quando presente.
+          const url = `${ep}?page=${currentPage}&pageSize=${pageSize}`;
+          const res = await http.get(url);
           const payload = res?.data?.dados ?? res?.data ?? [];
+          const linkPayload = res?.data?._link ?? res?.data?.dados?._link ?? null;
+          if (linkPayload) {
+            setHateoasLinks(linkPayload);
+          }
 
-          // este console log foi adicionado pra ver se a eu identifico o erro
-          console.log("Processed payload:", payload);
-
-          // Se o payload não for array, colocamos no array para manter a uniformidade
-
-          // antes estava assim:
-          // results.push(Array.isArray(payload) ? payload : [payload]);
-
-          // agora ficou assim pra facilitar debug:
-
-          const processedPayload = Array.isArray(payload) ? payload : [payload];
-          console.log("Final processed payload:", processedPayload);
-          results.push(processedPayload);
+          if (payload && typeof payload === "object" && Array.isArray(payload.content)) {
+            results.push(payload.content);
+            pageInfo = payload;
+          } else if (Array.isArray(payload)) {
+            results.push(payload);
+          } else if (payload && typeof payload === "object") {
+            results.push([payload]);
+          }
         }
 
-        // mesclar resultados (flatten) quando a aba consultou múltiplos endpoints
         const merged = ([] as any[]).concat(...results);
+        setApiData((prev) => ({ ...prev, [activeTab]: merged }));
 
-        // Antes estava assim:
-        // setApiData(prev => ({ ...prev, [activeTab]: merged }));
-
-        // agora com console log pra debug:
-
-        console.log("Final merged data:", merged);
-
-        setApiData((prev) => {
-          const newData = { ...prev, [activeTab]: merged };
-          console.log("New API data state:", newData);
-          return newData;
-        });
+        if (pageInfo) {
+          setTotalElements(pageInfo.totalElements ?? merged.length);
+          setTotalPages(pageInfo.totalPages ?? 1);
+          setShowPagingInfo(true);
+        } else {
+          setTotalElements(merged.length);
+          setTotalPages(1);
+          setShowPagingInfo(false);
+        }
       } catch (err) {
         console.error(err);
         showToast("Erro ao carregar dados do servidor", "error");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-
-  }, [activeTab]);
+  }, [activeTab, currentPage, pageSize]);
 
   // ============================================================
   // Parte 8 - Funções de Ação do Usuário (CRUD Simulado)
@@ -658,6 +607,7 @@ export default function DevTools() {
                 onClick={() => {
                   setActiveTab(tab.key);
                   setSearchTerm("");
+                  setCurrentPage(1);
                 }}
               >
                 {tab.label}
@@ -714,7 +664,10 @@ export default function DevTools() {
                 placeholder="Buscar..."
                 className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setSearchTerm(e.target.value);
+                }}
               />
               {/* Esconde o botão "Criar" apenas na aba Usuarios (Todos) */}
               {activeTab !== "usuarios" && (
@@ -795,6 +748,51 @@ export default function DevTools() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {loading && (
+              <div className="text-center text-gray-600">Carregando dados...</div>
+            )}
+
+            {showPagingInfo && (
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-gray-700">
+                <div>
+                  Mostrando página <strong>{currentPage}</strong> de <strong>{totalPages}</strong>, total de <strong>{totalElements}</strong> registros.
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={currentPage <= 1}
+                    className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  >
+                    Próxima
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {hateoasLinks && Object.keys(hateoasLinks).length > 0 && (
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <div className="font-semibold mb-2">HATEOAS Links</div>
+                <ul className="list-disc list-inside text-sm">
+                  {Object.entries(hateoasLinks).map(([key, link]) => (
+                    <li key={key}>
+                      <span className="font-medium">{key}</span> — {link.method} <code>{link.href}</code>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </main>

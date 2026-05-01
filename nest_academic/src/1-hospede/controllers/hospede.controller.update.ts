@@ -8,13 +8,15 @@ import {
   Put,
   Req,
 } from '@nestjs/common';
-import { HospedeRequest } from '../dto/request/hospede.request';
-import { HospedeServiceUpdate } from '../service/hospede.service.update';
-import { ROTA } from 'src/commons/constants/url.sistema';
 import type { Request } from 'express';
+import { HOSPEDE } from 'src/commons/constants/constants.sistema';
+import { ROTA } from 'src/commons/constants/url.sistema';
 import { Result } from 'src/commons/mensagem/mensagem';
-import { HospedeResponse } from '../dto/response/hospede.response';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
+import { gerarLinks } from 'src/commons/utils/hateoas.utils';
+import { HospedeRequest } from '../dto/request/hospede.request';
+import { HospedeResponse } from '../dto/response/hospede.response';
+import { HospedeServiceUpdate } from '../service/hospede.service.update';
 
 @Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerUpdate {
@@ -26,17 +28,19 @@ export class HospedeControllerUpdate {
   // Solução atual: usar o endpoint definido em ROTA.HOSPEDE.ENDPOINTS
   @Put(ROTA.HOSPEDE.ENDPOINTS.UPDATE) // 'alterar/:id'
   async update(
-    @Req() res: Request,
+    @Req() req: Request,
     @Param('id', ParseIntPipe) id: number,
     @Body() hospedeRequest: HospedeRequest,
   ): Promise<Result<HospedeResponse>> {
     const response = await this.hospedeServiceUpdate.update(id, hospedeRequest);
+    const _link = gerarLinks(req, HOSPEDE, id);
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
       'O hóspede foi alterado com sucesso !',
       response,
-      ROTA.HOSPEDE.UPDATE,
+      req.path,
       null,
+      _link,
     );
   }
   /*

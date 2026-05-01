@@ -11,11 +11,13 @@ import { HospedeServiceFindOne } from '../service/hospede.service.findone';
 
 import { ConverterHospede } from '../dto/converter/hospede.converter'; // novo
 
+import type { Request } from 'express';
+import { HOSPEDE } from 'src/commons/constants/constants.sistema';
 import { ROTA } from 'src/commons/constants/url.sistema';
-import { HospedeResponse } from '../dto/response/hospede.response';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
-import type { Request } from 'express';
+import { gerarLinks } from 'src/commons/utils/hateoas.utils';
+import { HospedeResponse } from '../dto/response/hospede.response';
 
 @Controller(ROTA.HOSPEDE.BASE.substring(1)) // Remove a barra inicial para evitar duplicação
 export class HospedeControllerFindOne {
@@ -37,13 +39,15 @@ export class HospedeControllerFindOne {
 
     // Converte entidade para DTO de response antes de enviar ao cliente.
     const response = ConverterHospede.toHospedeResponse(entidade);
+    const _link = gerarLinks(req, HOSPEDE, id);
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
       'Hóspede localizado com sucesso!',
       response,
-      ROTA.HOSPEDE.BY_ID,
+      req.path,
       null,
+      _link,
     );
   }
 }

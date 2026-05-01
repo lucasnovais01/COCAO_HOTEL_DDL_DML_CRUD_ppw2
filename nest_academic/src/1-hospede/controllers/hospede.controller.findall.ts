@@ -7,11 +7,13 @@ import {
   Req,
 } from '@nestjs/common';
 import type { Request } from 'express';
+import { HOSPEDE } from 'src/commons/constants/constants.sistema';
 import { ROTA } from 'src/commons/constants/url.sistema';
 import { PAGINATION } from 'src/commons/enum/paginacao.enum';
 import { Result } from 'src/commons/mensagem/mensagem';
 import { MensagemSistema } from 'src/commons/mensagem/mensagem.sistema';
 import { Page } from 'src/commons/pagination/page.sistema';
+import { geraPageLinks } from 'src/commons/utils/hateoas.utils';
 import { HospedeResponse } from '../dto/response/hospede.response';
 import { HospedeServiceFindAll } from '../service/hospede.service.findall';
 
@@ -32,10 +34,11 @@ export class HospedeControllerFindAll {
     const response = await this.hospedeServiceFindAll.findAll(
       page ? Number(page) : PAGINATION.PAGE,
       pageSize ? Number(pageSize) : PAGINATION.PAGESIZE,
-      props ?? 'nomeHospede',
+      props ?? 'idUsuario',
       order ?? PAGINATION.ASC,
       search,
     );
+    const _link = geraPageLinks(req, response, HOSPEDE);
 
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
@@ -43,6 +46,7 @@ export class HospedeControllerFindAll {
       response,
       req.path,
       null,
+      _link,
     );
   }
 }
