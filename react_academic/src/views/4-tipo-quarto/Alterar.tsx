@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";

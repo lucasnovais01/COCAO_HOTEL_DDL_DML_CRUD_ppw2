@@ -241,6 +241,7 @@ export default function DevTools() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
   const [hateoasLinks, setHateoasLinks] = useState<Record<string, any> | null>(null);
+  const [showHateoasLinks, setShowHateoasLinks] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPagingInfo, setShowPagingInfo] = useState(false);
   const [toast, setToast] = useState<
@@ -669,6 +670,13 @@ export default function DevTools() {
                   setSearchTerm(e.target.value);
                 }}
               />
+              <button
+                type="button"
+                onClick={() => setShowHateoasLinks((prev) => !prev)}
+                className="px-3 py-2 rounded-lg text-sm border border-gray-300 bg-white hover:bg-gray-100 transition"
+              >
+                {showHateoasLinks ? "Ocultar HATEOAS" : "Mostrar HATEOAS"}
+              </button>
               {/* Esconde o botão "Criar" apenas na aba Usuarios (Todos) */}
               {activeTab !== "usuarios" && (
                 <button
@@ -781,7 +789,7 @@ export default function DevTools() {
               </div>
             )}
 
-            {hateoasLinks && Object.keys(hateoasLinks).length > 0 && (
+            {showHateoasLinks && hateoasLinks && Object.keys(hateoasLinks).length > 0 && (
               <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
                 <div className="font-semibold mb-2">HATEOAS Links</div>
                 <ul className="list-disc list-inside text-sm">

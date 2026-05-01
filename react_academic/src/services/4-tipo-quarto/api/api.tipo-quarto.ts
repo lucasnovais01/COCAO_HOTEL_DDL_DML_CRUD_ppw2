@@ -13,6 +13,10 @@ type GetTiposQuartoResponse = {
     | TipoQuarto[];
 };
 
+type GetTipoQuartoResponse = {
+  dados?: TipoQuarto;
+};
+
 export const apiGetTiposQuarto = async (
   page: number = 1,
   pageSize: number = 5,
@@ -31,7 +35,7 @@ export const apiGetTiposQuarto = async (
 
 export const apiGetTipoQuarto = async (
   codigoTipoQuarto: number
-): Promise<AxiosResponse<unknown>> => {
+): Promise<AxiosResponse<GetTipoQuartoResponse>> => {
   console.log(
     "[apiGetTipoQuarto] Buscando tipo de quarto código:",
     codigoTipoQuarto
