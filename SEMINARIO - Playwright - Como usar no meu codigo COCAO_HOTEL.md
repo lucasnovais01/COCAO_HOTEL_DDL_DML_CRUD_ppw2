@@ -13,6 +13,9 @@ Este tutorial irá guiá-lo passo a passo para configurar e usar o Playwright pa
 O Playwright pode ser instalado em um projeto existente. Vamos adicioná-lo à raiz do seu workspace (pasta `COCAO_HOTEL_DDL_DML_CRUD_ppw2`).
 
 1. Abra o terminal no VS Code (Terminal > New Terminal).
+
+OBSERVAÇÃO É FORA DO SRC do NEST e REACT
+
 2. Navegue até a raiz do projeto:
    ```
    cd C:\Users\lucas\COCAO_HOTEL_DDL_DML_CRUD_ppw2
