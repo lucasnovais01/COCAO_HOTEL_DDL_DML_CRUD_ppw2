@@ -105,9 +105,15 @@ test('Página inicial do COCAO_HOTEL carrega corretamente', async ({ page }) => 
 
   // Verifica se o título da página contém "COCAO HOTEL" (ajuste conforme seu app)
   await expect(page).toHaveTitle(/COCAO HOTEL/i);
+  // await expect(page).toHaveTitle(/react_academic/i);
+
+  // no caso deste projeto, o titulo correto é /react_academic/i e não COCAO HOTEL
 
   // Verifica se há um elemento específico, como um cabeçalho
   await expect(page.locator('h1')).toContainText('Bem-vindo ao COCAO HOTEL');
+  // await expect(page.locator('h1')).toContainText('Dashboard');
+
+  // no caso deste projeto vai ser a palavra Dashboard
 });
 ```
 
@@ -116,6 +122,36 @@ test('Página inicial do COCAO_HOTEL carrega corretamente', async ({ page }) => 
   - `expect(page).toHaveTitle(...)`: Verifica o título da aba do navegador.
   - `page.locator('h1')`: Encontra um elemento `<h1>` na página.
   - Ajuste os seletores e textos conforme a estrutura real do seu frontend React.
+
+
+## Sobre o teste e as falhas
+No seu arquivo example.spec.ts, o teste faz duas verificações:
+
+await expect(page).toHaveTitle(/COCAO HOTEL/);
+await expect(page.locator('h1')).toContainText('Bem-vindo ao COCAO HOTEL');
+
+O que o erro diz:
+
+O título atual da página é react_academic
+O <h1> atual da página é Dashboard
+
+Isso significa:
+
+page.goto('/') abriu a página do seu app React
+o app atual não tem título COCAO HOTEL
+o texto do <h1> não é Bem-vindo ao COCAO HOTEL
+
+O que você pode fazer
+
+Opção 1: testar a página como ela está hoje
+Se quiser passar o teste sem mudar o app:
+
+Opção 2: mudar o app para o que o teste espera
+Se quiser que o app realmente seja COCAO HOTEL, altere:
+
+index.html para <title>COCAO HOTEL</title>
+o conteúdo do <h1> no seu app para Bem-vindo ao COCAO HOTEL
+##
 
 ## Passo 4: Executar os Testes
 
@@ -136,10 +172,16 @@ Agora, execute os testes:
   ```
   npx playwright test
   ```
-- **Executar apenas um arquivo**:
+- **Executar apenas um arquivo**: 
+## Só roda arquivos de teste, não qualquer arquivo do projeto.
   ```
   npx playwright test tests/cocao-hotel.spec.ts
   ```
+ ## Como testar corretamente neste sistema, Se você quer rodar apenas um arquivo de teste, use:
+  npx playwright test tests/example.spec.ts
+ ## Se quiser rodar tudo dentro da pasta
+  npx playwright test tests
+
 - **Executar com navegador visível (headed)**:
   ```
   npx playwright test --headed
@@ -166,3 +208,38 @@ Agora, execute os testes:
 ## Conclusão
 
 Com esses passos, você tem uma base sólida para testar seu projeto COCAO_HOTEL com Playwright. Comece com testes simples e expanda conforme adiciona funcionalidades. Se tiver dúvidas, consulte a documentação oficial: https://playwright.dev/
+
+
+
+
+
+
+
+
+## Resposta simples: Playwright vs. Postman
+Não, o Playwright não consegue fazer exatamente a mesma coisa que o Postman. Eles têm propósitos diferentes:
+
+  # O que o Postman faz
+Testa APIs REST diretamente (GET, POST, PUT, DELETE)
+Envia requests HTTP para endpoints como http://localhost:8000/rest/sistema/v1/hospede/criar
+Verifica respostas JSON, status codes, headers
+Ideal para testar backend isoladamente
+
+  # O que o Playwright faz
+Testa interfaces web (frontend) simulando um usuário real
+Abre navegadores, navega páginas, clica botões, preenche formulários
+Verifica se a UI responde corretamente (ex: título da página, texto na tela)
+Ideal para testes end-to-end (E2E), onde frontend + backend trabalham juntos
+
+  # Pode o Playwright testar APIs?
+Sim, mas de forma limitada e não recomendada como principal ferramenta:
+
+Ele pode fazer requests HTTP usando page.request ou apiRequestContext
+
+Exemplo básico:
+Mas isso é mais complexo e lento que o Postman, pois roda em contexto de navegador.
+
+Recomendação
+Continue usando Postman para testar APIs (como você fez com hospede/criar, listar, etc.)
+Use Playwright para testar a interface web (ex: clicar em "Criar Hóspede" no frontend e verificar se aparece na lista)
+Para APIs em testes automatizados, considere bibliotecas como supertest no NestJS ou axios em testes unitários.
