@@ -38,9 +38,10 @@ export const TIPO_QUARTO = {
     CONSULTAR: `Consultar ${ENTITY_NAME}`,
   },
   INPUT_ERROR: {
+    CODIGO: { BLANK: `O código do tipo de quarto deve ser informado`, MIN_VAL: `O código do tipo de quarto deve ser um número maior que zero` },
     NOME: { BLANK: `O nome do tipo de quarto deve ser informado` },
-    CAPACIDADE: { BLANK: `A capacidade máxima deve ser informada` },
-    VALOR_DIARIA: { BLANK: `O valor da diária deve ser informado` },
+    CAPACIDADE: { BLANK: `A capacidade máxima deve ser informada`, MIN_VAL: `A capacidade máxima deve ser maior que zero` },
+    VALOR_DIARIA: { BLANK: `O valor da diária deve ser informado`, MIN_VAL: `O valor da diária deve ser maior que zero` },
   },
   OPERACAO: criarMensagemOperacao(ENTITY_NAME),
 };

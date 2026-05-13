@@ -2,27 +2,31 @@
 import { useState, type FocusEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROTA } from "../../router/url";
-import { apiPostHospede } from "../api/api.hospede";
-import { HOSPEDE } from "../constants/hospede.constants";
-import type { ErrosHospede, Hospede } from "../type/hospede";
+import { apiPostQuarto } from "../api/api.quarto";
+import { QUARTO } from "../constants/quarto.constants";
+import type { Quarto } from "../type/quarto";
+
+type ErrosQuarto = Record<string, unknown>;
 
 export const useCriar = () => {
-  const [model, setModel] = useState<Hospede>(
-    HOSPEDE.DADOS_INICIAIS as unknown as Hospede,
+  const [model, setModel] = useState<Quarto>(
+    QUARTO.DADOS_INICIAIS as unknown as Quarto,
   );
-  const [errors, setErrors] = useState<ErrosHospede>({});
+  const [errors, setErrors] = useState<ErrosQuarto>({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChangeField = (name: keyof Hospede, value: string) => {
+  const handleChangeField = (name: keyof Quarto, value: string) => {
     setModel((prev) =>
       ({
-        ...(prev ?? (HOSPEDE.DADOS_INICIAIS as unknown as Hospede)),
+        ...(prev ?? (QUARTO.DADOS_INICIAIS as unknown as Quarto)),
         [name]:
-          name === HOSPEDE.FIELDS.TIPO || name === HOSPEDE.FIELDS.ATIVO
+          name === QUARTO.FIELDS.CODIGO_TIPO_QUARTO ||
+          name === QUARTO.FIELDS.NUMERO ||
+          name === QUARTO.FIELDS.ANDAR
             ? Number(value)
             : value,
-      } as unknown as Hospede),
+      } as unknown as Quarto),
     );
 
     setErrors((prev) =>
@@ -30,78 +34,35 @@ export const useCriar = () => {
         ...prev,
         [name]: undefined,
         [`${String(name)}Mensagem`]: undefined,
-      } as unknown as ErrosHospede),
+      } as unknown as ErrosQuarto),
     );
   };
 
   const validateField = (
-    name: keyof Hospede,
+    name: keyof Quarto,
     e: FocusEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const value = (e.target as HTMLInputElement).value;
     const messages: string[] = [];
 
     switch (name) {
-      case HOSPEDE.FIELDS.NOME:
-        if (!value || String(value).trim().length === 0)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.BLANK);
-        if (value && String(value).length > 0 && String(value).length < 5)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MIN_LEN);
-        if (value && String(value).length > 100)
-          messages.push(HOSPEDE.INPUT_ERROR.NOME.MAX_LEN);
+      case QUARTO.FIELDS.CODIGO_TIPO_QUARTO:
+        if (!value || Number(value) <= 0)
+          messages.push(QUARTO.INPUT_ERROR.CODIGO_TIPO_QUARTO.MIN_VAL);
         break;
 
-      case HOSPEDE.FIELDS.CPF:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.CPF.BLANK);
-        if (value && !/^[0-9]+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.PATTERN);
-        if (value && value.length !== 11)
-          messages.push(HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN);
+      case QUARTO.FIELDS.NUMERO:
+        if (!value || Number(value) <= 0)
+          messages.push(QUARTO.INPUT_ERROR.NUMERO.MIN_VAL);
         break;
 
-      case HOSPEDE.FIELDS.RG:
-        if (value) {
-          if (value.length < 7)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MIN_LEN);
-          if (value.length > 9)
-            messages.push(HOSPEDE.INPUT_ERROR.RG.MAX_LEN);
-        }
+      case QUARTO.FIELDS.STATUS:
+        if (!value) messages.push(QUARTO.INPUT_ERROR.STATUS.BLANK);
         break;
 
-      case HOSPEDE.FIELDS.SEXO:
-        if (!value) messages.push(HOSPEDE.INPUT_ERROR.SEXO.BLANK);
-        break;
-
-      case HOSPEDE.FIELDS.DATA_NASCIMENTO:
-        if (!value) {
-          messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK);
-        } else {
-          const d = new Date(value);
-          if (isNaN(d.getTime()))
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID);
-          else if (d >= new Date())
-            messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST);
-          else {
-            const age = new Date().getFullYear() - d.getFullYear();
-            if (age < 18)
-              messages.push(HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN);
-          }
-        }
-        break;
-
-      case HOSPEDE.FIELDS.EMAIL:
-        if (value && !/^\S+@\S+\.\S+$/.test(value))
-          messages.push(HOSPEDE.INPUT_ERROR.EMAIL.VALID);
-        break;
-
-      case HOSPEDE.FIELDS.TELEFONE:
-        if (value && value.replace(/[^0-9]/g, "").length < 10)
-          messages.push(HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN);
-        break;
-
-      case HOSPEDE.FIELDS.TIPO:
-        if (value === "" || value === undefined)
-          messages.push(HOSPEDE.INPUT_ERROR.TIPO.BLANK);
+      case QUARTO.FIELDS.ANDAR:
+        if (!value || Number(value) < 0)
+          messages.push(QUARTO.INPUT_ERROR.ANDAR.VALID);
         break;
 
       default:
@@ -114,111 +75,44 @@ export const useCriar = () => {
         [name]: messages.length > 0,
         [`${String(name)}Mensagem`]:
           messages.length > 0 ? messages : undefined,
-      } as unknown as ErrosHospede),
+      } as unknown as ErrosQuarto),
     );
   };
 
   const validarFormulario = (): boolean => {
-    const newErrors: ErrosHospede = {};
+    const newErrors: ErrosQuarto = {};
     let isFormValid = true;
 
     const valores = {
-      nomeHospede: model.nomeHospede,
-      cpf: model.cpf,
-      rg: model.rg,
-      sexo: model.sexo,
-      dataNascimento: model.dataNascimento,
-      email: model.email,
-      telefone: model.telefone,
-      tipo: model.tipo,
+      codigoTipoQuarto: model.codigoTipoQuarto,
+      numero: model.numero,
+      statusQuarto: model.statusQuarto,
+      andar: model.andar,
     } as const;
 
-    if (!valores.nomeHospede || String(valores.nomeHospede).trim().length === 0) {
-      newErrors.nomeHospede = true;
-      newErrors.nomeHospedeMensagem = [HOSPEDE.INPUT_ERROR.NOME.BLANK];
-      isFormValid = false;
-    }
-
-    if (!valores.cpf) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.BLANK];
-      isFormValid = false;
-    } else if (!/^[0-9]+$/.test(String(valores.cpf))) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.PATTERN];
-      isFormValid = false;
-    } else if (String(valores.cpf).length !== 11) {
-      newErrors.cpf = true;
-      newErrors.cpfMensagem = [HOSPEDE.INPUT_ERROR.CPF.EXACT_LEN];
-      isFormValid = false;
-    }
-
-    if (valores.rg && String(valores.rg).length < 7) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MIN_LEN];
-      isFormValid = false;
-    } else if (valores.rg && String(valores.rg).length > 9) {
-      newErrors.rg = true;
-      newErrors.rgMensagem = [HOSPEDE.INPUT_ERROR.RG.MAX_LEN];
-      isFormValid = false;
-    }
-
-    if (!valores.sexo) {
-      newErrors.sexo = true;
-      newErrors.sexoMensagem = [HOSPEDE.INPUT_ERROR.SEXO.BLANK];
-      isFormValid = false;
-    }
-
-    if (!valores.dataNascimento) {
-      newErrors.dataNascimento = true;
-      newErrors.dataNascimentoMensagem = [
-        HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.BLANK,
+    if (!valores.codigoTipoQuarto || Number(valores.codigoTipoQuarto) <= 0) {
+      newErrors.codigoTipoQuarto = true;
+      newErrors.codigoTipoQuartoMensagem = [
+        QUARTO.INPUT_ERROR.CODIGO_TIPO_QUARTO.MIN_VAL,
       ];
       isFormValid = false;
-    } else {
-      const d = new Date(String(valores.dataNascimento));
-      if (isNaN(d.getTime())) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.VALID,
-        ];
-        isFormValid = false;
-      } else if (d >= new Date()) {
-        newErrors.dataNascimento = true;
-        newErrors.dataNascimentoMensagem = [
-          HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.PAST,
-        ];
-        isFormValid = false;
-      } else {
-        const age = new Date().getFullYear() - d.getFullYear();
-        if (age < 18) {
-          newErrors.dataNascimento = true;
-          newErrors.dataNascimentoMensagem = [
-            HOSPEDE.INPUT_ERROR.DATA_NASCIMENTO.AGE_MIN,
-          ];
-          isFormValid = false;
-        }
-      }
     }
 
-    if (valores.email && !/^\S+@\S+\.\S+$/.test(String(valores.email))) {
-      newErrors.email = true;
-      newErrors.emailMensagem = [HOSPEDE.INPUT_ERROR.EMAIL.VALID];
+    if (!valores.numero || Number(valores.numero) <= 0) {
+      newErrors.numero = true;
+      newErrors.numeroMensagem = [QUARTO.INPUT_ERROR.NUMERO.MIN_VAL];
       isFormValid = false;
     }
 
-    if (
-      valores.telefone &&
-      String(valores.telefone).replace(/[^0-9]/g, "").length < 10
-    ) {
-      newErrors.telefone = true;
-      newErrors.telefoneMensagem = [HOSPEDE.INPUT_ERROR.TELEFONE.MIN_LEN];
+    if (!valores.statusQuarto || String(valores.statusQuarto).trim().length === 0) {
+      newErrors.statusQuarto = true;
+      newErrors.statusQuartoMensagem = [QUARTO.INPUT_ERROR.STATUS.BLANK];
       isFormValid = false;
     }
 
-    if (valores.tipo === undefined || valores.tipo === null) {
-      newErrors.tipo = true;
-      newErrors.tipoMensagem = [HOSPEDE.INPUT_ERROR.TIPO.BLANK];
+    if (Number.isNaN(Number(valores.andar)) || Number(valores.andar) < 0) {
+      newErrors.andar = true;
+      newErrors.andarMensagem = [QUARTO.INPUT_ERROR.ANDAR.VALID];
       isFormValid = false;
     }
 
@@ -226,13 +120,14 @@ export const useCriar = () => {
     return isFormValid;
   };
 
-  const getInputClass = (field?: keyof ErrosHospede): string => {
-    if (field && errors[field]) return "form-control is-invalid app-label input-error mt-2";
+  const getInputClass = (field?: keyof ErrosQuarto): string => {
+    if (field && errors[field])
+      return "form-control is-invalid app-label input-error mt-2";
     return "form-control app-label mt-2";
   };
 
-  const showMensagem = (field: keyof Hospede) => {
-    const msgKey = `${String(field)}Mensagem` as keyof ErrosHospede;
+  const showMensagem = (field: keyof Quarto) => {
+    const msgKey = `${String(field)}Mensagem` as keyof ErrosQuarto;
     const m = errors[msgKey] as any;
     if (!m) return null;
 
@@ -254,7 +149,7 @@ export const useCriar = () => {
                 style={{ display: "block" }}
                 key={index}
               >
-                {message}
+                {String(message)}
               </div>
             ))}
       </div>
@@ -271,40 +166,33 @@ export const useCriar = () => {
     setLoading(true);
 
     try {
-      const hospedeToSend = {
-        nomeHospede: model.nomeHospede,
-        cpf: model.cpf,
-        rg: model.rg || null,
-        sexo: model.sexo,
-        dataNascimento: model.dataNascimento
-          ? String(model.dataNascimento)
-          : "",
-        email: model.email || null,
-        telefone: model.telefone || null,
-        tipo: Number(model.tipo),
-        ativo: Number(model.ativo ?? 1),
-      } as unknown as Hospede;
+      const quartoToSend: Quarto = {
+        codigoTipoQuarto: Number(model.codigoTipoQuarto),
+        numero: Number(model.numero),
+        statusQuarto: String(model.statusQuarto ?? "LIVRE"),
+        andar: Number(model.andar),
+      } as unknown as Quarto;
 
-      await apiPostHospede(hospedeToSend);
+      await apiPostQuarto(quartoToSend);
 
-      navigate(ROTA.HOSPEDE.LISTAR, {
+      navigate(ROTA.QUARTO.LISTAR, {
         state: {
           toast: {
-            message: HOSPEDE.OPERACAO.CRIAR.SUCESSO,
+            message: QUARTO.OPERACAO.CRIAR.SUCESSO,
             type: "success",
           },
         },
       });
     } catch (error: any) {
       console.error(error);
-      alert(HOSPEDE.OPERACAO.CRIAR.ERRO);
+      alert(QUARTO.OPERACAO.CRIAR.ERRO);
     } finally {
       setLoading(false);
     }
   };
 
   const onCancel = () => {
-    navigate(ROTA.HOSPEDE.LISTAR);
+    navigate(ROTA.QUARTO.LISTAR);
   };
 
   return {

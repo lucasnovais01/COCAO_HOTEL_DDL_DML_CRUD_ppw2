@@ -41,9 +41,10 @@ export const QUARTO = {
     CONSULTAR: `Consultar ${ENTITY_NAME}`,
   },
   INPUT_ERROR: {
-    NUMERO: { BLANK: `O número do quarto deve ser informado` },
-    CODIGO_TIPO_QUARTO: { BLANK: `O tipo de quarto deve ser informado` },
-    STATUS: { BLANK: `O status deve ser informado` },
+    CODIGO_TIPO_QUARTO: { BLANK: `O tipo de quarto deve ser informado`, MIN_VAL: `O tipo de quarto deve ser um número maior que zero` },
+    NUMERO: { BLANK: `O número do quarto deve ser informado`, MIN_VAL: `O número do quarto deve ser maior que zero` },
+    STATUS: { BLANK: `O status do quarto deve ser informado` },
+    ANDAR: { BLANK: `O andar deve ser informado`, VALID: `O andar deve ser um número válido` },
   },
   STATUS_OPTIONS: [
     { value: "LIVRE", label: "Livre" },
